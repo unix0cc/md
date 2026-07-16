@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>md — sun4v MD/hv-config emulation test matrix</title>
+<style>
+  body { font-family: -apple-system, Helvetica, Arial, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  table { border-collapse: collapse; width: 100%; margin: 1.5rem 0; font-size: 0.9rem; }
+  caption { caption-side: top; text-align: left; font-weight: 600; margin-bottom: 0.5rem; }
+  th, td { border: 1px solid #ccc; padding: 0.4rem 0.6rem; text-align: center; vertical-align: middle; }
+  th { background: #f0f0f0; }
+  td.os { text-align: left; font-weight: 600; background: #fafafa; }
+  .pass { background: #d9f2d9; }
+  .fail { background: #f7d6d6; }
+  .untested { background: #fff; color: #999; }
+  .legend span { display: inline-block; margin-right: 1.2rem; }
+  .swatch { display: inline-block; width: 0.9em; height: 0.9em; border: 1px solid #999; vertical-align: middle; margin-right: 0.3em; }
+  code { background: #f4f4f4; padding: 0.1em 0.35em; border-radius: 3px; }
+  footer { font-size: 0.85rem; color: #666; margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<h1>sun4v MD/hv-config emulation test matrix</h1>
+
+<p>Tracks which guest OS test images have been verified to boot cleanly
+against which MD/hv-config build in <a href="bin/">bin/</a>. Most cells
+are still open — this table exists to plan and record the "test all
+hv/md pairs" pass, not to claim it's done.</p>
+
+<table>
+<caption>Boot status: OS image (row) &times; MD/hv-config build (column)</caption>
+<thead>
+<tr>
+  <th>OS image</th>
+  <th>OpenSPARC_T1_original</th>
+  <th>OpenSPARC_T1_rebuild</th>
+  <th>snv136/256</th>
+  <th>snv136/1024</th>
+  <th>snv136/2048</th>
+  <th>1GiB-snv_77<br>(1GiB-experimental)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td class="os">snv_77 ramdisk<sup>1</sup></td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+</tr>
+<tr>
+  <td class="os">snv_134 AI ISO<sup>2</sup></td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="pass">PASS<sup>*</sup></td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+</tr>
+<tr>
+  <td class="os">Solaris&nbsp;11&nbsp;Express 2010.11 AI<sup>3</sup></td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+</tr>
+<tr>
+  <td class="os">Solaris&nbsp;11&nbsp;11/11 text<sup>4</sup></td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+</tr>
+<tr>
+  <td class="os">Solaris&nbsp;10u8 GA DVD<sup>5</sup></td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+</tr>
+<tr>
+  <td class="os">Solaris&nbsp;10u10 GA2 DVD<sup>6</sup></td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+</tr>
+<tr>
+  <td class="os">Solaris&nbsp;10u11<sup>7</sup></td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+</tr>
+</tbody>
+</table>
+
+<div class="legend">
+  <span><span class="swatch" style="background:#d9f2d9"></span>PASS — verified clean boot</span>
+  <span><span class="swatch" style="background:#f7d6d6"></span>FAIL — verified boot failure</span>
+  <span><span class="swatch" style="background:#fff"></span>— untested</span>
+</div>
+
+<p><sup>*</sup> Verified via live kmdb debugging (see
+<code>docs/niagara-findings.md</code>, Experiment&nbsp;#16, in the
+qemu-sparc64 project) — clean boot of <code>osol-dev-134-ai-sparc.iso</code>
+at <code>-m 256</code> against the <a href="bin/snv136/256/">snv136/256</a>
+build. Recorded here against the closest matching row (snv_134); the ISO's
+own build number and this MD's <code>snv136</code> label don't necessarily
+imply a byte-for-byte version match — worth double-checking when this row
+gets retested.</p>
+
+<h2>Image sources</h2>
+<ol>
+<li>snv_77 ramdisk — <a href="https://github.com/changeyourname/OpenSPARC_T1/tree/master/OpenSPARCT1.1.7/design/sys/edk/os/OpenSolaris/proto">github.com/changeyourname/OpenSPARC_T1, OpenSPARCT1.1.7/design/sys/edk/os/OpenSolaris/proto</a></li>
+<li>snv_134 AI ISO — source not yet recorded (used in earlier session testing as <code>osol-dev-134-ai-sparc.iso</code>; find/confirm the original download location)</li>
+<li>Solaris 11 Express 11/2010 AI ISO — <code>sol-11-exp-201011-ai-sparc.iso</code></li>
+<li>Solaris 11 11/11 text ISO — <code>sol-11-1111-text-sparc.iso</code></li>
+<li>Solaris 10u8 GA SPARC DVD — <code>sol-10-u8-ga-sparc-dvd.iso</code></li>
+<li>Solaris 10u10 GA2 SPARC DVD — <code>sol-10-u10-ga2-sparc-dvd.iso</code></li>
+<li>Solaris 10u11 — source not yet recorded</li>
+</ol>
+
+<p>Exact download URLs for items 3&ndash;6 are tracked outside this file
+(mirror links change/rot); ask before re-adding them here if this repo
+is ever made public.</p>
+
+<h2>MD/hv-config builds under test</h2>
+<ul>
+<li><a href="bin/OpenSPARC_T1_original/">OpenSPARC_T1_original</a> — Sun's unmodified 2006 release (no fix applied; expected to fail on modern kernels per Experiment #16, not yet confirmed per-image)</li>
+<li><a href="bin/OpenSPARC_T1_rebuild/">OpenSPARC_T1_rebuild</a> — same sources, rebuilt with our mdgen; byte-identical to OpenSPARC_T1_original, so same expected boot behavior</li>
+<li><a href="bin/snv136/256/">snv136/256</a>, <a href="bin/snv136/1024/">snv136/1024</a>, <a href="bin/snv136/2048/">snv136/2048</a> — memory/cpus/cache + mmu-* fix applied (see <a href="patches/">patches/snv_136/</a>), 256/1024/2048 MiB variants</li>
+<li><a href="bin/1GiB-snv_77_1GiB-experimental/">1GiB-snv_77 (1GiB-experimental)</a> — externally-sourced prebuilt blobs, not built from src/</li>
+</ul>
+
+<footer>See <a href="README">README</a> for the repo layout (src/bin/patches/fw_blobs) and build instructions.</footer>
+
+</body>
+</html>
