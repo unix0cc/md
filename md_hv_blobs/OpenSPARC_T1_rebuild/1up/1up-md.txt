@@ -1,0 +1,87 @@
+node root root {
+	banner-name = "Sun Fire T2000";
+	name = "SUNW,Sun-Fire-T2000";
+	stick-frequency = 0x4c4b40;
+	clock-frequency = 0x4c4b40;
+	board-part# = "000-000-000";
+	max-#cpumondo-entries = 0x100;
+	max-#devmondo-entries = 0x100;
+	max-#cpus = 0x20;
+	max-#tsb-entries = 0x2;
+	reset-reason = 0x0;
+	fwd -> platform_data;
+	fwd -> vdev;
+}
+node options XXoptions {
+	input-device = "ttya";
+	output-device = "ttya";
+	boot-device = "vdisk";
+	use-nvramrc? = 0xffffffffffffffff;
+}
+node devalias XXdevalias {
+	net = "/virtual-devices/network@0";
+	disk = "/virtual-devices/disk@0";
+	vdisk = "/virtual-devices/disk@0";
+	nvram = "/virtual-devices/nvram@5";
+	ttya = "/virtual-devices/console@1";
+	ttyb = "/virtual-devices/console@4";
+}
+node platform platform_data {
+	banner-name = "Sun Fire T2000";
+	name = "SUNW,Sun-Fire-T2000";
+	mac-address = 0x8003dead03;
+	hostid = 0x80112233;
+	serial# = 0xab4130;
+	stick-frequency = 0x4c4b40;
+	clock-frequency = 0x4c4b40;
+}
+node virtual-devices vdev {
+	cfg-handle = 0x100;
+}
+node virtual-device disk {
+	back -> vdev;
+	name = "disk";
+	fcode-driver-name = "disk-virtual-device";
+	my-space = 0x0;
+	intr = 0x0;
+	ino = 0x0;
+	cfg-handle = 0x0;
+}
+node virtual-device console {
+	back -> vdev;
+	name = "console";
+	fcode-driver-name = "console-virtual-device";
+	intr = 0x1;
+	ino = 0x11;
+	compatible = "qcn";
+	cfg-handle = 0x1;
+	channel# = 0x0;
+}
+node virtual-device nvram {
+	back -> vdev;
+	name = "nvram";
+	fcode-driver-name = "nvram-virtual-device";
+	intr = 0x0;
+	ino = 0x0;
+	cfg-handle = 0x2;
+}
+node virtual-device tod {
+	back -> vdev;
+	name = "rtc";
+	fcode-driver-name = "tod-virtual-device";
+	intr = 0x0;
+	ino = 0x0;
+	cfg-handle = 0x3;
+	compatible = "sun4v-tod";
+}
+node cpu cpu0 {
+	id = 0x0;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node mblock p0_memlist0 {
+	base = 0x80000000;
+	size = 0x10000000;
+}

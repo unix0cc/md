@@ -1,0 +1,20 @@
+--- a/1up.pdesc
++++ b/1up.pdesc
+@@ -35,3 +35,17 @@
+ 	base = 0x0000000080000000;
+ 	size = 256M;
+ }
++
++node memory memory {
++	fwd -> p0_memlist0;
++	back -> root;
++}
++
++node cpus cpus {
++	fwd -> cpu0;
++	back -> root;
++}
++
++node cache cache {
++	back -> cpu0;
++}

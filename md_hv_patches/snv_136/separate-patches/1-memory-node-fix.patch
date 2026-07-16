@@ -1,0 +1,29 @@
+--- a/common.pdesc
++++ b/common.pdesc
+@@ -36,7 +36,6 @@
+     max-#tsb-entries = 0x2; \
+     }
+
+-
+ node options XXoptions {
+      input-device = "ttya";
+      output-device = "ttya";
+@@ -66,6 +65,7 @@
+ 	reset-reason = 0;			   // power-on
+ 	fwd -> platform_data;
+ 	fwd -> vdev;
++	fwd -> memory;
+ }
+
+ node platform platform_data {
+--- a/1up.pdesc
++++ b/1up.pdesc
+@@ -35,3 +35,8 @@
+ 	base = 0x0000000080000000;
+ 	size = 256M;
+ }
++
++node memory memory {
++	fwd -> p0_memlist0;
++	back -> root;
++}

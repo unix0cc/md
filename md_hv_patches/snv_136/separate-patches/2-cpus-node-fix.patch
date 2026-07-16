@@ -1,0 +1,29 @@
+--- a/common.pdesc
++++ b/common.pdesc
+@@ -34,6 +34,7 @@
+     isalist = "sparcv9","sparcv8plus","sparcv8","sparcv8-fsmuld","sparcv7","sparc"; \
+     compatible = { "SUNW,UltraSPARC-T1", "SUNW,sun4v-cpu", "sun4v" }; \
+     max-#tsb-entries = 0x2; \
++    back -> cpus; \
+     }
+
+ node options XXoptions {
+@@ -66,6 +67,7 @@
+ 	fwd -> platform_data;
+ 	fwd -> vdev;
+ 	fwd -> memory;
++	fwd -> cpus;
+ }
+
+ node platform platform_data {
+--- a/1up.pdesc
++++ b/1up.pdesc
+@@ -40,3 +40,8 @@
+ 	fwd -> p0_memlist0;
+ 	back -> root;
+ }
++
++node cpus cpus {
++	fwd -> cpu0;
++	back -> root;
++}

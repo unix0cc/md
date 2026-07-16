@@ -1,0 +1,45 @@
+md_hv_blobs/
+================
+
+Binary blobs only. No buildable source lives here (that's md_hv/, see
+../md_hv/) -- everything under this directory is either a pristine
+upstream artifact or `make` output, never hand-edited.
+
+OpenSPARC_T1_original/
+    Sun's original, unmodified 2006 OpenSPARC T1 "niagara" Legion release
+    (GPLv2 -- see each file's own header). Kept exactly as shipped,
+    including its own Makefile/Makefile.master and mixed source+blob
+    layout (niagara/*.pdesc, *.hdesc, *.conf, *-md.bin, *-hv.bin) -- this
+    is the one deliberate exception to the "blobs only" rule, since it's
+    the ground-truth reference everything else is validated against.
+
+OpenSPARC_T1_rebuild/1up/
+    Output of `make` in ../md_hv/OpenSPARC_T1_rebuild/: the same original
+    sources above, compiled with our own GNU-make-ported mdgen
+    (github.com/unix0cc/mdbuild) instead of Sun's Solaris/Sun-Studio
+    build. 1up-md.bin/1up-hv.bin here are verified byte-identical to
+    OpenSPARC_T1_original/niagara/1up-{md,hv}.bin -- this is the toolchain
+    fidelity proof.
+
+snv136/256/1up/, snv136/1024/
+    Output of `make` in ../md_hv/snv136/256/ and ../md_hv/snv136/1024/:
+    the boot-tested sun4v MD/hv-config for illumos/OpenSolaris snv_136,
+    built by applying the fix patches in ../md_hv_patches/snv_136/
+    (memory/cpus/cache nodes + mmu-page-size-list/mmu-#va-bits platform
+    props) on top of the original sources. 256/ and 1024/ differ only in
+    mblock.size (MD) and GUEST() memsize (hv-config), matching the
+    intended QEMU -m value.
+
+Every subdirectory also carries netcons, nvram1, openboot.bin, q.bin,
+reset.bin -- symlinks to ../../fw_blobs/, the shared static OBP/firmware
+blobs (not built by mdgen, just needed alongside the MD/HV binaries for
+QEMU to boot).
+
+Regenerating
+------------
+Never edit files under md_hv_blobs/ directly (other than
+OpenSPARC_T1_original/, which is frozen on purpose). To rebuild:
+
+    cd ../md_hv/<config>/
+    make distclean   # wipes this directory's corresponding output
+    make             # regenerates .bin/.txt + firmware symlinks here

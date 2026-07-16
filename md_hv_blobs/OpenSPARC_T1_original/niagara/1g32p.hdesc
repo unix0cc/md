@@ -1,0 +1,113 @@
+/*
+* ========== Copyright Header Begin ==========================================
+* 
+* OpenSPARC T1 Processor File: 1g32p.hdesc
+* Copyright (c) 2006 Sun Microsystems, Inc.  All Rights Reserved.
+* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES.
+* 
+* The above named program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public
+* License version 2 as published by the Free Software Foundation.
+* 
+* The above named program is distributed in the hope that it will be 
+* useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public
+* License along with this work; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+* 
+* ========== Copyright Header End ============================================
+*/
+/*
+ * Copyright 2005 Sun Microsystems, Inc.  All rights reserved.
+ * Use is subject to license terms.
+ *
+ * ident	"@(#)1g32p.hdesc	1.5	05/02/18 SMI"
+ */
+
+// Hypervisor configuration for 1 guest, 32 processors
+
+#include "common.hdesc"
+
+CPU(0,guest0,0)
+CPU(1,guest0,1)
+CPU(2,guest0,2)
+CPU(3,guest0,3)
+CPU(4,guest0,4)
+CPU(5,guest0,5)
+CPU(6,guest0,6)
+CPU(7,guest0,7)
+CPU(8,guest0,8)
+CPU(9,guest0,9)
+CPU(10,guest0,10)
+CPU(11,guest0,11)
+CPU(12,guest0,12)
+CPU(13,guest0,13)
+CPU(14,guest0,14)
+CPU(15,guest0,15)
+CPU(16,guest0,16)
+CPU(17,guest0,17)
+CPU(18,guest0,18)
+CPU(19,guest0,19)
+CPU(20,guest0,20)
+CPU(21,guest0,21)
+CPU(22,guest0,22)
+CPU(23,guest0,23)
+CPU(24,guest0,24)
+CPU(25,guest0,25)
+CPU(26,guest0,26)
+CPU(27,guest0,27)
+CPU(28,guest0,28)
+CPU(29,guest0,29)
+CPU(30,guest0,30)
+CPU(31,guest0,31)
+
+GUEST(0, 0xffffffff, 0x80000000, 256M, 0x80000000, 0x1f12000000, 0x1f40000000)
+
+node cpus cpus {
+	cpu -> cpu0;
+	cpu -> cpu1;
+	cpu -> cpu2;
+	cpu -> cpu3;
+	cpu -> cpu4;
+	cpu -> cpu5;
+	cpu -> cpu6;
+	cpu -> cpu7;
+	cpu -> cpu8;
+	cpu -> cpu9;
+	cpu -> cpu10;
+	cpu -> cpu11;
+	cpu -> cpu12;
+	cpu -> cpu13;
+	cpu -> cpu14;
+	cpu -> cpu15;
+	cpu -> cpu16;
+	cpu -> cpu17;
+	cpu -> cpu18;
+	cpu -> cpu19;
+	cpu -> cpu20;
+	cpu -> cpu21;
+	cpu -> cpu22;
+	cpu -> cpu23;
+	cpu -> cpu24;
+	cpu -> cpu25;
+	cpu -> cpu26;
+	cpu -> cpu27;
+	cpu -> cpu28;
+	cpu -> cpu29;
+	cpu -> cpu30;
+	cpu -> cpu31;
+}
+
+node guests guests {
+	guest -> guest0;
+}
+
+node root root {
+	cpus -> cpus;
+	guests -> guests;
+	hvuart = HVUART;
+	tod = HVTOD;
+}
