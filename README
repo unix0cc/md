@@ -37,6 +37,14 @@ fw_blobs/
     nvram1, netcons) -- not built by mdgen, just symlinked by each
     src/<config>/Makefile into the matching bin/<config>/ output.
 
+proofs/
+    Local-only boot/failure evidence (plain text) for cells in the
+    docs/index.html test matrix, one file per build x OS-image pair
+    it links from -- e.g. proofs/<build-slug>__<os-slug>.txt. Listed
+    in .gitignore on purpose: this directory is never committed, so
+    `git clone` never pulls it down and the matrix links to it will
+    404 for anyone but the person who generated the proof locally.
+
 Building a config
 ------------------
     cd src/<config>/       # e.g. src/snv_134/256, src/snv_134/1024
