@@ -21,19 +21,31 @@ OpenSPARC_T1_rebuild/1up/
     OpenSPARC_T1_original/niagara/1up-{md,hv}.bin -- this is the toolchain
     fidelity proof.
 
-snv136/256/1up/, snv136/1024/
-    Output of `make` in ../src/snv136/256/ and ../src/snv136/1024/:
-    the boot-tested sun4v MD/hv-config for illumos/OpenSolaris snv_136,
-    built by applying the fix patches in ../patches/snv_136/
+snv_134/256/1up/, snv_134/1024/
+    Output of `make` in ../src/snv_134/256/ and ../src/snv_134/1024/:
+    the boot-tested sun4v MD/hv-config for illumos/OpenSolaris snv_134,
+    built by applying the fix patches in ../patches/snv_134/
     (memory/cpus/cache nodes + mmu-page-size-list/mmu-#va-bits platform
     props) on top of the original sources. 256/ and 1024/ differ only in
     mblock.size (MD) and GUEST() memsize (hv-config), matching the
     intended QEMU -m value.
 
-Every subdirectory also carries netcons, nvram1, openboot.bin, q.bin,
-reset.bin -- symlinks to ../../fw_blobs/, the shared static OBP/firmware
-blobs (not built by mdgen, just needed alongside the MD/HV binaries for
-QEMU to boot).
+1GiB-snv_77_1GiB-experimental/
+    Externally-sourced, prebuilt 1GiB MD/hv-config for snv_77, pulled
+    from github.com/artyom-tarasenko/qemu-sun4v-md, branch
+    "1GiB-experimental", directory "1GiB-snv_77/". Not built by us --
+    no corresponding src/ entry, since we don't have the .pdesc/.hdesc
+    that produced it, only the compiled 1up-md.bin/1up-hv.bin. Kept
+    as another deliberate exception to "blobs only via our own build",
+    same rationale as OpenSPARC_T1_original/. Its nvram1/openboot.bin/
+    q.bin/reset.bin are real files (that branch's own copies, not
+    necessarily identical to fw_blobs/), and it has no netcons (the
+    upstream directory didn't ship one).
+
+Every other subdirectory also carries netcons, nvram1, openboot.bin,
+q.bin, reset.bin -- symlinks to ../../fw_blobs/, the shared static
+OBP/firmware blobs (not built by mdgen, just needed alongside the
+MD/HV binaries for QEMU to boot).
 
 Regenerating
 ------------

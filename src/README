@@ -15,12 +15,12 @@ OpenSPARC_T1_rebuild/1up/
     Sun's shipped binaries byte-for-byte -- see
     ../bin/OpenSPARC_T1_rebuild/.
 
-snv136/256/1up/, snv136/1024/
+snv_134/256/1up/, snv_134/1024/
     The same original sources with the boot-fix patches from
-    ../patches/snv_136/ applied (memory/cpus/cache nodes +
+    ../patches/snv_134/ applied (memory/cpus/cache nodes +
     mmu-page-size-list/mmu-#va-bits platform props -- the minimal set
     proven necessary for a clean sun4v boot on illumos/OpenSolaris
-    snv_136, see docs/niagara-findings.md Experiment #16). 256/ and
+    snv_134, see docs/niagara-findings.md Experiment #16). 256/ and
     1024/ differ only in mblock.size (MD) / GUEST() memsize (hv-config),
     matching the intended QEMU -m value. 1024/ is flat (no "1up"
     subdirectory) since it's a single config; 256/ keeps the
@@ -28,7 +28,7 @@ snv136/256/1up/, snv136/1024/
 
 Building
 --------
-    cd <config>/          # e.g. snv136/256, snv136/1024, OpenSPARC_T1_rebuild
+    cd <config>/          # e.g. snv_134/256, snv_134/1024, OpenSPARC_T1_rebuild
     make                  # writes .bin/.txt + firmware symlinks into
                            # the mirrored ../../bin/<config>/ path
     make distclean         # removes that output, leaves source untouched

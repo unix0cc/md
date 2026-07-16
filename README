@@ -25,12 +25,12 @@ bin/
     `make` produces from src/ for every other config. See bin/README.
 
 patches/
-    The fix patch chain (currently patches/snv_136/) -- both a
+    The fix patch chain (currently patches/snv_134/) -- both a
     consolidated one-patch-per-source-file view and an incremental
     one-patch-per-feature view (separate-patches/) of the same,
     live-kmdb-proven-minimal MD fix: memory/cpus/cache nodes plus
     mmu-page-size-list/mmu-#va-bits platform properties, required for
-    a clean sun4v boot on illumos/OpenSolaris snv_136.
+    a clean sun4v boot on illumos/OpenSolaris snv_134.
 
 fw_blobs/
     Shared static OBP/firmware blobs (openboot.bin, q.bin, reset.bin,
@@ -39,7 +39,7 @@ fw_blobs/
 
 Building a config
 ------------------
-    cd src/<config>/       # e.g. src/snv136/256, src/snv136/1024
+    cd src/<config>/       # e.g. src/snv_134/256, src/snv_134/1024
     make                   # writes .bin/.txt + firmware symlinks into
                             # the mirrored bin/<config>/ path
     make distclean          # removes that output, leaves src/ untouched
