@@ -48,17 +48,6 @@ hv/md pairs" pass, not to claim it's done.</p>
 </thead>
 <tbody>
 <tr>
-  <td class="build">OpenSPARC_T1_original</td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
-</tr>
-<tr>
   <td class="build">OpenSPARC_T1_rebuild</td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/OpenSPARC_T1_rebuild__disk.s10hw2.txt">PASS</a></td>
   <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/OpenSPARC_T1_rebuild__snv_77-ramdisk.txt">FAIL (panic:lgrp_traverse)</a></td>
@@ -68,6 +57,17 @@ hv/md pairs" pass, not to claim it's done.</p>
   <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
+</tr>
+<tr>
+  <td class="build">1GiB-snv_77<br>(1GiB-experimental)</td>
+  <td class="untested">—</td>
+  <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__snv_77-ramdisk.txt">FAIL (panic:krtld-link)</a></td>
+  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__snv_134-ai-iso.txt">PASS</a></td>
+  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__sol-11-exp-201011-ai.txt">PASS</a></td>
+  <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__sol-11-1111-text.txt">FAIL (trap:Level 14 Interrupt)</a></td>
+  <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__sol-10-u8.txt">FAIL (panic:kmem64-prom_alloc)</a></td>
+  <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__sol-10-u10.txt">FAIL (panic:kmem64-prom_alloc)</a></td>
+  <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__s10u11.txt">FAIL (panic:kmem64-prom_alloc)</a></td>
 </tr>
 <tr>
   <td class="build">snv_134/256</td>
@@ -103,15 +103,26 @@ hv/md pairs" pass, not to claim it's done.</p>
   <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/snv_134-2048__s10u11.txt">FAIL (hang)</a></td>
 </tr>
 <tr>
-  <td class="build">1GiB-snv_77<br>(1GiB-experimental)</td>
+  <td class="build">tlb_fix/1024</td>
   <td class="untested">—</td>
-  <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__snv_77-ramdisk.txt">FAIL (panic:krtld-link)</a></td>
-  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__snv_134-ai-iso.txt">PASS</a></td>
-  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__sol-11-exp-201011-ai.txt">PASS</a></td>
-  <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__sol-11-1111-text.txt">FAIL (trap:Level 14 Interrupt)</a></td>
-  <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__sol-10-u8.txt">FAIL (panic:kmem64-prom_alloc)</a></td>
-  <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__sol-10-u10.txt">FAIL (panic:kmem64-prom_alloc)</a></td>
-  <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__s10u11.txt">FAIL (panic:kmem64-prom_alloc)</a></td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+</tr>
+<tr>
+  <td class="build">tlb_fix/2048</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
 </tr>
 </tbody>
 </table>
@@ -137,10 +148,10 @@ installer ISO like the other columns, no separate download link.</p>
 
 <h2>MD/hv-config builds under test</h2>
 <ul>
-<li><a href="https://github.com/unix0cc/md/tree/main/bin/OpenSPARC_T1_original/">OpenSPARC_T1_original</a> — Sun's unmodified 2006 release (no fix applied; expected to fail on modern kernels, not yet confirmed per-image)</li>
-<li><a href="https://github.com/unix0cc/md/tree/main/bin/OpenSPARC_T1_rebuild/">OpenSPARC_T1_rebuild</a> — same sources, rebuilt with our mdgen; byte-identical to OpenSPARC_T1_original, so same expected boot behavior</li>
-<li><a href="https://github.com/unix0cc/md/tree/main/bin/snv_134/256/">snv_134/256</a>, <a href="https://github.com/unix0cc/md/tree/main/bin/snv_134/1024/">snv_134/1024</a>, <a href="https://github.com/unix0cc/md/tree/main/bin/snv_134/2048/">snv_134/2048</a> — memory/cpus/cache + mmu-* fix applied (see <a href="https://github.com/unix0cc/md/tree/main/patches">patches/snv_134/</a>), 256/1024/2048 MiB variants</li>
+<li><a href="https://github.com/unix0cc/md/tree/main/bin/OpenSPARC_T1_rebuild/">OpenSPARC_T1_rebuild</a> — Sun's unmodified 2006 sources, rebuilt with our mdgen; byte-identical to the untouched OpenSPARC_T1_original reference in bin/, so same expected boot behavior</li>
 <li><a href="https://github.com/unix0cc/md/tree/main/bin/1GiB-snv_77_1GiB-experimental/">1GiB-snv_77 (1GiB-experimental)</a> — externally-sourced prebuilt blobs, not built from src/</li>
+<li><a href="https://github.com/unix0cc/md/tree/main/bin/snv_134/256/">snv_134/256</a>, <a href="https://github.com/unix0cc/md/tree/main/bin/snv_134/1024/">snv_134/1024</a>, <a href="https://github.com/unix0cc/md/tree/main/bin/snv_134/2048/">snv_134/2048</a> — memory/cpus/cache + mmu-* fix applied (see <a href="https://github.com/unix0cc/md/tree/main/patches">patches/snv_134/</a>), 256/1024/2048 MiB variants</li>
+<li><a href="https://github.com/unix0cc/md/tree/main/bin/tlb_fix/">tlb_fix/1024, tlb_fix/2048</a> — snv_134/1024 and snv_134/2048 plus one added <code>tlb</code> node (see <a href="https://github.com/unix0cc/md/tree/main/src/tlb_fix">src/tlb_fix/</a>), fixing the <code>sfmmu_cpu_init</code> panic (<code>"failed to get MMU CTX domain index"</code>) hit by Solaris 10u10+/Solaris 11 on the snv_134 builds; not yet confirmed per-image</li>
 </ul>
 
 <footer>See <a href="https://github.com/unix0cc/md/blob/main/README">README</a> for the repo layout (src/bin/patches/fw_blobs) and build instructions.</footer>
