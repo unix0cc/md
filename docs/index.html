@@ -10,7 +10,7 @@
   caption { caption-side: top; text-align: left; font-weight: 600; margin-bottom: 0.5rem; }
   th, td { border: 1px solid #ccc; padding: 0.4rem 0.6rem; text-align: center; vertical-align: middle; }
   th { background: #f0f0f0; }
-  td.os { text-align: left; font-weight: 600; background: #fafafa; }
+  td.build { text-align: left; font-weight: 600; background: #fafafa; }
   .pass { background: #d9f2d9; }
   .fail { background: #f7d6d6; }
   .untested { background: #fff; color: #999; }
@@ -30,21 +30,23 @@ are still open — this table exists to plan and record the "test all
 hv/md pairs" pass, not to claim it's done.</p>
 
 <table>
-<caption>Boot status: OS image (row) &times; MD/hv-config build (column)</caption>
+<caption>Boot status: MD/hv-config build (row) &times; OS image (column)</caption>
 <thead>
 <tr>
-  <th>OS image</th>
-  <th>OpenSPARC_T1_original</th>
-  <th>OpenSPARC_T1_rebuild</th>
-  <th>snv136/256</th>
-  <th>snv136/1024</th>
-  <th>snv136/2048</th>
-  <th>1GiB-snv_77<br>(1GiB-experimental)</th>
+  <th>Build</th>
+  <th>snv_77 ramdisk<sup>1</sup></th>
+  <th>snv_134 AI ISO<sup>2</sup></th>
+  <th>Solaris&nbsp;11&nbsp;Express 2010.11 AI<sup>3</sup></th>
+  <th>Solaris&nbsp;11&nbsp;11/11 text<sup>4</sup></th>
+  <th>Solaris&nbsp;10u8 GA DVD<sup>5</sup></th>
+  <th>Solaris&nbsp;10u10 GA2 DVD<sup>6</sup></th>
+  <th>Solaris&nbsp;10u11<sup>7</sup></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td class="os">snv_77 ramdisk<sup>1</sup></td>
+  <td class="build">OpenSPARC_T1_original</td>
+  <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
@@ -53,25 +55,28 @@ hv/md pairs" pass, not to claim it's done.</p>
   <td class="untested">—</td>
 </tr>
 <tr>
-  <td class="os">snv_134 AI ISO<sup>2</sup></td>
+  <td class="build">OpenSPARC_T1_rebuild</td>
   <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+</tr>
+<tr>
+  <td class="build">snv136/256</td>
   <td class="untested">—</td>
   <td class="pass">PASS<sup>*</sup></td>
   <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
-</tr>
-<tr>
-  <td class="os">Solaris&nbsp;11&nbsp;Express 2010.11 AI<sup>3</sup></td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
 </tr>
 <tr>
-  <td class="os">Solaris&nbsp;11&nbsp;11/11 text<sup>4</sup></td>
+  <td class="build">snv136/1024</td>
+  <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
@@ -80,16 +85,8 @@ hv/md pairs" pass, not to claim it's done.</p>
   <td class="untested">—</td>
 </tr>
 <tr>
-  <td class="os">Solaris&nbsp;10u8 GA DVD<sup>5</sup></td>
+  <td class="build">snv136/2048</td>
   <td class="untested">—</td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
-</tr>
-<tr>
-  <td class="os">Solaris&nbsp;10u10 GA2 DVD<sup>6</sup></td>
   <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
@@ -98,7 +95,8 @@ hv/md pairs" pass, not to claim it's done.</p>
   <td class="untested">—</td>
 </tr>
 <tr>
-  <td class="os">Solaris&nbsp;10u11<sup>7</sup></td>
+  <td class="build">1GiB-snv_77<br>(1GiB-experimental)</td>
+  <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
