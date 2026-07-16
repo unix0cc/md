@@ -1,3 +1,0 @@
-# Local-only boot/failure proof logs, referenced by docs/index.html
-# but deliberately never synced (not tracked, not pushed/pulled).
-proofs/
