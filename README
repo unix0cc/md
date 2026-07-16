@@ -1,0 +1,54 @@
+md
+==
+
+sun4v Machine Description (MD) / hypervisor-config source, blobs, and
+patches for OpenSPARC T1 "niagara" -- the data that tells a sun4v guest
+kernel (illumos/OpenSolaris) what CPUs, memory, and virtual devices it
+has, and the QEMU-side hv-config that backs it.
+
+This repo is the MD/hv-config content itself. The compiler/linter that
+turns `.pdesc`/`.hdesc` source into the binary `.bin` blobs (`mdgen`,
+`mdlint`) lives separately at github.com/unix0cc/mdbuild -- built there,
+installed at $(HOME)/mdbuild/bin/, and referenced by path from the
+Makefiles here.
+
+Layout
+------
+src/
+    Buildable source only (.pdesc/.hdesc + one Makefile per config).
+    Never contains .bin/.txt output or firmware blobs. See src/README.
+
+bin/
+    Built blobs only: the pristine, unmodified 2006 Sun original
+    release (bin/OpenSPARC_T1_original/, GPLv2, kept exactly as
+    shipped -- the one exception to "blobs only"), plus everything
+    `make` produces from src/ for every other config. See bin/README.
+
+patches/
+    The fix patch chain (currently patches/snv_136/) -- both a
+    consolidated one-patch-per-source-file view and an incremental
+    one-patch-per-feature view (separate-patches/) of the same,
+    live-kmdb-proven-minimal MD fix: memory/cpus/cache nodes plus
+    mmu-page-size-list/mmu-#va-bits platform properties, required for
+    a clean sun4v boot on illumos/OpenSolaris snv_136.
+
+fw_blobs/
+    Shared static OBP/firmware blobs (openboot.bin, q.bin, reset.bin,
+    nvram1, netcons) -- not built by mdgen, just symlinked by each
+    src/<config>/Makefile into the matching bin/<config>/ output.
+
+Building a config
+------------------
+    cd src/<config>/       # e.g. src/snv136/256, src/snv136/1024
+    make                   # writes .bin/.txt + firmware symlinks into
+                            # the mirrored bin/<config>/ path
+    make distclean          # removes that output, leaves src/ untouched
+
+Provenance / licensing
+-----------------------
+The original OpenSPARC T1 "niagara" `.pdesc`/`.hdesc`/`.conf` sources
+and the blobs Sun shipped with them are GPLv2 (see each file's own
+header) -- unmodified in bin/OpenSPARC_T1_original/. The mdgen/mdlint
+tool source they're compiled with (github.com/unix0cc/mdbuild) is
+separately BSD 3-Clause. Patches, Makefiles, and READMEs added in this
+repo are new work built on top of the GPLv2 originals.
