@@ -70,7 +70,7 @@ hv/md pairs" pass, not to claim it's done.</p>
   <td class="build">snv_134/256</td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/snv_134-256__disk.s10hw2.txt">PASS</a></td>
   <td class="untested">—</td>
-  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/snv_134-256__snv_134-ai-iso.txt">PASS</a><sup>*</sup></td>
+  <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/snv_134-256__snv_134-ai-iso.txt">FAIL (panic:bop_alloc_chunk)</a></td>
   <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
@@ -119,10 +119,6 @@ hv/md pairs" pass, not to claim it's done.</p>
   <span><span class="swatch" style="background:#fff"></span>— untested</span>
 </div>
 
-<p><sup>*</sup> Verified via live kmdb debugging — clean boot of
-<code>osol-dev-134-ai-sparc.iso</code> at <code>-m 256</code> against
-the <a href="https://github.com/unix0cc/md/tree/main/bin/snv_134/256/">snv_134/256</a>
-build.</p>
 
 <h2>Image sources</h2>
 <p>Each column header above links directly to its source. Still missing:
