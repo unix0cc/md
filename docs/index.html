@@ -25,7 +25,7 @@
 <h1>sun4v MD/hv-config emulation test matrix</h1>
 
 <p>Tracks which guest OS test images have been verified to boot cleanly
-against which MD/hv-config build in <a href="../bin/">bin/</a>. Most cells
+against which MD/hv-config build in <a href="https://github.com/unix0cc/md/tree/main/bin">bin/</a>. Most cells
 are still open — this table exists to plan and record the "test all
 hv/md pairs" pass, not to claim it's done.</p>
 
@@ -118,7 +118,7 @@ hv/md pairs" pass, not to claim it's done.</p>
 <p><sup>*</sup> Verified via live kmdb debugging (see
 <code>docs/niagara-findings.md</code>, Experiment&nbsp;#16, in the
 qemu-sparc64 project) — clean boot of <code>osol-dev-134-ai-sparc.iso</code>
-at <code>-m 256</code> against the <a href="../bin/snv136/256/">snv136/256</a>
+at <code>-m 256</code> against the <a href="https://github.com/unix0cc/md/tree/main/bin/snv136/256/">snv136/256</a>
 build. Recorded here against the closest matching row (snv_134); the ISO's
 own build number and this MD's <code>snv136</code> label don't necessarily
 imply a byte-for-byte version match — worth double-checking when this row
@@ -141,13 +141,13 @@ is ever made public.</p>
 
 <h2>MD/hv-config builds under test</h2>
 <ul>
-<li><a href="../bin/OpenSPARC_T1_original/">OpenSPARC_T1_original</a> — Sun's unmodified 2006 release (no fix applied; expected to fail on modern kernels per Experiment #16, not yet confirmed per-image)</li>
-<li><a href="../bin/OpenSPARC_T1_rebuild/">OpenSPARC_T1_rebuild</a> — same sources, rebuilt with our mdgen; byte-identical to OpenSPARC_T1_original, so same expected boot behavior</li>
-<li><a href="../bin/snv136/256/">snv136/256</a>, <a href="../bin/snv136/1024/">snv136/1024</a>, <a href="../bin/snv136/2048/">snv136/2048</a> — memory/cpus/cache + mmu-* fix applied (see <a href="../patches/">patches/snv_136/</a>), 256/1024/2048 MiB variants</li>
-<li><a href="../bin/1GiB-snv_77_1GiB-experimental/">1GiB-snv_77 (1GiB-experimental)</a> — externally-sourced prebuilt blobs, not built from src/</li>
+<li><a href="https://github.com/unix0cc/md/tree/main/bin/OpenSPARC_T1_original/">OpenSPARC_T1_original</a> — Sun's unmodified 2006 release (no fix applied; expected to fail on modern kernels per Experiment #16, not yet confirmed per-image)</li>
+<li><a href="https://github.com/unix0cc/md/tree/main/bin/OpenSPARC_T1_rebuild/">OpenSPARC_T1_rebuild</a> — same sources, rebuilt with our mdgen; byte-identical to OpenSPARC_T1_original, so same expected boot behavior</li>
+<li><a href="https://github.com/unix0cc/md/tree/main/bin/snv136/256/">snv136/256</a>, <a href="https://github.com/unix0cc/md/tree/main/bin/snv136/1024/">snv136/1024</a>, <a href="https://github.com/unix0cc/md/tree/main/bin/snv136/2048/">snv136/2048</a> — memory/cpus/cache + mmu-* fix applied (see <a href="https://github.com/unix0cc/md/tree/main/patches">patches/snv_136/</a>), 256/1024/2048 MiB variants</li>
+<li><a href="https://github.com/unix0cc/md/tree/main/bin/1GiB-snv_77_1GiB-experimental/">1GiB-snv_77 (1GiB-experimental)</a> — externally-sourced prebuilt blobs, not built from src/</li>
 </ul>
 
-<footer>See <a href="../README">README</a> for the repo layout (src/bin/patches/fw_blobs) and build instructions.</footer>
+<footer>See <a href="https://github.com/unix0cc/md/blob/main/README">README</a> for the repo layout (src/bin/patches/fw_blobs) and build instructions.</footer>
 
 </body>
 </html>
