@@ -34,6 +34,7 @@ hv/md pairs" pass, not to claim it's done.</p>
 <thead>
 <tr>
   <th>Build</th>
+  <th>disk.s10hw2<sup>8</sup></th>
   <th><a href="https://github.com/changeyourname/OpenSPARC_T1/tree/master/OpenSPARCT1.1.7/design/sys/edk/os/OpenSolaris/proto/">snv_77 ramdisk</a></th>
   <th><a href="http://ftp.naist.jp/pub/openindiana/dlc/isos/archive/opensolaris/osol-dev-134-ai-sparc.iso">snv_134 ai ISO</a></th>
   <th><a href="http://69.43.38.172/mirrors/Unix/Sun/Oracle%20Solaris%2011%20Express%202010.11/sol-11-exp-201011-ai-sparc.iso">Solaris&nbsp;11&nbsp;Express 11/2010 ai</a></th>
@@ -41,7 +42,6 @@ hv/md pairs" pass, not to claim it's done.</p>
   <th><a href="http://69.43.38.172/mirrors/Unix/Sun/sol-10-u8/sol-10-u8-ga-sparc-dvd.iso">Solaris&nbsp;10u8 GA DVD</a></th>
   <th><a href="http://69.43.38.172/mirrors/Unix/Sun/sol-10-u10/sol-10-u10-ga2-sparc-dvd.iso">Solaris&nbsp;10u10 GA2 DVD</a></th>
   <th>Solaris&nbsp;10u11</th>
-  <th>disk.s10hw2<sup>8</sup></th>
 </tr>
 </thead>
 <tbody>
@@ -58,20 +58,19 @@ hv/md pairs" pass, not to claim it's done.</p>
 </tr>
 <tr>
   <td class="build">OpenSPARC_T1_rebuild</td>
+  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/OpenSPARC_T1_rebuild__disk.s10hw2.txt">PASS</a></td>
   <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/OpenSPARC_T1_rebuild__snv_77-ramdisk.txt">FAIL (panic)</a></td>
   <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
-  <td class="untested">—</td>
-  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/OpenSPARC_T1_rebuild__disk.s10hw2.txt">PASS</a></td>
 </tr>
 <tr>
   <td class="build">snv_134/256</td>
   <td class="untested">—</td>
-  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/snv_134-256__snv_134-ai-iso.txt">PASS</a><sup>*</sup></td>
   <td class="untested">—</td>
+  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/snv_134-256__snv_134-ai-iso.txt">PASS</a><sup>*</sup></td>
   <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
@@ -120,10 +119,9 @@ hv/md pairs" pass, not to claim it's done.</p>
   <span><span class="swatch" style="background:#fff"></span>— untested</span>
 </div>
 
-<p><sup>*</sup> Verified via live kmdb debugging (see
-<code>docs/niagara-findings.md</code>, Experiment&nbsp;#16, in the
-qemu-sparc64 project) — clean boot of <code>osol-dev-134-ai-sparc.iso</code>
-at <code>-m 256</code> against the <a href="https://github.com/unix0cc/md/tree/main/bin/snv_134/256/">snv_134/256</a>
+<p><sup>*</sup> Verified via live kmdb debugging — clean boot of
+<code>osol-dev-134-ai-sparc.iso</code> at <code>-m 256</code> against
+the <a href="https://github.com/unix0cc/md/tree/main/bin/snv_134/256/">snv_134/256</a>
 build.</p>
 
 <h2>Image sources</h2>
@@ -136,7 +134,7 @@ installer ISO like the other columns, no separate download link.</p>
 
 <h2>MD/hv-config builds under test</h2>
 <ul>
-<li><a href="https://github.com/unix0cc/md/tree/main/bin/OpenSPARC_T1_original/">OpenSPARC_T1_original</a> — Sun's unmodified 2006 release (no fix applied; expected to fail on modern kernels per Experiment #16, not yet confirmed per-image)</li>
+<li><a href="https://github.com/unix0cc/md/tree/main/bin/OpenSPARC_T1_original/">OpenSPARC_T1_original</a> — Sun's unmodified 2006 release (no fix applied; expected to fail on modern kernels, not yet confirmed per-image)</li>
 <li><a href="https://github.com/unix0cc/md/tree/main/bin/OpenSPARC_T1_rebuild/">OpenSPARC_T1_rebuild</a> — same sources, rebuilt with our mdgen; byte-identical to OpenSPARC_T1_original, so same expected boot behavior</li>
 <li><a href="https://github.com/unix0cc/md/tree/main/bin/snv_134/256/">snv_134/256</a>, <a href="https://github.com/unix0cc/md/tree/main/bin/snv_134/1024/">snv_134/1024</a>, <a href="https://github.com/unix0cc/md/tree/main/bin/snv_134/2048/">snv_134/2048</a> — memory/cpus/cache + mmu-* fix applied (see <a href="https://github.com/unix0cc/md/tree/main/patches">patches/snv_134/</a>), 256/1024/2048 MiB variants</li>
 <li><a href="https://github.com/unix0cc/md/tree/main/bin/1GiB-snv_77_1GiB-experimental/">1GiB-snv_77 (1GiB-experimental)</a> — externally-sourced prebuilt blobs, not built from src/</li>
