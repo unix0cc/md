@@ -108,14 +108,14 @@ hv/md pairs" pass, not to claim it's done.</p>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-1024__s10u11.txt">PASS</a></td>
 </tr>
 <tr>
-  <td class="build">tlb_fix/2048</td>
-  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__disk.s10hw2.txt">PASS</a></td>
-  <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__snv_134-ai-iso.txt">FAIL (hang)</a></td>
-  <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__sol-11-exp-201011-ai.txt">FAIL (hang)</a></td>
-  <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__sol-11-1111-text.txt">FAIL (panic:bad-hcall)</a></td>
-  <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__sol-10-u8.txt">FAIL (trap:Level 14 Interrupt)</a></td>
-  <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__sol-10-u10.txt">FAIL (hang)</a></td>
-  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__s10u11.txt">PASS</a></td>
+  <td class="build">tlb_fix/2048<sup>10</sup></td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
+  <td class="untested">—</td>
 </tr>
 </tbody>
 </table>
@@ -144,6 +144,13 @@ installer ISO like the other columns, no separate download link.</p>
 OOM panics on the two other images already tested against this build
 (<code>snv_134 ai ISO</code>, <code>Solaris&nbsp;10u8</code>); 256MB is
 already known to be too small to boot any of these installer images.</p>
+<p><sup>10</sup> Every cell previously recorded here has been reverted to
+untested: the build had a memory-config bug (hv-config <code>GUEST()</code>
+memsize left at <code>1024M</code> instead of being bumped to
+<code>2048M</code> alongside the MD's <code>mblock.size</code>), so every
+prior <code>tlb_fix/2048</code> result was actually tested against a
+hypervisor-granted 1024M, not the claimed 2048M. Fixed 2026-07-17; all
+cells need re-running against the corrected build.</p>
 
 <h2>MD/hv-config builds under test</h2>
 <ul>
