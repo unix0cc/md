@@ -32,7 +32,7 @@
 #include "common.hdesc"
 
 CPU(0,guest0,0)
-GUEST(0, 0x1, 0x80000000, 1024M, 0x80000000, 0x1f12000000, 0x1f40000000)
+GUEST(0, 0x1, 0x80000000, 2048M, 0x80000000, 0x1f12000000, 0x1f40000000)
 
 node cpus cpus {
 	cpu -> cpu0;
