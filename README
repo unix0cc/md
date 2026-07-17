@@ -25,7 +25,7 @@ bin/
     `make` produces from src/ for every other config. See bin/README.
 
 patches/
-    The fix patch chain (currently patches/snv_134/) -- both a
+    The fix patch chain (currently patches/t1_boot_fix/) -- both a
     consolidated one-patch-per-source-file view and an incremental
     one-patch-per-feature view (separate-patches/) of the same,
     live-kmdb-proven-minimal MD fix: memory/cpus/cache nodes plus
@@ -44,7 +44,7 @@ ever being pulled down by a `git clone` of this repo.
 
 Building a config
 ------------------
-    cd src/<config>/       # e.g. src/snv_134/256, src/snv_134/1024
+    cd src/<config>/       # e.g. src/t1_boot_fix/256, src/t1_boot_fix/1024
     make                   # writes .bin/.txt + firmware symlinks into
                             # the mirrored bin/<config>/ path
     make distclean          # removes that output, leaves src/ untouched

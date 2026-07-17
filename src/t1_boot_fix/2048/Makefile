@@ -1,17 +1,17 @@
-# GNU-make build for the snv_134 2048MB sun4v MD/hv-config, built from the
+# GNU-make build for the t1_boot_fix 2048MB sun4v MD/hv-config, built from the
 # original OpenSPARC T1 "niagara" Legion sources plus the fix patches in
-# patches/snv_134/ (memory/cpus/cache nodes + mmu-* platform props),
+# patches/t1_boot_fix/ (memory/cpus/cache nodes + mmu-* platform props),
 # with mblock.size/GUEST() memsize bumped to 2048M (see common two-layer
 # memory model: MD mblock.size and hv-config GUEST() memsize must both
 # match the QEMU -m flag).
 #
 # Flat layout (single "1up" config, no per-config subdirectory) -- unlike
-# OpenSPARC_T1_rebuild/ and snv_134/256/, which wildcard-scan for multiple
+# OpenSPARC_T1_rebuild/ and t1_boot_fix/256/, which wildcard-scan for multiple
 # config subdirectories.
 #
 # This directory holds ONLY source (.pdesc/.hdesc) + this Makefile. `make`
 # writes built .bin/.txt and firmware-blob symlinks into the sibling
-# bin/snv_134/2048/ tree (see OUT_DIR below), so src stays pure
+# bin/t1_boot_fix/2048/ tree (see OUT_DIR below), so src stays pure
 # source and bin stays pure blobs even right after a build.
 #
 # mdgen itself comes from github.com/unix0cc/mdbuild, built via that repo's
@@ -29,8 +29,8 @@ VERBOSE ?=
 FW_BLOBS := /git/md/fw_blobs
 
 # Built output (.bin/.txt/firmware-symlinks) lands here, not alongside the
-# source -- sibling bin/snv_134/2048/ directory.
-OUT_DIR := ../../../bin/snv_134/2048
+# source -- sibling bin/t1_boot_fix/2048/ directory.
+OUT_DIR := ../../../bin/t1_boot_fix/2048
 
 FW_BLOB_FILES := $(notdir $(wildcard $(FW_BLOBS)/*))
 FW_BLOB_LINKS := $(foreach f,$(FW_BLOB_FILES),$(OUT_DIR)/$(f))

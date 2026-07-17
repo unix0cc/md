@@ -21,10 +21,10 @@ OpenSPARC_T1_rebuild/1up/
     OpenSPARC_T1_original/niagara/1up-{md,hv}.bin -- this is the toolchain
     fidelity proof.
 
-snv_134/256/1up/, snv_134/1024/
-    Output of `make` in ../src/snv_134/256/ and ../src/snv_134/1024/:
+t1_boot_fix/256/1up/, t1_boot_fix/1024/
+    Output of `make` in ../src/t1_boot_fix/256/ and ../src/t1_boot_fix/1024/:
     the boot-tested sun4v MD/hv-config for illumos/OpenSolaris snv_134,
-    built by applying the fix patches in ../patches/snv_134/
+    built by applying the fix patches in ../patches/t1_boot_fix/
     (memory/cpus/cache nodes + mmu-page-size-list/mmu-#va-bits platform
     props) on top of the original sources. 256/ and 1024/ differ only in
     mblock.size (MD) and GUEST() memsize (hv-config), matching the

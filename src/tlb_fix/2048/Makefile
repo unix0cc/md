@@ -1,5 +1,5 @@
-# GNU-make build for the "tlb_fix" experimental variant of the snv_134
-# 2048MB sun4v MD/hv-config -- a copy of src/snv_134/2048/ with one added
+# GNU-make build for the "tlb_fix" experimental variant of the t1_boot_fix
+# 2048MB sun4v MD/hv-config -- a copy of src/t1_boot_fix/2048/ with one added
 # fix: a "tlb" node (back -> cpu0), forward-reachable from cpu0 alongside
 # the existing "cache" node, so the kernel's plat_cpuid_to_mmu_ctx_info()
 # -> load_tlb_cpu_mappings() MD scan for a "tlb" node type (reachable via
@@ -8,7 +8,7 @@
 # See docs/index.html test matrix for which OS images hit this panic.
 #
 # Flat layout (single "1up" config, no per-config subdirectory) -- unlike
-# OpenSPARC_T1_rebuild/ and snv_134/256/, which wildcard-scan for multiple
+# OpenSPARC_T1_rebuild/ and t1_boot_fix/256/, which wildcard-scan for multiple
 # config subdirectories.
 #
 # This directory holds ONLY source (.pdesc/.hdesc) + this Makefile. `make`

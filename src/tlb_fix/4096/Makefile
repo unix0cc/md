@@ -1,6 +1,6 @@
-# GNU-make build for the "tlb_fix" experimental variant of the snv_134
+# GNU-make build for the "tlb_fix" experimental variant of the t1_boot_fix
 # 4096MB sun4v MD/hv-config -- a copy of src/tlb_fix/2048/ (itself derived
-# from snv_134/2048) bumped to 4096MB, to test whether the bop_alloc_chunk
+# from t1_boot_fix/2048) bumped to 4096MB, to test whether the bop_alloc_chunk
 # OOM panic hit by sol-11_1-ai-sparc.iso against tlb_fix/2048 is genuine
 # memory exhaustion (root-caused via live kmdb: OBP's boot-time allocator
 # exhausts a shrink-and-retry loop down to 8KB granularity and still can't
@@ -17,7 +17,7 @@
 # See docs/index.html test matrix for which OS images hit which panics.
 #
 # Flat layout (single "1up" config, no per-config subdirectory) -- unlike
-# OpenSPARC_T1_rebuild/ and snv_134/256/, which wildcard-scan for multiple
+# OpenSPARC_T1_rebuild/ and t1_boot_fix/256/, which wildcard-scan for multiple
 # config subdirectories.
 #
 # This directory holds ONLY source (.pdesc/.hdesc) + this Makefile. `make`
