@@ -36,6 +36,7 @@
     max-#tsb-entries = 0x2; \
     mmu-page-size-list = 0x9; \
     mmu-#va-bits = 0x40; \
+    q-cpu-mondo-#bits = 0x8; \
     back -> cpus; \
     fwd -> cache; \
     fwd -> tlb; \
