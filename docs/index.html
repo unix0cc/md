@@ -71,8 +71,8 @@ hv/md pairs" pass, not to claim it's done.</p>
   <td class="build">snv_134/256</td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/snv_134-256__disk.s10hw2.txt">PASS</a></td>
   <td class="fail-oom"><a href="https://unix0cc.github.io/md-artefacts/snv_134-256__snv_134-ai-iso.txt">FAIL (panic:bop_alloc_chunk)</a></td>
-  <td class="untested">—</td>
-  <td class="untested">—</td>
+  <td class="fail-oom">not enough memory<sup>9</sup></td>
+  <td class="fail-oom">not enough memory<sup>9</sup></td>
   <td class="fail-oom"><a href="https://unix0cc.github.io/md-artefacts/snv_134-256__sol-10-u8.txt">FAIL (panic:bop_alloc_chunk)</a></td>
   <td class="untested">—</td>
   <td class="untested">—</td>
@@ -139,6 +139,11 @@ the filename).</p>
 used as the reference/known-good test image for both this project
 (qemu-sparc64) and the original Legion OpenSPARC T1 emulator; not an
 installer ISO like the other columns, no separate download link.</p>
+<p><sup>9</sup> Not actually run against these cells -- inferred from
+<code>snv_134/256</code>'s established pattern of <code>bop_alloc_chunk</code>
+OOM panics on the two other images already tested against this build
+(<code>snv_134 ai ISO</code>, <code>Solaris&nbsp;10u8</code>); 256MB is
+already known to be too small to boot any of these installer images.</p>
 
 <h2>MD/hv-config builds under test</h2>
 <ul>
