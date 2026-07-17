@@ -86,6 +86,9 @@ node cpu cpu0 {
 	mmu-page-size-list = 0x9;
 	mmu-#va-bits = 0x40;
 	q-cpu-mondo-#bits = 0x8;
+	q-dev-mondo-#bits = 0x8;
+	q-resumable-#bits = 0x6;
+	q-nonresumable-#bits = 0x2;
 	back -> cpus;
 	fwd -> cache;
 	fwd -> tlb;
