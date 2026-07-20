@@ -1,0 +1,20 @@
+--- a/common.pdesc
++++ b/common.pdesc
+@@ -38,6 +38,7 @@
+     mmu-#va-bits = 0x40; \
+     back -> cpus; \
+     fwd -> cache; \
++    fwd -> tlb; \
+     }
+ 
+ node options XXoptions {
+--- a/1up.pdesc
++++ b/1up.pdesc
+@@ -49,3 +49,7 @@
+ node cache cache {
+ 	back -> cpu0;
+ }
++
++node tlb tlb {
++	back -> cpu0;
++}

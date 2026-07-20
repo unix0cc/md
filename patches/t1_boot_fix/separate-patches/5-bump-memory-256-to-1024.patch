@@ -1,0 +1,22 @@
+--- a/1up.pdesc
++++ b/1up.pdesc
+@@ -33,7 +33,7 @@
+ 
+ node mblock p0_memlist0 {
+ 	base = 0x0000000080000000;
+-	size = 256M;
++	size = 1024M;
+ }
+ 
+ node memory memory {
+--- a/1up.hdesc
++++ b/1up.hdesc
+@@ -32,7 +32,7 @@
+ #include "common.hdesc"
+ 
+ CPU(0,guest0,0)
+-GUEST(0, 0x1, 0x80000000, 256M, 0x80000000, 0x1f12000000, 0x1f40000000)
++GUEST(0, 0x1, 0x80000000, 1024M, 0x80000000, 0x1f12000000, 0x1f40000000)
+ 
+ node cpus cpus {
+ 	cpu -> cpu0;

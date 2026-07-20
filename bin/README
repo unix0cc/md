@@ -5,7 +5,13 @@ Binary blobs only. No buildable source lives here (that's src/, see
 ../src/) -- everything under this directory is either a pristine
 upstream artifact or `make` output, never hand-edited.
 
-OpenSPARC_T1_original/
+Only three configs are considered finished/canonical and live directly
+here: OpenSPARC_T1_rebuild/, t1_boot_fix/, tlb_fix/. Experimental/
+in-progress variants live under _test/ (see _test/README if present, or
+../src/_test/ for the corresponding sources); external reference-only
+blobs with no corresponding src/ live under _reference/.
+
+_reference/OpenSPARC_T1_original/
     Sun's original, unmodified 2006 OpenSPARC T1 "niagara" Legion release
     (GPLv2 -- see each file's own header). Kept exactly as shipped,
     including its own Makefile/Makefile.master and mixed source+blob
@@ -18,8 +24,8 @@ OpenSPARC_T1_rebuild/1up/
     sources above, compiled with our own GNU-make-ported mdgen
     (github.com/unix0cc/mdbuild) instead of Sun's Solaris/Sun-Studio
     build. 1up-md.bin/1up-hv.bin here are verified byte-identical to
-    OpenSPARC_T1_original/niagara/1up-{md,hv}.bin -- this is the toolchain
-    fidelity proof.
+    _reference/OpenSPARC_T1_original/niagara/1up-{md,hv}.bin -- this is
+    the toolchain fidelity proof.
 
 t1_boot_fix/256/1up/, t1_boot_fix/1024/
     Output of `make` in ../src/t1_boot_fix/256/ and ../src/t1_boot_fix/1024/:
@@ -30,17 +36,17 @@ t1_boot_fix/256/1up/, t1_boot_fix/1024/
     mblock.size (MD) and GUEST() memsize (hv-config), matching the
     intended QEMU -m value.
 
-1GiB-snv_77_1GiB-experimental/
+_reference/1GiB-snv_77_1GiB-experimental/
     Externally-sourced, prebuilt 1GiB MD/hv-config for snv_77, pulled
     from github.com/artyom-tarasenko/qemu-sun4v-md, branch
     "1GiB-experimental", directory "1GiB-snv_77/". Not built by us --
     no corresponding src/ entry, since we don't have the .pdesc/.hdesc
     that produced it, only the compiled 1up-md.bin/1up-hv.bin. Kept
     as another deliberate exception to "blobs only via our own build",
-    same rationale as OpenSPARC_T1_original/. Its nvram1/openboot.bin/
-    q.bin/reset.bin are real files (that branch's own copies, not
-    necessarily identical to fw_blobs/), and it has no netcons (the
-    upstream directory didn't ship one).
+    same rationale as _reference/OpenSPARC_T1_original/. Its
+    nvram1/openboot.bin/q.bin/reset.bin are real files (that branch's
+    own copies, not necessarily identical to fw_blobs/), and it has no
+    netcons (the upstream directory didn't ship one).
 
 Every other subdirectory also carries netcons, nvram1, openboot.bin,
 q.bin, reset.bin -- symlinks to ../../fw_blobs/, the shared static
@@ -49,8 +55,8 @@ MD/HV binaries for QEMU to boot).
 
 Regenerating
 ------------
-Never edit files under bin/ directly (other than
-OpenSPARC_T1_original/, which is frozen on purpose). To rebuild:
+Never edit files under bin/ directly (other than _reference/, which is
+frozen on purpose). To rebuild:
 
     cd ../src/<config>/
     make distclean   # wipes this directory's corresponding output

@@ -1,0 +1,29 @@
+diff --git a/common.pdesc b/common.pdesc
+index 0afe011..4a47984 100644
+--- a/common.pdesc
++++ b/common.pdesc
+@@ -34,8 +34,15 @@
+     isalist = "sparcv9","sparcv8plus","sparcv8","sparcv8-fsmuld","sparcv7","sparc"; \
+     compatible = { "SUNW,UltraSPARC-T1", "SUNW,sun4v-cpu", "sun4v" }; \
+     max-#tsb-entries = 0x2; \
+-    mmu-page-size-list = 0x9; \
++    mmu-page-size-list = 0xb; \
+     mmu-#va-bits = 0x40; \
++    mmu-max-#tsbs = 0x1; \
++    mmu-#context-bits = 0xd; \
++    mmu-#shared-contexts = 0x0; \
++    q-cpu-mondo-#bits = 0x8; \
++    q-dev-mondo-#bits = 0x8; \
++    q-resumable-#bits = 0x6; \
++    q-nonresumable-#bits = 0x2; \
+     back -> cpus; \
+     fwd -> cache; \
+     fwd -> tlb; \
+@@ -82,6 +89,7 @@ node platform platform_data {
+      serial# = 11223344;
+      stick-frequency = 5000000;
+      clock-frequency = 5000000;
++     domaining-enabled = 1;
+ }
+ 
+ 

@@ -7,12 +7,17 @@ ever written here. Built output goes to the mirrored path under
 ../bin/ (see ../bin/README), so this tree stays clean
 even right after a build.
 
+Only three configs here are considered finished/canonical:
+OpenSPARC_T1_rebuild/, t1_boot_fix/, tlb_fix/. Experimental/in-progress
+variants (derived from one of these three, not yet promoted) live under
+_test/, mirrored at ../bin/_test/ and ../patches/_test/.
+
 OpenSPARC_T1_rebuild/1up/
     Sun's original, unmodified 2006 OpenSPARC T1 "niagara" sources
     (common.pdesc/common.hdesc/1up.pdesc/1up.hdesc, copied verbatim from
-    ../bin/OpenSPARC_T1_original/niagara/). Building this proves
-    our GNU-make-ported mdgen (github.com/unix0cc/mdbuild) reproduces
-    Sun's shipped binaries byte-for-byte -- see
+    ../bin/_reference/OpenSPARC_T1_original/niagara/). Building this
+    proves our GNU-make-ported mdgen (github.com/unix0cc/mdbuild)
+    reproduces Sun's shipped binaries byte-for-byte -- see
     ../bin/OpenSPARC_T1_rebuild/.
 
 t1_boot_fix/256/1up/, t1_boot_fix/1024/
@@ -25,6 +30,13 @@ t1_boot_fix/256/1up/, t1_boot_fix/1024/
     matching the intended QEMU -m value. 1024/ is flat (no "1up"
     subdirectory) since it's a single config; 256/ keeps the
     subdirectory-per-config convention shared with OpenSPARC_T1_rebuild/.
+
+tlb_fix/1024, tlb_fix/2048, tlb_fix/4096
+    t1_boot_fix plus one added per-cpu "tlb" node (see
+    ../patches/tlb_fix/), fixing the sfmmu_cpu_init panic
+    ("failed to get MMU CTX domain index") hit by Solaris 10u10+/
+    Solaris 11 on the t1_boot_fix builds. Flat layout (no "1up"
+    subdirectory) at every size.
 
 Building
 --------
