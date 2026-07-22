@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>QEMU SPARC64 machine description (MD) binaries: Solaris boot matrix</title>
 <style>
-  html { width: 100%; overflow-x: hidden; }
-  body { font-family: -apple-system, Helvetica, Arial, sans-serif; width: 100%; max-width: 900px; margin: 0 auto; padding: 2rem 1rem; color: #1a1a1a; box-sizing: border-box; }
+  body { font-family: -apple-system, Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 2rem 1rem; color: #1a1a1a; box-sizing: border-box; }
   h1 { font-size: 1.4rem; }
-  table { border-collapse: collapse; width: 100%; margin: 1.5rem 0; font-size: 0.9rem; }
+  .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
   caption { caption-side: top; text-align: left; font-weight: 600; margin-bottom: 0.5rem; }
   th, td { border: 1px solid #ccc; padding: 0.4rem 0.6rem; text-align: center; vertical-align: middle; }
   th { background: #f0f0f0; }
@@ -34,6 +34,7 @@
 against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.materials/index.html">Machine Description</a> (MD) and hypervisor (HV) binaries
 (<b>1up-md.bin</b>, <b>1up-hv.bin</b>) build in "<a href="https://github.com/unix0cc/md/tree/main/bin">bin</a>".</p>
 
+<div class="table-wrap">
 <table>
 <caption>Boot status: MD/hv-config build (row) &times; OS image (column)</caption>
 <thead>
@@ -127,6 +128,7 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 </tr>
 </tbody>
 </table>
+</div>
 
 <div class="legend">
   <span><span class="swatch" style="background:#d9f2d9"></span>PASS — verified clean boot</span>
