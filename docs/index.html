@@ -53,7 +53,7 @@ hv/md pairs" pass, not to claim it's done.</p>
 <tr>
   <td class="build"><a href="https://github.com/unix0cc/md/tree/main/bin/OpenSPARC_T1_rebuild">OpenSPARC_T1_rebuild</a> (binary-identical)<sup>1</sup></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/OpenSPARC_T1_rebuild__disk.s10hw2.txt">PASS</a></td>
-  <td class="untested">—</td>
+  <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/OpenSPARC_T1_rebuild__snv_134-ai-iso.txt">FAIL/trap<br>Fast Data Access MMU Miss</a><sup>3</sup></td>
   <td class="untested">—</td>
   <td class="untested">—</td>
   <td class="untested">—</td>
@@ -137,6 +137,8 @@ hv/md pairs" pass, not to claim it's done.</p>
 <p><sup>1</sup> Derived from the <a href="https://www.oracle.com/servers/technologies/opensparc-t1-page.html">OpenSparc T1 Legion image</a> — Sun's original 2006 emulator reference with shipped hypervisor and MD binaries, which was rebuilt using mdgen tool from <a href="https://github.com/unix0cc/mdbuild/">mdbuild</a> toolchain.</p>
 
 <p><sup>2</sup> <code>1GiB-snv_77</code> — Artyom Tarasenko's MD build with 1024MB (<a href="https://github.com/artyom-tarasenko/qemu-sun4v-md">github.com/artyom-tarasenko/qemu-sun4v-md</a>).</p>
+
+<p><sup>3</sup> Starting point of investigation: <a href="https://unix0.cc/2026/07/15/sun4v-machine-description-part-1/">part 1</a> and <a href="https://unix0.cc/2026/07/16/sun4v-machine-description-part-2/">part 2</a>.</p>
 
 <h2>Image sources</h2>
 <p>Each column header above links directly to its source, except
