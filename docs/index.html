@@ -89,7 +89,7 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 <tr>
   <td class="build"><a href="https://github.com/unix0cc/md/tree/main/bin/t1_boot_fix/1024">t1_boot_fix/1024</a><br>(mem/cpu/cache/mmu +1024MB in MD)</td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/t1_boot_fix-1024__disk.s10hw2.txt">PASS</a></td>
-  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/t1_boot_fix-1024__snv_134-ai-iso.txt">PASS</a></td>
+  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/t1_boot_fix-1024__snv_134-ai-iso.txt">PASS</a><sup>6</sup></td>
   <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/t1_boot_fix-1024__sol-11-exp-201011-ai.txt">FAIL/panic<br>sfmmu_cpu_init</a></td>
   <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/t1_boot_fix-1024__sol-11-1111-text.txt">FAIL/panic<br>sfmmu_cpu_init</a></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/t1_boot_fix-1024__sol-10-u8.txt">PASS</a></td>
@@ -152,6 +152,8 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 <p><sup>4</sup> Bumping the memory fix 256 -&gt; 1024MB — resolved by <code>t1_boot_fix/1024</code>, see <a href="https://unix0.cc/2026/07/17/sun4v_snv134_boot_S10u8/">link#3</a>.</p>
 
 <p><sup>5</sup> <code>bop_alloc_chunk</code> and <code>boot temp overflow</code> are both out-of-memory panics for Solaris kernels — 256MB is too little for these images.</p>
+
+<p><sup>6</sup> Reference point: enable TLB property (<a href="https://unix0.cc/2026/07/18/sun4v_tlb_fix/">part #4</a>).</p>
 
 <h2>Image sources</h2>
 <p>Each column header above links directly to its source, except
