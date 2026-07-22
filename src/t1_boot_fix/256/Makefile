@@ -3,6 +3,11 @@
 # patches/t1_boot_fix/ (memory/cpus/cache nodes + mmu-* platform props --
 # see patches/t1_boot_fix/separate-patches/ for the incremental chain).
 #
+# Flat layout (single "1up" config, no per-config subdirectory) -- matches
+# t1_boot_fix/1024/ and t1_boot_fix/2048/'s convention (2026-07-22
+# restructuring; previously wildcard-scanned for multiple config
+# subdirectories, but only "1up" was ever populated).
+#
 # This directory holds ONLY source (.pdesc/.hdesc) + this Makefile. `make`
 # writes built .bin/.txt and firmware-blob symlinks into the sibling
 # bin/t1_boot_fix/256/ tree (see OUT_DIR below), so src stays pure
@@ -26,23 +31,12 @@ FW_BLOBS := /git/md/fw_blobs
 # source -- sibling bin/t1_boot_fix/256/ directory.
 OUT_DIR := ../../../bin/t1_boot_fix/256
 
-CONFIGS := $(patsubst %/,%,$(wildcard */))
-
-MD_BIN := $(foreach c,$(CONFIGS),$(OUT_DIR)/$(c)/$(c)-md.bin)
-MD_TXT := $(foreach c,$(CONFIGS),$(OUT_DIR)/$(c)/$(c)-md.txt)
-HV_BIN := $(foreach c,$(CONFIGS),$(OUT_DIR)/$(c)/$(c)-hv.bin)
-HV_TXT := $(foreach c,$(CONFIGS),$(OUT_DIR)/$(c)/$(c)-hv.txt)
-
-# Symlink every file in FW_BLOBS into every config's OUT_DIR, keeping the
-# same basename. Not a pattern rule (that can only match one fixed directory
-# prefix) -- a plain rule over the explicit target list, using $@ in the
-# recipe to recover which config/file this invocation is.
 FW_BLOB_FILES := $(notdir $(wildcard $(FW_BLOBS)/*))
-FW_BLOB_LINKS := $(foreach c,$(CONFIGS),$(foreach f,$(FW_BLOB_FILES),$(OUT_DIR)/$(c)/$(f)))
+FW_BLOB_LINKS := $(foreach f,$(FW_BLOB_FILES),$(OUT_DIR)/$(f))
 
 .PHONY: all clean distclean fw-blobs
 
-all: $(MD_BIN) $(MD_TXT) $(HV_BIN) $(HV_TXT) fw-blobs
+all: $(OUT_DIR)/1up-md.bin $(OUT_DIR)/1up-md.txt $(OUT_DIR)/1up-hv.bin $(OUT_DIR)/1up-hv.txt fw-blobs
 
 fw-blobs: $(FW_BLOB_LINKS)
 
@@ -73,7 +67,7 @@ $(OUT_DIR)/%-hv.txt: %-hv.pp
 	$(MDGEN) --text --outfile $@ $<
 
 clean:
-	$(RM) $(foreach c,$(CONFIGS),$(c)/*.pp)
+	$(RM) *.pp
 
 distclean: clean
 	$(RM) -r $(OUT_DIR)

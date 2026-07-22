@@ -19,15 +19,16 @@ _reference/OpenSPARC_T1_original/
     is the one deliberate exception to the "blobs only" rule, since it's
     the ground-truth reference everything else is validated against.
 
-OpenSPARC_T1_rebuild/1up/
+OpenSPARC_T1_rebuild/
     Output of `make` in ../src/OpenSPARC_T1_rebuild/: the same original
     sources above, compiled with our own GNU-make-ported mdgen
     (github.com/unix0cc/mdbuild) instead of Sun's Solaris/Sun-Studio
     build. 1up-md.bin/1up-hv.bin here are verified byte-identical to
     _reference/OpenSPARC_T1_original/niagara/1up-{md,hv}.bin -- this is
-    the toolchain fidelity proof.
+    the toolchain fidelity proof. Flat layout (no "1up" subdirectory,
+    2026-07-22 restructuring) since it's a single config.
 
-t1_boot_fix/256/1up/, t1_boot_fix/1024/
+t1_boot_fix/256/, t1_boot_fix/1024/
     Output of `make` in ../src/t1_boot_fix/256/ and ../src/t1_boot_fix/1024/:
     the boot-tested sun4v MD/hv-config for illumos/OpenSolaris snv_134,
     built by applying the fix patches in ../patches/t1_boot_fix/
