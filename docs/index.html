@@ -23,6 +23,8 @@
   .legend span { display: inline-block; margin-right: 1.2rem; }
   .swatch { display: inline-block; width: 0.9em; height: 0.9em; border: 1px solid #999; vertical-align: middle; margin-right: 0.3em; }
   code { background: #f4f4f4; padding: 0.1em 0.35em; border-radius: 3px; }
+  pre { background: #f4f4f4; padding: 0.6rem 0.8rem; border-radius: 3px; overflow-x: auto; }
+  pre code { background: none; padding: 0; }
   footer { font-size: 0.85rem; color: #666; margin-top: 2rem; }
 </style>
 </head>
@@ -138,6 +140,13 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
   <span><span class="swatch" style="background:#f0faf0"></span>PASS (kernel) — no panic/hang, but boot never completes (installer/service stall, not a kernel failure)</span>
   <span><span class="swatch" style="background:#fff"></span>— untested</span>
 </div>
+
+<h2>Usage</h2>
+<p>Syntax:</p>
+<pre><code>./qemu-system-sparc64 -M niagara -L /git/md/bin/tlb_fix/<b>&lt;memsize&gt;</b> -nographic -m <b>&lt;memsize&gt;</b> -drive if=pflash,readonly=on,file=<b>&lt;path_to_file&gt;</b>/<b>&lt;iso_file.iso&gt;</b></code></pre>
+
+<p>Example:</p>
+<pre><code>./qemu-system-sparc64 -M niagara -L /git/md/bin/tlb_fix/1024 -nographic -m 1024 -drive if=pflash,readonly=on,file=/zroot/iso/sol-10-u8-ga-sparc-dvd.iso</code></pre>
 
 <p><b>Notes</b></p>
 
