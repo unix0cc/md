@@ -6,7 +6,7 @@
 <title>QEMU SPARC64 machine description (MD) binaries: Solaris boot matrix</title>
 <style>
   body { font-family: -apple-system, Helvetica, Arial, sans-serif; max-width: 1300px; margin: 0 auto; padding: 2rem 1rem; color: #1a1a1a; box-sizing: border-box; }
-  h1 { font-size: 1.4rem; }
+  h1 { font-size: 1.4rem; text-align: center; }
   .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
   table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
   caption { caption-side: top; text-align: left; font-weight: 600; margin-bottom: 0.5rem; }
@@ -32,7 +32,7 @@
 
 <p>Tracks which guest OS test images have been verified to boot cleanly
 against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.materials/index.html">Machine Description</a> (MD) and hypervisor (HV) binaries
-(<b>1up-md.bin</b>, <b>1up-hv.bin</b>) build in "<a href="https://github.com/unix0cc/md/tree/main/bin">bin</a>".</p>
+(<b>1up-md.bin</b>, <b>1up-hv.bin</b>) build in <a href="https://github.com/unix0cc/md/tree/main/bin">bin</a>. The detail how to use it in section below.</p>
 
 <div class="table-wrap">
 <table>
@@ -117,7 +117,7 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-1024__s10u11.txt">PASS</a></td>
 </tr>
 <tr>
-  <td class="build"><a href="https://github.com/unix0cc/md/tree/main/bin/tlb_fix/2048">tlb_fix/2048</a><sup>10</sup><br>(t1_boot_fix/2048 + tlb structures in MD)</td>
+  <td class="build"><a href="https://github.com/unix0cc/md/tree/main/bin/tlb_fix/2048">tlb_fix/2048</a><br>(t1_boot_fix/2048 + tlb structures in MD)</td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__disk.s10hw2.txt">PASS</a></td>
   <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__snv_134-ai-iso.txt">FAIL/hang<br>alloc_page_freelists</a></td>
   <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__sol-11-exp-201011-ai.txt">FAIL/hang<br>alloc_page_freelists</a></td>
@@ -139,6 +139,8 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
   <span><span class="swatch" style="background:#fff"></span>— untested</span>
 </div>
 
+<p><b>Notes</b></p>
+
 <p><sup>0</sup> <code>disk.s10hw2</code> — Solaris 5.10: Solaris 10 3/05 HW2 (<code>s10s_hw2wos_05</code>) SPARC, derived from Legion code as boot reference for QEMU sun4v (<a href="https://wiki.qemu.org/Documentation/Platforms/SPARC">wiki.qemu.org/Documentation/Platforms/SPARC</a>).</p>
 
 <p><sup>1</sup> Derived from the <a href="https://www.oracle.com/servers/technologies/opensparc-t1-page.html">OpenSparc T1 Legion image</a> — Sun's original 2006 emulator reference with shipped hypervisor and MD binaries, which was rebuilt using mdgen tool from <a href="https://github.com/unix0cc/mdbuild/">mdbuild</a> toolchain.</p>
@@ -156,13 +158,6 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 Solaris&nbsp;10u11 (<code>V36434-01.iso</code>, Oracle's Solaris 10
 1/13 SPARC DVD part number -- no public download URL recorded, just
 the filename).</p>
-<p><sup>10</sup> Every cell previously recorded here has been reverted to
-untested: the build had a memory-config bug (hv-config <code>GUEST()</code>
-memsize left at <code>1024M</code> instead of being bumped to
-<code>2048M</code> alongside the MD's <code>mblock.size</code>), so every
-prior <code>tlb_fix/2048</code> result was actually tested against a
-hypervisor-granted 1024M, not the claimed 2048M. Fixed 2026-07-17; all
-cells need re-running against the corrected build.</p>
 
 <h2>MD/hv-config builds under test</h2>
 <ul>
