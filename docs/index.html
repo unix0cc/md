@@ -38,7 +38,7 @@ hv/md pairs" pass, not to claim it's done.</p>
 <thead>
 <tr>
   <th>Build</th>
-  <th>disk.s10hw2<sup>8</sup></th>
+  <th>disk.s10hw2<sup>9</sup></th>
   <th><a href="http://ftp.naist.jp/pub/openindiana/dlc/isos/archive/opensolaris/osol-dev-134-ai-sparc.iso">snv_134 ai ISO</a></th>
   <th><a href="http://69.43.38.172/mirrors/Unix/Sun/Oracle%20Solaris%2011%20Express%202010.11/sol-11-exp-201011-ai-sparc.iso">Solaris&nbsp;11&nbsp;Express 11/2010 ai</a></th>
   <th><a href="http://69.43.38.172/mirrors/Unix/Sun/sol-11-1111-text-sparc.iso">Solaris&nbsp;11&nbsp;11/11 text</a></th>
@@ -49,7 +49,7 @@ hv/md pairs" pass, not to claim it's done.</p>
 </thead>
 <tbody>
 <tr>
-  <td class="build">OpenSPARC_T1_rebuild</td>
+  <td class="build">OpenSPARC_T1_rebuild (binary-identical)<sup>1</sup></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/OpenSPARC_T1_rebuild__disk.s10hw2.txt">PASS</a></td>
   <td class="untested">—</td>
   <td class="untested">—</td>
@@ -72,8 +72,8 @@ hv/md pairs" pass, not to claim it's done.</p>
   <td class="build">t1_boot_fix/256<br>(mem/cpu/cache/mmu in MD)</td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/t1_boot_fix-256__disk.s10hw2.txt">PASS</a></td>
   <td class="fail-oom"><a href="https://unix0cc.github.io/md-artefacts/t1_boot_fix-256__snv_134-ai-iso.txt">FAIL/panic<br>bop_alloc_chunk</a></td>
-  <td class="fail-oom">not enough memory<sup>9</sup></td>
-  <td class="fail-oom">not enough memory<sup>9</sup></td>
+  <td class="fail-oom">not enough memory<sup>10</sup></td>
+  <td class="fail-oom">not enough memory<sup>10</sup></td>
   <td class="fail-oom"><a href="https://unix0cc.github.io/md-artefacts/t1_boot_fix-256__sol-10-u8.txt">FAIL/panic<br>bop_alloc_chunk</a></td>
   <td class="untested">—</td>
   <td class="untested">—</td>
@@ -109,7 +109,7 @@ hv/md pairs" pass, not to claim it's done.</p>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-1024__s10u11.txt">PASS</a></td>
 </tr>
 <tr>
-  <td class="build">tlb_fix/2048<sup>10</sup></td>
+  <td class="build">tlb_fix/2048<sup>11</sup></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__disk.s10hw2.txt">PASS</a></td>
   <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__snv_134-ai-iso.txt">FAIL/hang<br>alloc_page_freelists</a></td>
   <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__sol-11-exp-201011-ai.txt">FAIL/hang<br>alloc_page_freelists</a></td>
@@ -130,22 +130,23 @@ hv/md pairs" pass, not to claim it's done.</p>
   <span><span class="swatch" style="background:#fff"></span>— untested</span>
 </div>
 
+<p><sup>1</sup> Derived from the <a href="https://www.oracle.com/servers/technologies/opensparc-t1-page.html">OpenSparc T1 Legion image</a> — Sun's original 2006 emulator reference with shipped hypervisor and MD binaries, which we rebuild here using our own mdgen toolchain.</p>
 
 <h2>Image sources</h2>
 <p>Each column header above links directly to its source, except
 Solaris&nbsp;10u11 (<code>V36434-01.iso</code>, Oracle's Solaris 10
 1/13 SPARC DVD part number -- no public download URL recorded, just
 the filename).</p>
-<p><sup>8</sup> <code>disk.s10hw2</code> — a Solaris 10 HW2 disk image
+<p><sup>9</sup> <code>disk.s10hw2</code> — a Solaris 10 HW2 disk image
 used as the reference/known-good test image for both this project
 (qemu-sparc64) and the original Legion OpenSPARC T1 emulator; not an
 installer ISO like the other columns, no separate download link.</p>
-<p><sup>9</sup> Not actually run against these cells -- inferred from
+<p><sup>10</sup> Not actually run against these cells -- inferred from
 <code>t1_boot_fix/256</code>'s established pattern of <code>bop_alloc_chunk</code>
 OOM panics on the two other images already tested against this build
 (<code>snv_134 ai ISO</code>, <code>Solaris&nbsp;10u8</code>); 256MB is
 already known to be too small to boot any of these installer images.</p>
-<p><sup>10</sup> Every cell previously recorded here has been reverted to
+<p><sup>11</sup> Every cell previously recorded here has been reverted to
 untested: the build had a memory-config bug (hv-config <code>GUEST()</code>
 memsize left at <code>1024M</code> instead of being bumped to
 <code>2048M</code> alongside the MD's <code>mblock.size</code>), so every
