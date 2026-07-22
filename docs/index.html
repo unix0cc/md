@@ -143,7 +143,8 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 
 <h2>Usage</h2>
 <p>Syntax:</p>
-<pre><code>./qemu-system-sparc64 -M niagara -L /git/md/bin/tlb_fix/<b>&lt;memsize&gt;</b> -nographic -m <b>&lt;memsize&gt;</b> -drive if=pflash,readonly=on,file=<b>&lt;path_to_file&gt;</b>/<b>&lt;iso_file.iso&gt;</b></code></pre>
+<pre><code>./qemu-system-sparc64 -M niagara -L <b>&lt;md_dir&gt;</b>/<b>&lt;memsize&gt;</b> -nographic -m <b>&lt;memsize&gt;</b> -drive if=pflash,readonly=on,file=<b>&lt;path_to_file&gt;</b>/<b>&lt;iso_file.iso&gt;</b></code></pre>
+<p><code>&lt;md_dir&gt;</code> is a directory with the proper MD/HV binaries (<code>1up-md.bin</code>, <code>1up-hv.bin</code>) as well as the other required binaries (<code>netcons</code>, <code>nvram1</code>, <code>openboot.bin</code>, <code>q.bin</code>) -- e.g. <code>/git/md/bin/tlb_fix</code>.</p>
 
 <p>Example:</p>
 <pre><code>./qemu-system-sparc64 -M niagara -L /git/md/bin/tlb_fix/1024 -nographic -m 1024 -drive if=pflash,readonly=on,file=/zroot/iso/sol-10-u8-ga-sparc-dvd.iso</code></pre>
