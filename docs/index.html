@@ -142,14 +142,14 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 </div>
 
 <h2>Usage</h2>
-<p>Syntax:</p>
+<p><b>Syntax:</b></p>
 <pre><code>./qemu-system-sparc64 -M niagara -L <b>&lt;md_dir&gt;</b>/<b>&lt;memsize&gt;</b> -nographic -m <b>&lt;memsize&gt;</b> -drive if=pflash,readonly=on,file=<b>&lt;path_to_file&gt;</b>/<b>&lt;iso_file.iso&gt;</b></code></pre>
 <p><b>&lt;md_dir&gt;/&lt;memsize&gt;</b> is a directory containing the MD/HV binaries (<code>1up-md.bin</code>, <code>1up-hv.bin</code>) and the required firmware binaries (<code>netcons</code>, <code>nvram1</code>, <code>openboot.bin</code>, <code>q.bin</code>), e.g. <code>/git/md/bin/tlb_fix/1024</code>.</p>
 
-<p>Example:</p>
+<p><b>Example:</b></p>
 <pre><code>./qemu-system-sparc64 -M niagara -L /git/md/bin/tlb_fix/1024 -nographic -m 1024 -drive if=pflash,readonly=on,file=/zroot/iso/sol-10-u8-ga-sparc-dvd.iso</code></pre>
 
-<p><b>Notes</b></p>
+<h2>Notes</h2>
 
 <p><sup>0</sup> <code>disk.s10hw2</code> — Solaris 5.10: Solaris 10 3/05 HW2 (<code>s10s_hw2wos_05</code>) SPARC, derived from Legion code as boot reference for QEMU sun4v (<a href="https://wiki.qemu.org/Documentation/Platforms/SPARC">wiki.qemu.org/Documentation/Platforms/SPARC</a>).</p>
 
