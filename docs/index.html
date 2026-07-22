@@ -40,7 +40,7 @@ hv/md pairs" pass, not to claim it's done.</p>
 <thead>
 <tr>
   <th>Build</th>
-  <th>disk.s10hw2<sup>9</sup></th>
+  <th>disk.s10hw2<sup>0</sup></th>
   <th><a href="http://ftp.naist.jp/pub/openindiana/dlc/isos/archive/opensolaris/osol-dev-134-ai-sparc.iso">snv_134 ai ISO</a></th>
   <th><a href="http://69.43.38.172/mirrors/Unix/Sun/Oracle%20Solaris%2011%20Express%202010.11/sol-11-exp-201011-ai-sparc.iso">Solaris&nbsp;11&nbsp;Express 11/2010 ai</a></th>
   <th><a href="http://69.43.38.172/mirrors/Unix/Sun/sol-11-1111-text-sparc.iso">Solaris&nbsp;11&nbsp;11/11 text</a></th>
@@ -132,6 +132,8 @@ hv/md pairs" pass, not to claim it's done.</p>
   <span><span class="swatch" style="background:#fff"></span>— untested</span>
 </div>
 
+<p><sup>0</sup> <code>disk.s10hw2</code> — Solaris 5.10: Solaris 10 3/05 HW2 (<code>s10s_hw2wos_05</code>) SPARC, derived from Legion code as boot reference for QEMU sun4v (<a href="https://wiki.qemu.org/Documentation/Platforms/SPARC">wiki.qemu.org/Documentation/Platforms/SPARC</a>).</p>
+
 <p><sup>1</sup> Derived from the <a href="https://www.oracle.com/servers/technologies/opensparc-t1-page.html">OpenSparc T1 Legion image</a> — Sun's original 2006 emulator reference with shipped hypervisor and MD binaries, which we rebuild here using our mdgen tool from <a href="https://github.com/unix0cc/mdbuild/">mdbuild</a> toolchain.</p>
 
 <h2>Image sources</h2>
@@ -139,10 +141,6 @@ hv/md pairs" pass, not to claim it's done.</p>
 Solaris&nbsp;10u11 (<code>V36434-01.iso</code>, Oracle's Solaris 10
 1/13 SPARC DVD part number -- no public download URL recorded, just
 the filename).</p>
-<p><sup>9</sup> <code>disk.s10hw2</code> — a Solaris 10 HW2 disk image
-used as the reference/known-good test image for both this project
-(qemu-sparc64) and the original Legion OpenSPARC T1 emulator; not an
-installer ISO like the other columns, no separate download link.</p>
 <p><sup>10</sup> Not actually run against these cells -- inferred from
 <code>t1_boot_fix/256</code>'s established pattern of <code>bop_alloc_chunk</code>
 OOM panics on the two other images already tested against this build
