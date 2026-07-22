@@ -19,6 +19,7 @@
   .fail-oom { background: #cfe2f3; }
   .pass-stall { background: #f0faf0; }
   .untested { background: #fff; color: #999; }
+  tr.section td { background: #ddd; color: #555; font-weight: 600; text-align: left; padding: 0.15rem 0.6rem; font-size: 0.8rem; }
   .legend span { display: inline-block; margin-right: 1.2rem; }
   .swatch { display: inline-block; width: 0.9em; height: 0.9em; border: 1px solid #999; vertical-align: middle; margin-right: 0.3em; }
   code { background: #f4f4f4; padding: 0.1em 0.35em; border-radius: 3px; }
@@ -37,7 +38,7 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 <caption>Boot status: MD/hv-config build (row) &times; OS image (column)</caption>
 <thead>
 <tr>
-  <th>Build</th>
+  <th>OS image/MD build</th>
   <th>disk.s10hw2<sup>0</sup></th>
   <th><a href="http://ftp.naist.jp/pub/openindiana/dlc/isos/archive/opensolaris/osol-dev-134-ai-sparc.iso">snv_134 ai ISO</a></th>
   <th><a href="http://69.43.38.172/mirrors/Unix/Sun/Oracle%20Solaris%2011%20Express%202010.11/sol-11-exp-201011-ai-sparc.iso">Solaris&nbsp;11&nbsp;Express 11/2010 ai</a></th>
@@ -48,6 +49,9 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 </tr>
 </thead>
 <tbody>
+<tr class="section">
+  <td colspan="8">Reference</td>
+</tr>
 <tr>
   <td class="build"><a href="https://github.com/unix0cc/md/tree/main/bin/OpenSPARC_T1_rebuild">OpenSPARC_T1_rebuild</a> (binary-identical)<sup>1</sup></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/OpenSPARC_T1_rebuild__disk.s10hw2.txt">PASS</a></td>
@@ -67,6 +71,9 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
   <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__sol-10-u8.txt">FAIL/panic<br>kmem64-prom_alloc</a></td>
   <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__sol-10-u10.txt">FAIL/panic<br>kmem64-prom_alloc</a></td>
   <td class="fail-panic"><a href="https://unix0cc.github.io/md-artefacts/1GiB-snv_77_1GiB-experimental__s10u11.txt">FAIL/panic<br>kmem64-prom_alloc</a></td>
+</tr>
+<tr class="section">
+  <td colspan="8">test builds</td>
 </tr>
 <tr>
   <td class="build"><a href="https://github.com/unix0cc/md/tree/main/bin/t1_boot_fix/256">t1_boot_fix/256</a><br>(mem/cpu/cache/mmu in MD)</td>
