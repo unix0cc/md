@@ -22,7 +22,7 @@
 #
 # This directory holds ONLY source (.pdesc/.hdesc) + this Makefile. `make`
 # writes built .bin/.txt and firmware-blob symlinks into the sibling
-# bin/maxcpu_fix/2048/ tree (see OUT_DIR below), so src stays pure
+# bin/_test/maxcpu_fix/2048/ tree (see OUT_DIR below), so src stays pure
 # source and bin stays pure blobs even right after a build.
 #
 # mdgen itself comes from github.com/unix0cc/mdbuild, built via that repo's
@@ -40,8 +40,8 @@ VERBOSE ?=
 FW_BLOBS := /git/md/fw_blobs
 
 # Built output (.bin/.txt/firmware-symlinks) lands here, not alongside the
-# source -- sibling bin/maxcpu_fix/2048/ directory.
-OUT_DIR := ../../../bin/maxcpu_fix/2048
+# source -- sibling bin/_test/maxcpu_fix/2048/ directory.
+OUT_DIR := ../../../../bin/_test/maxcpu_fix/2048
 
 FW_BLOB_FILES := $(notdir $(wildcard $(FW_BLOBS)/*))
 FW_BLOB_LINKS := $(foreach f,$(FW_BLOB_FILES),$(OUT_DIR)/$(f))
