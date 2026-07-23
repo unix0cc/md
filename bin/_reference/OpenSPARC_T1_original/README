@@ -1,0 +1,14 @@
+OpenSPARC_T1_original/
+======================
+
+Sun Microsystems' original, unmodified 2006 OpenSPARC T1 "niagara" Legion
+release. Contains originating content from /images/legion/src/config,
+extracted from OpenSPARCT1_Arch.1.5.tar.bz2 -- Sun's official OpenSPARC T1
+architecture release archive.
+
+Kept exactly as shipped, including its own Makefile/Makefile.master and
+mixed source+blob layout (niagara/*.pdesc, *.hdesc, *.conf, *-md.bin,
+*-hv.bin). This is the ground-truth reference everything else in this
+repo is validated against -- see ../../README (bin/README): the
+OpenSPARC_T1_rebuild config proves our own mdgen toolchain reproduces
+these binaries byte-for-byte.
