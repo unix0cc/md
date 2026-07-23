@@ -149,7 +149,8 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 <p><b>&lt;md_dir&gt;/&lt;memsize&gt;</b> is a directory containing the MD/HV binaries (1up-md.bin, 1up-hv.bin) and the required firmware binaries (netcons, nvram1, openboot.bin, q.bin), e.g. /git/md/bin/tlb_fix/1024.</p>
 
 <p><b>Example:</b></p>
-<pre><code>./qemu-system-sparc64 -M niagara -L /git/md/bin/tlb_fix/1024 -nographic -m 1024 -drive if=pflash,readonly=on,file=/zroot/iso/sol-10-u8-ga-sparc-dvd.iso</code></pre>
+<pre><code>./qemu-system-sparc64 -M niagara -L /tmp/md/bin/latest/1024 -nographic -m 1024 -drive if=pflash,readonly=on,file=/zroot/iso/s10u11/V36434-01.iso</code></pre>
+<pre><code>./qemu-system-sparc64 -M niagara -L /tmp/md/bin/tlb_fix/1024 -nographic -m 1024 -drive if=pflash,readonly=on,file=/zroot/iso/sol-10-u8-ga-sparc-dvd.iso</code></pre>
 
 <h2>Build Procedure</h2>
 <p>The build procedure is described here: <a href="https://github.com/unix0cc/md/">https://github.com/unix0cc/md/</a>. Requires a toolkit (<a href="https://github.com/unix0cc/mdbuild/">mdgen/mdlint</a>) used for compiling the <code>.bin</code> files (<code>1up-md.bin</code>, <code>1up-hv.bin</code>).</p>
