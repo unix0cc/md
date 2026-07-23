@@ -1,0 +1,13 @@
+1GiB-snv_77_1GiB-experimental/
+===============================
+
+Externally-sourced, prebuilt 1GiB MD/hv-config for snv_77, from:
+https://github.com/artyom-tarasenko/qemu-sun4v-md/tree/1GiB-experimental/1GiB-snv_77
+
+Not built by us -- no corresponding src/ entry, since we don't have the
+.pdesc/.hdesc that produced it, only the compiled 1up-md.bin/1up-hv.bin.
+Kept as a deliberate exception to "blobs only via our own build", same
+rationale as ../OpenSPARC_T1_original/. Its nvram1/openboot.bin/q.bin/
+reset.bin are real files (that branch's own copies, not necessarily
+identical to ../../fw_blobs/), and it has no netcons (the upstream
+directory didn't ship one).
