@@ -142,11 +142,11 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 </div>
 
 <h2>Usage</h2>
-<p><code>-m <b>&lt;memsize&gt;</b></code> is QEMU's guest memory size flag and should correspond with the proper path in <code>-L <b>&lt;md_dir&gt;</b>/<b>&lt;memsize&gt;</b></code>. A mismatch (e.g. <code>-L /git/md/bin/tlb_fix/1024</code> with <code>-m 2048</code>) means the guest is told it has memory the MD never declared, and will fail to boot correctly.</p>
+<p>-m <b>&lt;memsize&gt;</b> is QEMU's guest memory size flag and should correspond with the proper path in -L <b>&lt;md_dir&gt;</b>/<b>&lt;memsize&gt;</b>. A mismatch (e.g. -L /git/md/bin/tlb_fix/1024 with -m 2048) means the guest is told it has memory the MD never declared, and will fail to boot correctly.</p>
 
 <p><b>Syntax:</b></p>
 <pre><code>./qemu-system-sparc64 -M niagara -L <b>&lt;md_dir&gt;</b>/<b>&lt;memsize&gt;</b> -nographic -m <b>&lt;memsize&gt;</b> -drive if=pflash,readonly=on,file=<b>&lt;path_to_file&gt;</b>/<b>&lt;iso_file.iso&gt;</b></code></pre>
-<p><b>&lt;md_dir&gt;/&lt;memsize&gt;</b> is a directory containing the MD/HV binaries (<code>1up-md.bin</code>, <code>1up-hv.bin</code>) and the required firmware binaries (<code>netcons</code>, <code>nvram1</code>, <code>openboot.bin</code>, <code>q.bin</code>), e.g. <code>/git/md/bin/tlb_fix/1024</code>.</p>
+<p><b>&lt;md_dir&gt;/&lt;memsize&gt;</b> is a directory containing the MD/HV binaries (1up-md.bin, 1up-hv.bin) and the required firmware binaries (netcons, nvram1, openboot.bin, q.bin), e.g. /git/md/bin/tlb_fix/1024.</p>
 
 <p><b>Example:</b></p>
 <pre><code>./qemu-system-sparc64 -M niagara -L /git/md/bin/tlb_fix/1024 -nographic -m 1024 -drive if=pflash,readonly=on,file=/zroot/iso/sol-10-u8-ga-sparc-dvd.iso</code></pre>
