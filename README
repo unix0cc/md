@@ -12,6 +12,9 @@ turns `.pdesc`/`.hdesc` source into the binary `.bin` blobs (`mdgen`,
 installed at $(HOME)/mdbuild/bin/, and referenced by path from the
 Makefiles here.
 
+This README describes the repo as it currently is. For the history of
+notable changes, see CHANGELOG.md.
+
 Layout
 ------
 src/
