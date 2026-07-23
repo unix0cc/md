@@ -27,7 +27,6 @@ set -u
 
 REPO_ROOT=$(cd -- "$(dirname -- "$0")/.." && pwd)
 MDGEN=${MDGEN:-$HOME/mdbuild/bin/mdgen}
-ARTEFACTS="1up-md.bin 1up-md.txt 1up-hv.bin 1up-hv.txt"
 
 quiet=0
 case ${1:-} in
@@ -74,8 +73,21 @@ for makefile in $(find "$REPO_ROOT/src" -name Makefile | sort); do
         continue
     fi
 
+    # What this config is *supposed* to contain is whatever the build just
+    # produced -- taken from the temp directory rather than a fixed list, so
+    # configs that build more than one MD (OpenSPARC_T1_rebuild builds 1up,
+    # 1g2p and 1g32p) are handled without the script knowing their names.
+    expected=""
+    for built in "$tmp"/*; do
+        [ -e "$built" ] || continue
+        expected="$expected $(basename "$built")"
+    done
+    if [ -z "$expected" ]; then
+        printf '%-40s BUILD PRODUCED NOTHING\n' "$label"; rc=1; continue
+    fi
+
     drift=""
-    for f in $ARTEFACTS; do
+    for f in $expected; do
         cmp -s "$tmp/$f" "$outdir/$f" || drift="$drift $f"
     done
 
@@ -87,7 +99,7 @@ for makefile in $(find "$REPO_ROOT/src" -name Makefile | sort); do
     for existing in "$outdir"/*; do
         [ -e "$existing" ] || continue
         base=$(basename "$existing")
-        case " $ARTEFACTS " in
+        case " $expected " in
             *" $base "*) ;;
             *) stray="$stray $base" ;;
         esac
@@ -126,18 +138,27 @@ REBUILD_BIN="$REPO_ROOT/bin/OpenSPARC_T1_rebuild"
 
 if [ -d "$REF" ]; then
     refbad=""
-    for f in 1up.pdesc 1up.hdesc common.pdesc common.hdesc; do
+    # All three configs Sun shipped. 1up alone is a weak proof: it is a
+    # single-strand, single-guest machine, while 1g2p and 1g32p describe
+    # multiple guests and 32 strands, reaching node and property shapes 1up
+    # never does (1g32p-md.bin is 9104 bytes against 1up's 2408).
+    for f in common.pdesc common.hdesc; do
         cmp -s "$REF/$f" "$REBUILD_SRC/$f" || refbad="$refbad src/$f"
     done
-    for f in 1up-md.bin 1up-hv.bin; do
-        cmp -s "$REF/$f" "$REBUILD_BIN/$f" || refbad="$refbad bin/$f"
+    for c in 1up 1g2p 1g32p; do
+        for f in "$c.pdesc" "$c.hdesc"; do
+            cmp -s "$REF/$f" "$REBUILD_SRC/$f" || refbad="$refbad src/$f"
+        done
+        for f in "$c-md.bin" "$c-hv.bin"; do
+            cmp -s "$REF/$f" "$REBUILD_BIN/$f" || refbad="$refbad bin/$f"
+        done
     done
 
     if [ -n "$refbad" ]; then
         printf '%-40s NOT BYTE-IDENTICAL TO SUN 2006:%s\n' "OpenSPARC_T1_rebuild" "$refbad"
         rc=1
     elif [ "$quiet" -eq 0 ]; then
-        printf '%-40s byte-identical to Sun 2006 originals\n' "OpenSPARC_T1_rebuild"
+        printf "%-40s byte-identical to Sun 2006 originals (1up, 1g2p, 1g32p)\n" "OpenSPARC_T1_rebuild"
     fi
 else
     echo "verify.sh: reference originals missing at $REF" >&2

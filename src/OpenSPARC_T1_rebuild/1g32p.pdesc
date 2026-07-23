@@ -1,0 +1,71 @@
+/*
+* ========== Copyright Header Begin ==========================================
+* 
+* OpenSPARC T1 Processor File: 1g32p.pdesc
+* Copyright (c) 2006 Sun Microsystems, Inc.  All Rights Reserved.
+* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES.
+* 
+* The above named program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public
+* License version 2 as published by the Free Software Foundation.
+* 
+* The above named program is distributed in the hope that it will be 
+* useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public
+* License along with this work; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+* 
+* ========== Copyright Header End ============================================
+*/
+/*
+ * Copyright 2005 Sun Microsystems, Inc.  All rights reserved.
+ * Use is subject to license terms.
+ *
+ * ident	"@(#)1g32p.pdesc	1.6	05/08/29 SMI"
+ */
+
+#define	MEMBASE	0x80000000
+#define	MEMSIZE	256M
+
+#include "common.pdesc"
+
+ADD_CPU(0)
+ADD_CPU(1)
+ADD_CPU(2)
+ADD_CPU(3)
+ADD_CPU(4)
+ADD_CPU(5)
+ADD_CPU(6)
+ADD_CPU(7)
+ADD_CPU(8)
+ADD_CPU(9)
+ADD_CPU(10)
+ADD_CPU(11)
+ADD_CPU(12)
+ADD_CPU(13)
+ADD_CPU(14)
+ADD_CPU(15)
+ADD_CPU(16)
+ADD_CPU(17)
+ADD_CPU(18)
+ADD_CPU(19)
+ADD_CPU(20)
+ADD_CPU(21)
+ADD_CPU(22)
+ADD_CPU(23)
+ADD_CPU(24)
+ADD_CPU(25)
+ADD_CPU(26)
+ADD_CPU(27)
+ADD_CPU(28)
+ADD_CPU(29)
+ADD_CPU(30)
+ADD_CPU(31)
+
+node mblock p0_memlist0 {
+	base = 0x80000000;
+	size = 256M;
+}

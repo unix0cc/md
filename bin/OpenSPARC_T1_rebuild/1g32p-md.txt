@@ -1,0 +1,304 @@
+node root root {
+	banner-name = "Sun Fire T2000";
+	name = "SUNW,Sun-Fire-T2000";
+	stick-frequency = 0x4c4b40;
+	clock-frequency = 0x4c4b40;
+	board-part# = "000-000-000";
+	max-#cpumondo-entries = 0x100;
+	max-#devmondo-entries = 0x100;
+	max-#cpus = 0x20;
+	max-#tsb-entries = 0x2;
+	reset-reason = 0x0;
+	fwd -> platform_data;
+	fwd -> vdev;
+}
+node options XXoptions {
+	input-device = "ttya";
+	output-device = "ttya";
+	boot-device = "vdisk";
+	use-nvramrc? = 0xffffffffffffffff;
+}
+node devalias XXdevalias {
+	net = "/virtual-devices/network@0";
+	disk = "/virtual-devices/disk@0";
+	vdisk = "/virtual-devices/disk@0";
+	nvram = "/virtual-devices/nvram@5";
+	ttya = "/virtual-devices/console@1";
+	ttyb = "/virtual-devices/console@4";
+}
+node platform platform_data {
+	banner-name = "Sun Fire T2000";
+	name = "SUNW,Sun-Fire-T2000";
+	mac-address = 0x8003dead03;
+	hostid = 0x80112233;
+	serial# = 0xab4130;
+	stick-frequency = 0x4c4b40;
+	clock-frequency = 0x4c4b40;
+}
+node virtual-devices vdev {
+	cfg-handle = 0x100;
+}
+node virtual-device disk {
+	back -> vdev;
+	name = "disk";
+	fcode-driver-name = "disk-virtual-device";
+	my-space = 0x0;
+	intr = 0x0;
+	ino = 0x0;
+	cfg-handle = 0x0;
+}
+node virtual-device console {
+	back -> vdev;
+	name = "console";
+	fcode-driver-name = "console-virtual-device";
+	intr = 0x1;
+	ino = 0x11;
+	compatible = "qcn";
+	cfg-handle = 0x1;
+	channel# = 0x0;
+}
+node virtual-device nvram {
+	back -> vdev;
+	name = "nvram";
+	fcode-driver-name = "nvram-virtual-device";
+	intr = 0x0;
+	ino = 0x0;
+	cfg-handle = 0x2;
+}
+node virtual-device tod {
+	back -> vdev;
+	name = "rtc";
+	fcode-driver-name = "tod-virtual-device";
+	intr = 0x0;
+	ino = 0x0;
+	cfg-handle = 0x3;
+	compatible = "sun4v-tod";
+}
+node cpu cpu0 {
+	id = 0x0;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu1 {
+	id = 0x1;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu2 {
+	id = 0x2;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu3 {
+	id = 0x3;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu4 {
+	id = 0x4;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu5 {
+	id = 0x5;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu6 {
+	id = 0x6;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu7 {
+	id = 0x7;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu8 {
+	id = 0x8;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu9 {
+	id = 0x9;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu10 {
+	id = 0xa;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu11 {
+	id = 0xb;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu12 {
+	id = 0xc;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu13 {
+	id = 0xd;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu14 {
+	id = 0xe;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu15 {
+	id = 0xf;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu16 {
+	id = 0x10;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu17 {
+	id = 0x11;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu18 {
+	id = 0x12;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu19 {
+	id = 0x13;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu20 {
+	id = 0x14;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu21 {
+	id = 0x15;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu22 {
+	id = 0x16;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu23 {
+	id = 0x17;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu24 {
+	id = 0x18;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu25 {
+	id = 0x19;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu26 {
+	id = 0x1a;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu27 {
+	id = 0x1b;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu28 {
+	id = 0x1c;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu29 {
+	id = 0x1d;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu30 {
+	id = 0x1e;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node cpu cpu31 {
+	id = 0x1f;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+}
+node mblock p0_memlist0 {
+	base = 0x80000000;
+	size = 0x10000000;
+}

@@ -41,9 +41,20 @@ VERBOSE ?=
 # source -- sibling bin/OpenSPARC_T1_rebuild/ directory.
 OUT_DIR := ../../bin/OpenSPARC_T1_rebuild
 
+# All three configs Sun shipped, same list and same pattern rules as their
+# original niagara/Makefile ("CONFIGS = 1up 1g32p 1g2p"). Building all three
+# widens the byte-identity proof: 1up is a single-strand, single-guest
+# machine, while 1g2p and 1g32p describe multiple guests and 32 strands, so
+# they exercise node and property shapes 1up never reaches.
+CONFIGS := 1up 1g2p 1g32p
+
+OUTPUTS := $(foreach c,$(CONFIGS),\
+	$(OUT_DIR)/$(c)-md.bin $(OUT_DIR)/$(c)-md.txt \
+	$(OUT_DIR)/$(c)-hv.bin $(OUT_DIR)/$(c)-hv.txt)
+
 .PHONY: all clean distclean
 
-all: $(OUT_DIR)/1up-md.bin $(OUT_DIR)/1up-md.txt $(OUT_DIR)/1up-hv.bin $(OUT_DIR)/1up-hv.txt
+all: $(OUTPUTS)
 
 %-md.pp: %.pdesc
 	$(CPP) $< $@

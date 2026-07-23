@@ -1,0 +1,41 @@
+node root root {
+	cpus -> cpus;
+	guests -> guests;
+	hvuart = 0xfff0c2c000;
+	tod = 0xfff0c1fff8;
+}
+node cpu cpu0 {
+	pid = 0x0;
+	guest -> guest0;
+	vid = 0x0;
+}
+node cpu cpu4 {
+	pid = 0x4;
+	guest -> guest0;
+	vid = 0x1;
+}
+node guest guest0 {
+	gid = 0x0;
+	pid = 0x1;
+	xid = 0x10;
+	cpuset = 0x11;
+	membase = 0x80000000;
+	memsize = 0x10000000;
+	realbase = 0x80000000;
+	uartbase = 0x1f10000000;
+	nvbase = 0x1f11000000;
+	nvsize = 0x2000;
+	rombase = 0xfff0080000;
+	romsize = 0x80000;
+	diskpa = 0x1f40000000;
+	pdpa = 0x1f12000000;
+	bootcpu = 0x0;
+	perfctraccess = 0x1;
+}
+node cpus cpus {
+	cpu -> cpu0;
+	cpu -> cpu4;
+}
+node guests guests {
+	guest -> guest0;
+}

@@ -1,0 +1,221 @@
+node root root {
+	cpus -> cpus;
+	guests -> guests;
+	hvuart = 0xfff0c2c000;
+	tod = 0xfff0c1fff8;
+}
+node cpu cpu0 {
+	pid = 0x0;
+	guest -> guest0;
+	vid = 0x0;
+}
+node cpu cpu1 {
+	pid = 0x1;
+	guest -> guest0;
+	vid = 0x1;
+}
+node cpu cpu2 {
+	pid = 0x2;
+	guest -> guest0;
+	vid = 0x2;
+}
+node cpu cpu3 {
+	pid = 0x3;
+	guest -> guest0;
+	vid = 0x3;
+}
+node cpu cpu4 {
+	pid = 0x4;
+	guest -> guest0;
+	vid = 0x4;
+}
+node cpu cpu5 {
+	pid = 0x5;
+	guest -> guest0;
+	vid = 0x5;
+}
+node cpu cpu6 {
+	pid = 0x6;
+	guest -> guest0;
+	vid = 0x6;
+}
+node cpu cpu7 {
+	pid = 0x7;
+	guest -> guest0;
+	vid = 0x7;
+}
+node cpu cpu8 {
+	pid = 0x8;
+	guest -> guest0;
+	vid = 0x8;
+}
+node cpu cpu9 {
+	pid = 0x9;
+	guest -> guest0;
+	vid = 0x9;
+}
+node cpu cpu10 {
+	pid = 0xa;
+	guest -> guest0;
+	vid = 0xa;
+}
+node cpu cpu11 {
+	pid = 0xb;
+	guest -> guest0;
+	vid = 0xb;
+}
+node cpu cpu12 {
+	pid = 0xc;
+	guest -> guest0;
+	vid = 0xc;
+}
+node cpu cpu13 {
+	pid = 0xd;
+	guest -> guest0;
+	vid = 0xd;
+}
+node cpu cpu14 {
+	pid = 0xe;
+	guest -> guest0;
+	vid = 0xe;
+}
+node cpu cpu15 {
+	pid = 0xf;
+	guest -> guest0;
+	vid = 0xf;
+}
+node cpu cpu16 {
+	pid = 0x10;
+	guest -> guest0;
+	vid = 0x10;
+}
+node cpu cpu17 {
+	pid = 0x11;
+	guest -> guest0;
+	vid = 0x11;
+}
+node cpu cpu18 {
+	pid = 0x12;
+	guest -> guest0;
+	vid = 0x12;
+}
+node cpu cpu19 {
+	pid = 0x13;
+	guest -> guest0;
+	vid = 0x13;
+}
+node cpu cpu20 {
+	pid = 0x14;
+	guest -> guest0;
+	vid = 0x14;
+}
+node cpu cpu21 {
+	pid = 0x15;
+	guest -> guest0;
+	vid = 0x15;
+}
+node cpu cpu22 {
+	pid = 0x16;
+	guest -> guest0;
+	vid = 0x16;
+}
+node cpu cpu23 {
+	pid = 0x17;
+	guest -> guest0;
+	vid = 0x17;
+}
+node cpu cpu24 {
+	pid = 0x18;
+	guest -> guest0;
+	vid = 0x18;
+}
+node cpu cpu25 {
+	pid = 0x19;
+	guest -> guest0;
+	vid = 0x19;
+}
+node cpu cpu26 {
+	pid = 0x1a;
+	guest -> guest0;
+	vid = 0x1a;
+}
+node cpu cpu27 {
+	pid = 0x1b;
+	guest -> guest0;
+	vid = 0x1b;
+}
+node cpu cpu28 {
+	pid = 0x1c;
+	guest -> guest0;
+	vid = 0x1c;
+}
+node cpu cpu29 {
+	pid = 0x1d;
+	guest -> guest0;
+	vid = 0x1d;
+}
+node cpu cpu30 {
+	pid = 0x1e;
+	guest -> guest0;
+	vid = 0x1e;
+}
+node cpu cpu31 {
+	pid = 0x1f;
+	guest -> guest0;
+	vid = 0x1f;
+}
+node guest guest0 {
+	gid = 0x0;
+	pid = 0x1;
+	xid = 0x10;
+	cpuset = 0xffffffff;
+	membase = 0x80000000;
+	memsize = 0x10000000;
+	realbase = 0x80000000;
+	uartbase = 0x1f10000000;
+	nvbase = 0x1f11000000;
+	nvsize = 0x2000;
+	rombase = 0xfff0080000;
+	romsize = 0x80000;
+	diskpa = 0x1f40000000;
+	pdpa = 0x1f12000000;
+	bootcpu = 0x0;
+	perfctraccess = 0x1;
+}
+node cpus cpus {
+	cpu -> cpu0;
+	cpu -> cpu1;
+	cpu -> cpu2;
+	cpu -> cpu3;
+	cpu -> cpu4;
+	cpu -> cpu5;
+	cpu -> cpu6;
+	cpu -> cpu7;
+	cpu -> cpu8;
+	cpu -> cpu9;
+	cpu -> cpu10;
+	cpu -> cpu11;
+	cpu -> cpu12;
+	cpu -> cpu13;
+	cpu -> cpu14;
+	cpu -> cpu15;
+	cpu -> cpu16;
+	cpu -> cpu17;
+	cpu -> cpu18;
+	cpu -> cpu19;
+	cpu -> cpu20;
+	cpu -> cpu21;
+	cpu -> cpu22;
+	cpu -> cpu23;
+	cpu -> cpu24;
+	cpu -> cpu25;
+	cpu -> cpu26;
+	cpu -> cpu27;
+	cpu -> cpu28;
+	cpu -> cpu29;
+	cpu -> cpu30;
+	cpu -> cpu31;
+}
+node guests guests {
+	guest -> guest0;
+}

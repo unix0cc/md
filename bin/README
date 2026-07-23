@@ -23,10 +23,12 @@ OpenSPARC_T1_rebuild/
     Output of `make` in ../src/OpenSPARC_T1_rebuild/: the same original
     sources above, compiled with our own GNU-make-ported mdgen
     (github.com/unix0cc/mdbuild) instead of Sun's Solaris/Sun-Studio
-    build. 1up-md.bin/1up-hv.bin here are verified byte-identical to
-    _reference/OpenSPARC_T1_original/niagara/1up-{md,hv}.bin -- this is
-    the toolchain fidelity proof. Flat layout (no "1up" subdirectory,
-    2026-07-22 restructuring) since it's a single config.
+    build. All six blobs -- {1up,1g2p,1g32p}-{md,hv}.bin -- are verified
+    byte-identical to their counterparts in
+    _reference/OpenSPARC_T1_original/niagara/. This is the toolchain
+    fidelity proof, and it covers every config Sun shipped rather than
+    just the smallest one. Flat layout (no per-config subdirectory) --
+    the three configs' filenames already differ, so they coexist.
 
 t1_boot_fix/256/, t1_boot_fix/1024/
     Output of `make` in ../src/t1_boot_fix/256/ and ../src/t1_boot_fix/1024/:

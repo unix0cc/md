@@ -48,7 +48,7 @@ ever being pulled down by a `git clone` of this repo.
 Building a config
 ------------------
     cd src/<config>/       # e.g. src/t1_boot_fix/256, src/t1_boot_fix/1024
-    make                   # writes 1up-md.bin/.txt + 1up-hv.bin/.txt into
+    make                   # writes the config's .bin/.txt into
                             # the mirrored bin/<config>/ path
     make distclean          # removes that output, leaves src/ untouched
 
@@ -86,9 +86,12 @@ check at all (mdgen missing) -- never 0, so "verify passed" cannot
 quietly mean "verify never ran". Worth running before any commit that
 touches src/.
 
-Known gap: Sun shipped three configs (1up, 1g2p, 1g32p) and all three
-originals are in bin/_reference/, but only 1up is rebuilt, so the
-byte-identity proof currently covers one of the three.
+The proof covers all three configs Sun shipped -- 1up, 1g2p and 1g32p --
+using Sun's own config list from their original niagara/Makefile. That
+breadth matters: 1up is a single-strand, single-guest machine, so on its
+own it exercises only a fraction of mdgen. 1g2p and 1g32p describe
+multiple guests and 32 strands, and 1g32p-md.bin is 9104 bytes against
+1up's 2408. All six blobs (md and hv for each) rebuild byte-identical.
 
 Running a config
 -----------------

@@ -14,12 +14,15 @@ _test/, mirrored at ../bin/_test/ and ../patches/_test/.
 
 OpenSPARC_T1_rebuild/
     Sun's original, unmodified 2006 OpenSPARC T1 "niagara" sources
-    (common.pdesc/common.hdesc/1up.pdesc/1up.hdesc, copied verbatim from
-    ../bin/_reference/OpenSPARC_T1_original/niagara/). Building this
-    proves our GNU-make-ported mdgen (github.com/unix0cc/mdbuild)
-    reproduces Sun's shipped binaries byte-for-byte -- see
-    ../bin/OpenSPARC_T1_rebuild/. Flat layout (no "1up" subdirectory,
-    2026-07-22 restructuring) since it's a single config.
+    (common.pdesc/common.hdesc plus 1up/1g2p/1g32p .pdesc/.hdesc, copied
+    verbatim from ../bin/_reference/OpenSPARC_T1_original/niagara/).
+    Building this proves our GNU-make-ported mdgen
+    (github.com/unix0cc/mdbuild) reproduces Sun's shipped binaries
+    byte-for-byte -- see ../bin/OpenSPARC_T1_rebuild/. All three configs
+    Sun shipped are built, matching the CONFIGS list in their own
+    niagara/Makefile; 1up alone would exercise only a single-strand,
+    single-guest machine. Flat layout (no per-config subdirectory) --
+    the three configs' filenames already differ, so they coexist.
 
 t1_boot_fix/256/, t1_boot_fix/1024/
     The same original sources with the boot-fix patches from
