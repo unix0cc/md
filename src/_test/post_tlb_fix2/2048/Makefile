@@ -50,7 +50,7 @@ VERBOSE ?=
 # deliberately NOT copied or symlinked into the output directory. Pass
 # fw_blobs/ to QEMU as a second search path instead:
 #
-#   qemu-system-sparc64 -M niagara -L <OUT_DIR> -L /git/md/fw_blobs ...
+#   qemu-system-sparc64 -M niagara -L <OUT_DIR> -L ../../../../fw_blobs ...
 #
 # QEMU appends each -L to its data-dir list and searches them in declaration
 # order; specifying an incomplete directory this way is exactly what that
