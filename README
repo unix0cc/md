@@ -13,7 +13,7 @@ installed at $(HOME)/mdbuild/bin/, and referenced by path from the
 Makefiles here.
 
 This README describes the repo as it currently is. For the history of
-notable changes, see CHANGELOG.md.
+notable changes, see CHANGELOG.
 
 Layout
 ------
