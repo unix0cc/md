@@ -52,6 +52,44 @@ Building a config
                             # the mirrored bin/<config>/ path
     make distclean          # removes that output, leaves src/ untouched
 
+Verifying the committed blobs
+------------------------------
+    scripts/verify.sh      # rebuilds every config into a temp dir and
+                            # compares it against what is committed
+    scripts/verify.sh -q   # only report problems
+
+Because this repo commits its built blobs, source and blob can drift
+apart: edit a .pdesc, forget to run make, commit, and git will not
+complain -- it just shows a changed source next to an unchanged blob.
+Every boot result in docs/index.html that cites that config then refers
+to something the source no longer produces. verify.sh catches exactly
+that, and also flags stray files in a config directory (a firmware blob
+copied back in would shadow later -L paths at run time).
+
+It also re-checks the byte-identity proof that OpenSPARC_T1_rebuild/
+exists for -- that our mdgen port reproduces Sun's 2006 binaries exactly
+-- by comparing both legs of it against
+bin/_reference/OpenSPARC_T1_original/niagara/:
+
+    src/OpenSPARC_T1_rebuild/*.pdesc|hdesc  ==  Sun's originals
+    bin/OpenSPARC_T1_rebuild/*.bin          ==  Sun's originals
+
+Checking only the blobs would not be enough: edit those "verbatim"
+sources, rebuild honestly, and bin/ still matches src/, so the drift
+check above stays green while the proof is quietly false. (Comment-only
+edits do not even change the output, since cpp strips them -- which the
+source comparison catches and a blob comparison never would.)
+
+It writes nothing under bin/, so it is safe to run at any time. Exit 0
+means every config matches; 1 means a problem; 2 means it could not
+check at all (mdgen missing) -- never 0, so "verify passed" cannot
+quietly mean "verify never ran". Worth running before any commit that
+touches src/.
+
+Known gap: Sun shipped three configs (1up, 1g2p, 1g32p) and all three
+originals are in bin/_reference/, but only 1up is rebuilt, so the
+byte-identity proof currently covers one of the three.
+
 Running a config
 -----------------
 A config directory holds only the two built blobs, so give QEMU both it
