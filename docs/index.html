@@ -142,7 +142,7 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 </div>
 
 <h2>Usage</h2>
-<p><code>-m <b>&lt;memsize&gt;</b></code> is QEMU's guest memory size flag, but each configuration of Machine Description is memory-deterministic (<code><b>&lt;md_dir&gt;</b>/<b>&lt;memsize&gt;</b></code>, i.e. <code>-L latest/1024</code>), so for a successful boot <code>-m</code>'s value must match the <b>&lt;memsize&gt;</b> (i.e. <code>-m 1024</code>) in the <code>-L</code> path exactly. A mismatch (e.g. <code>-L /git/md/bin/latest/1024</code> with <code>-m 2048</code>) means the guest is told it has memory the MD never declared, and will fail to boot correctly.</p>
+<p><code>-m <b>&lt;memsize&gt;</b></code> is QEMU's guest memory size flag and should correspond with the proper path in <code>-L <b>&lt;md_dir&gt;</b>/<b>&lt;memsize&gt;</b></code>. A mismatch (e.g. <code>-L /git/md/bin/tlb_fix/1024</code> with <code>-m 2048</code>) means the guest is told it has memory the MD never declared, and will fail to boot correctly.</p>
 
 <p><b>Syntax:</b></p>
 <pre><code>./qemu-system-sparc64 -M niagara -L <b>&lt;md_dir&gt;</b>/<b>&lt;memsize&gt;</b> -nographic -m <b>&lt;memsize&gt;</b> -drive if=pflash,readonly=on,file=<b>&lt;path_to_file&gt;</b>/<b>&lt;iso_file.iso&gt;</b></code></pre>
