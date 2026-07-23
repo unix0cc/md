@@ -34,8 +34,11 @@ patches/
 
 fw_blobs/
     Shared static OBP/firmware blobs (openboot.bin, q.bin, reset.bin,
-    nvram1, netcons) -- not built by mdgen, just symlinked by each
-    src/<config>/Makefile into the matching bin/<config>/ output.
+    nvram1) -- not built by mdgen, and deliberately neither copied nor
+    symlinked into each config. Pass this directory to QEMU as a second
+    -L search path instead; see "Running a config" below.
+    (netcons is kept here too, but `-M niagara` never loads it -- it is
+    a Legion-simulator artefact.)
 
 Boot/failure evidence for docs/index.html's test matrix cells lives in
 a separate repo, github.com/unix0cc/md-artefacts, published via its
@@ -45,9 +48,36 @@ ever being pulled down by a `git clone` of this repo.
 Building a config
 ------------------
     cd src/<config>/       # e.g. src/t1_boot_fix/256, src/t1_boot_fix/1024
-    make                   # writes .bin/.txt + firmware symlinks into
+    make                   # writes 1up-md.bin/.txt + 1up-hv.bin/.txt into
                             # the mirrored bin/<config>/ path
     make distclean          # removes that output, leaves src/ untouched
+
+Running a config
+-----------------
+A config directory holds only the two built blobs, so give QEMU both it
+and fw_blobs/ -- `-L` may be repeated, and the paths are searched in the
+order given:
+
+    qemu-system-sparc64 -M niagara -nographic -m 2048 \
+        -L bin/tlb_fix/2048 \
+        -L fw_blobs \
+        -drive if=pflash,readonly=on,file=/path/to/disk.s10hw2
+
+This is what repeated `-L` was added for. QEMU commit 4524051c32 ("Add
+search path support for qemu data files", 2013): specifying an
+incomplete directory this way means "anything not found there will be
+loaded from the default paths, so you don't have to create a symlink
+farm for all the rom blobs". The option's own help text was never
+updated to describe the repetition, but the behaviour is deliberate and
+long-standing.
+
+Two ways to check what actually got used:
+
+    -L help              # prints the search path list, in order
+    -trace load_file     # prints the resolved location of each blob loaded
+
+Beware the ordering rule: first match wins. A directory that carries its
+own copy of a firmware blob will shadow every -L after it.
 
 Provenance / licensing
 -----------------------

@@ -58,10 +58,16 @@ _reference/1GiB-snv_77_1GiB-experimental/
     own copies, not necessarily identical to fw_blobs/), and it has no
     netcons (the upstream directory didn't ship one).
 
-Every other subdirectory also carries netcons, nvram1, openboot.bin,
-q.bin, reset.bin -- symlinks to ../../fw_blobs/, the shared static
-OBP/firmware blobs (not built by mdgen, just needed alongside the
-MD/HV binaries for QEMU to boot).
+Every other subdirectory holds only what mdgen produced: 1up-md.bin,
+1up-md.txt, 1up-hv.bin, 1up-hv.txt. The static OBP/firmware blobs that
+QEMU also needs (openboot.bin, q.bin, reset.bin, nvram1) are NOT here --
+pass ../fw_blobs/ as a second -L search path instead. See ../README
+("Running a config").
+
+These directories used to carry symlinks to ../../fw_blobs/. They were
+removed on 2026-07-23: the symlinks were absolute (/git/md/fw_blobs/...),
+so every clone outside /git/md got 55 dangling links, and repeated -L
+makes them unnecessary anyway.
 
 Regenerating
 ------------
@@ -70,4 +76,4 @@ frozen on purpose). To rebuild:
 
     cd ../src/<config>/
     make distclean   # wipes this directory's corresponding output
-    make             # regenerates .bin/.txt + firmware symlinks here
+    make             # regenerates .bin/.txt here

@@ -41,14 +41,20 @@ tlb_fix/1024, tlb_fix/2048, tlb_fix/4096
 Building
 --------
     cd <config>/          # e.g. t1_boot_fix/256, t1_boot_fix/1024, OpenSPARC_T1_rebuild
-    make                  # writes .bin/.txt + firmware symlinks into
-                           # the mirrored ../../bin/<config>/ path
+    make                  # writes .bin/.txt into the mirrored
+                           # ../../bin/<config>/ path
     make distclean         # removes that output, leaves source untouched
 
 Each Makefile's `MDGEN` defaults to $(HOME)/mdbuild/bin/mdgen (built from
-github.com/unix0cc/mdbuild, not part of this repo) and `FW_BLOBS` points
-at ../../fw_blobs/ for the static OBP/firmware blobs symlinked alongside
-each build's output.
+github.com/unix0cc/mdbuild, not part of this repo).
+
+A build produces only 1up-md.bin/.txt and 1up-hv.bin/.txt. The static
+OBP/firmware blobs in ../fw_blobs/ are deliberately not copied or
+symlinked alongside them -- give QEMU both directories instead:
+
+    qemu-system-sparc64 -M niagara -L ../bin/<config>/ -L ../fw_blobs/ ...
+
+See ../README ("Running a config") for why.
 
 Adding a new config
 --------------------

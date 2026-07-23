@@ -39,7 +39,7 @@
 # config subdirectories.
 #
 # This directory holds ONLY source (.pdesc/.hdesc) + this Makefile. `make`
-# writes built .bin/.txt and firmware-blob symlinks into the sibling
+# writes built .bin/.txt into the sibling
 # bin/_test/post_t1boot_mini/1024/ tree (see OUT_DIR below), so src stays pure
 # source and bin stays pure blobs even right after a build.
 #
@@ -52,27 +52,24 @@ CPP     := cpp -traditional-cpp
 MDGEN   ?= $(HOME)/mdbuild/bin/mdgen
 VERBOSE ?=
 
-# Static OBP/firmware support blobs (openboot.bin, q.bin, reset.bin,
-# nvram1, netcons -- not built by mdgen, just symlinked alongside the
-# built md/hv binaries so a config directory has everything it needs).
-FW_BLOBS := /git/md/fw_blobs
+# Static OBP/firmware blobs (openboot.bin, q.bin, reset.bin, nvram1) are
+# deliberately NOT copied or symlinked into the output directory. Pass
+# fw_blobs/ to QEMU as a second search path instead:
+#
+#   qemu-system-sparc64 -M niagara -L <OUT_DIR> -L /git/md/fw_blobs ...
+#
+# QEMU appends each -L to its data-dir list and searches them in declaration
+# order; specifying an incomplete directory this way is exactly what that
+# feature was added for (commit 4524051c32, "so you don't have to create a
+# symlink farm for all the rom blobs"). Verify with -L help / -trace load_file.
 
-# Built output (.bin/.txt/firmware-symlinks) lands here, not alongside the
+# Built output (.bin/.txt) lands here, not alongside the
 # source -- sibling bin/post_t1boot_mini/1024/ directory.
 OUT_DIR := ../../../../bin/_test/post_t1boot_mini/1024
 
-FW_BLOB_FILES := $(notdir $(wildcard $(FW_BLOBS)/*))
-FW_BLOB_LINKS := $(foreach f,$(FW_BLOB_FILES),$(OUT_DIR)/$(f))
+.PHONY: all clean distclean
 
-.PHONY: all clean distclean fw-blobs
-
-all: $(OUT_DIR)/1up-md.bin $(OUT_DIR)/1up-md.txt $(OUT_DIR)/1up-hv.bin $(OUT_DIR)/1up-hv.txt fw-blobs
-
-fw-blobs: $(FW_BLOB_LINKS)
-
-$(FW_BLOB_LINKS):
-	@mkdir -p $(dir $@)
-	ln -sf $(FW_BLOBS)/$(notdir $@) $@
+all: $(OUT_DIR)/1up-md.bin $(OUT_DIR)/1up-md.txt $(OUT_DIR)/1up-hv.bin $(OUT_DIR)/1up-hv.txt
 
 %-md.pp: %.pdesc
 	$(CPP) $< $@
