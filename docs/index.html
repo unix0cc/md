@@ -171,6 +171,21 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
     -nographic -m 1024 \
     -drive if=pflash,readonly=on,file=/path-to/S10image/disk.s10hw2</code></pre>
 
+<p>Confirm which directory each file was taken from with <b>-trace load_file</b>:</p>
+<pre><code>qemu-system-sparc64 -M niagara \
+    -L /tmp/md/bin/latest/1024 -L /path-to/S10image \
+    -nographic -m 1024 -trace load_file \
+    -drive if=pflash,readonly=on,file=/zroot/iso/s10u11/V36434-01.iso
+
+load_file name nvram1 location /path-to/S10image/nvram1
+load_file name 1up-md.bin location /tmp/md/bin/latest/1024/1up-md.bin
+load_file name 1up-hv.bin location /tmp/md/bin/latest/1024/1up-hv.bin
+load_file name reset.bin location /path-to/S10image/reset.bin
+load_file name q.bin location /path-to/S10image/q.bin
+load_file name openboot.bin location /path-to/S10image/openboot.bin
+load_file name /zroot/iso/s10u11/V36434-01.iso location /zroot/iso/s10u11/V36434-01.iso
+cpu Probing I/O buses</code></pre>
+
 <h2>Build Procedure</h2>
 <p>The build procedure is described here: <a href="https://github.com/unix0cc/md/">https://github.com/unix0cc/md/</a>. Requires a toolkit (<a href="https://github.com/unix0cc/mdbuild/">mdgen/mdlint</a>) used for compiling the <code>.bin</code> files (<code>1up-md.bin</code>, <code>1up-hv.bin</code>).</p>
 
