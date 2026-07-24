@@ -171,6 +171,12 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
     -nographic -m 1024 \
     -drive if=pflash,readonly=on,file=/path-to/S10image/disk.s10hw2</code></pre>
 
+<p>If the md config files were built with <a href="https://github.com/unix0cc/md/"><b>make symlinks</b></a>, a single <b>-L</b> path is enough:</p>
+<pre><code>qemu-system-sparc64 -M niagara \
+    -L /tmp/md/bin/latest/1024 \
+    -nographic -m 1024 \
+    -drive if=pflash,readonly=on,file=/zroot/iso/s10u11/V36434-01.iso</code></pre>
+
 <p>Confirm which directory each file was taken from with <b>-trace load_file</b>:</p>
 <pre><code>qemu-system-sparc64 -M niagara \
     -L /tmp/md/bin/latest/1024 -L /path-to/S10image \
@@ -190,12 +196,6 @@ cpu Probing I/O buses</code></pre>
 files out of <b>S10image</b> &mdash; which is what the <b>-L</b> order asked for. Had
 <b>S10image</b> been listed first, <b>1up-md.bin</b> and <b>1up-hv.bin</b> would show its
 paths here instead, and the config under test would never have been loaded.</p>
-
-<p>If the md config files were built with <a href="https://github.com/unix0cc/md/"><b>make symlinks</b></a>, a single <b>-L</b> path is enough:</p>
-<pre><code>qemu-system-sparc64 -M niagara \
-    -L /tmp/md/bin/latest/1024 \
-    -nographic -m 1024 \
-    -drive if=pflash,readonly=on,file=/zroot/iso/s10u11/V36434-01.iso</code></pre>
 
 <h2>Build Procedure</h2>
 <p>The build procedure is described here: <a href="https://github.com/unix0cc/md/">https://github.com/unix0cc/md/</a>. Requires a toolkit (<a href="https://github.com/unix0cc/mdbuild/">mdgen/mdlint</a>) used for compiling the <code>.bin</code> files (<code>1up-md.bin</code>, <code>1up-hv.bin</code>).</p>
