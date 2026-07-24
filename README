@@ -36,12 +36,28 @@ patches/
     a clean sun4v boot on illumos/OpenSolaris snv_134.
 
 fw_blobs/
-    Shared static OBP/firmware blobs (openboot.bin, q.bin, reset.bin,
-    nvram1) -- not built by mdgen, and deliberately neither copied nor
-    symlinked into each config. Pass this directory to QEMU as a second
-    -L search path instead; see "Running a config" below.
-    (netcons is kept here too, but -M niagara never loads it -- it is
-    a Legion-simulator artefact.)
+    The firmware -M niagara loads but mdgen does not produce:
+
+        openboot.bin    OBP 4.20.0
+        q.bin           hypervisor
+        reset.bin       reset vector
+        nvram1          OBP settings
+
+    Byte-identical copies of the same files in the S10image directory of
+    the OpenSPARC T1 archive, kept here so that running a config needs
+    nothing but a clone of this repository -- the archive is a ~100 MB
+    download for four files.
+
+    Deliberately neither copied nor symlinked into each config: a config
+    directory holds only its two built blobs, and this directory is given
+    to QEMU as a second -L search path. See "Running a config" below.
+
+    Without these, no config here can boot: the MD/hv pair alone is not a
+    machine. They are tracked in git, so an accidental removal shows up in
+    git status and is undone with "git checkout -- fw_blobs".
+
+    netcons is kept alongside them but -M niagara never loads it -- it is
+    a Legion-simulator artefact.
 
 Boot/failure evidence for docs/index.html's test matrix cells lives in
 a separate repo, github.com/unix0cc/md-artefacts, published via its
