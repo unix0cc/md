@@ -191,7 +191,7 @@ files out of <b>S10image</b> &mdash; which is what the <b>-L</b> order asked for
 <b>S10image</b> been listed first, <b>1up-md.bin</b> and <b>1up-hv.bin</b> would show its
 paths here instead, and the config under test would never have been loaded.</p>
 
-<p>After <b>make symlinks</b>, the same boot needs one <b>-L</b>:</p>
+<p>If the config was built with <b>make symlinks</b>, a single <b>-L</b> path is enough:</p>
 <pre><code>qemu-system-sparc64 -M niagara \
     -L /tmp/md/bin/latest/1024 \
     -nographic -m 1024 -trace load_file \

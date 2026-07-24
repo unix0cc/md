@@ -198,8 +198,8 @@ Two ways to check what actually got used:
 Beware the ordering rule: first match wins. A directory that carries its
 own copy of a firmware blob will shadow every -L after it.
 
-After `make symlinks` the same boot needs one -L, because the config
-directory now holds all six:
+If the config was built with `make symlinks`, a single -L path is enough,
+because the config directory then holds all six:
 
     qemu-system-sparc64 -M niagara \
         -L /tmp/md/bin/latest/1024 \
