@@ -7,8 +7,8 @@ kernel (illumos/OpenSolaris) what CPUs, memory, and virtual devices it
 has, and the QEMU-side hv-config that backs it.
 
 This repo is the MD/hv-config content itself. The compiler/linter that
-turns `.pdesc`/`.hdesc` source into the binary `.bin` blobs (`mdgen`,
-`mdlint`) lives separately at github.com/unix0cc/mdbuild -- built there,
+turns .pdesc/.hdesc source into the binary .bin blobs (mdgen,
+mdlint) lives separately at github.com/unix0cc/mdbuild -- built there,
 installed at $(HOME)/mdbuild/bin/, and referenced by path from the
 Makefiles here.
 
@@ -25,7 +25,7 @@ bin/
     Built blobs only: the pristine, unmodified 2006 Sun original
     release (bin/OpenSPARC_T1_original/, GPLv2, kept exactly as
     shipped -- the one exception to "blobs only"), plus everything
-    `make` produces from src/ for every other config. See bin/README.
+    make produces from src/ for every other config. See bin/README.
 
 patches/
     The fix patch chain (currently patches/t1_boot_fix/) -- both a
@@ -40,13 +40,13 @@ fw_blobs/
     nvram1) -- not built by mdgen, and deliberately neither copied nor
     symlinked into each config. Pass this directory to QEMU as a second
     -L search path instead; see "Running a config" below.
-    (netcons is kept here too, but `-M niagara` never loads it -- it is
+    (netcons is kept here too, but -M niagara never loads it -- it is
     a Legion-simulator artefact.)
 
 Boot/failure evidence for docs/index.html's test matrix cells lives in
 a separate repo, github.com/unix0cc/md-artefacts, published via its
 own GitHub Pages site -- so it's visible from the live matrix without
-ever being pulled down by a `git clone` of this repo.
+ever being pulled down by a git clone of this repo.
 
 Building a config
 ------------------
@@ -55,7 +55,7 @@ Building a config
                             # the mirrored bin/<config>/ path
     make distclean          # removes that output, leaves src/ untouched
 
-What `make` actually does. A config directory holds four sources, and they
+What make actually does. A config directory holds four sources, and they
 compile as two independent chains -- not one pipeline:
 
     1up.pdesc ----+                        +--> 1up-md.bin   guest MD
@@ -71,19 +71,19 @@ compile as two independent chains -- not one pipeline:
     *.hdesc  ->  *-hv.bin   the hv-config: what the hypervisor uses to back
                             that machine.
 
-`common.pdesc`/`common.hdesc` are pulled in by `#include` and are never
+common.pdesc/common.hdesc are pulled in by #include and are never
 compiled on their own -- which is why four sources yield two blobs, not four.
-`cpp` runs first because the sources use `#include` and macros; the `.pp`
+cpp runs first because the sources use #include and macros; the .pp
 intermediates are deleted after the build.
 
-Each chain is run twice, once with `mdgen --binary` for the `.bin` and once
-with `--text` for the `.txt`. Both are committed: the `.txt` is the readable
+Each chain is run twice, once with mdgen --binary for the .bin and once
+with --text for the .txt. Both are committed: the .txt is the readable
 twin of an otherwise opaque binary, so a change to a blob is reviewable in a
 diff.
 
-Beware the two-layer memory rule: guest RAM size lives in *both* the MD
-(`mblock.size`) and the hv-config (`GUEST()` memsize), and both must match
-QEMU's `-m`. Patch one only and OBP reports the new size while the hypervisor
+Beware the two-layer memory rule: guest RAM size lives in BOTH the MD
+(mblock.size) and the hv-config (GUEST() memsize), and both must match
+QEMU's -m. Patch one only and OBP reports the new size while the hypervisor
 still backs the old one.
 
 The equivalent by hand, if you are building outside this repo, is in the
@@ -133,7 +133,7 @@ multiple guests and 32 strands, and 1g32p-md.bin is 9104 bytes against
 Running a config
 -----------------
 A config directory holds only the two built blobs, so give QEMU both it
-and fw_blobs/ -- `-L` may be repeated, and the paths are searched in the
+and fw_blobs/ -- -L may be repeated, and the paths are searched in the
 order given:
 
     qemu-system-sparc64 -M niagara -nographic -m 2048 \
@@ -141,7 +141,7 @@ order given:
         -L fw_blobs \
         -drive if=pflash,readonly=on,file=/path/to/disk.s10hw2
 
-This is what repeated `-L` was added for. QEMU commit 4524051c32 ("Add
+This is what repeated -L was added for. QEMU commit 4524051c32 ("Add
 search path support for qemu data files", 2013): specifying an
 incomplete directory this way means "anything not found there will be
 loaded from the default paths, so you don't have to create a symlink
@@ -159,7 +159,7 @@ own copy of a firmware blob will shadow every -L after it.
 
 Provenance / licensing
 -----------------------
-The original OpenSPARC T1 "niagara" `.pdesc`/`.hdesc`/`.conf` sources
+The original OpenSPARC T1 "niagara" .pdesc/.hdesc/.conf sources
 and the blobs Sun shipped with them are GPLv2 (see each file's own
 header) -- unmodified in bin/OpenSPARC_T1_original/. The mdgen/mdlint
 tool source they're compiled with (github.com/unix0cc/mdbuild) is
