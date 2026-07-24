@@ -66,6 +66,18 @@ ever being pulled down by a git clone of this repo.
 
 Building a config
 ------------------
+From the repository root, a top-level Makefile drives every config at once:
+
+    make                   # build all configs
+    make symlinks          # link fw_blobs into all of them (see below)
+    make verify            # run scripts/verify.sh
+    make distclean         # remove all built output
+    make list              # print the config names
+    make tlb_fix/1024      # build one config by name
+
+Or work in a config's own directory, which is what the top-level Makefile
+does for each of them:
+
     cd src/<config>/       # e.g. src/t1_boot_fix/256, src/t1_boot_fix/1024
     make                   # writes the config's .bin/.txt into
                             # the mirrored bin/<config>/ path
