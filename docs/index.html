@@ -150,7 +150,7 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 
 <p><b>-M niagara</b> loads six files by name &mdash; 1up-md.bin, 1up-hv.bin, nvram1, openboot.bin, q.bin, reset.bin &mdash; and finds them across the <b>-L</b> paths, searched in the order given, first match winning.</p>
 
-<p>The second <b>-L</b> is needed when the first directory holds only part of them. The config directories in bin hold just 1up-md.bin and 1up-hv.bin, so the firmware has to come from a second path &mdash; <b>fw_blobs</b> (from this project), or the <b>S10image</b> dir from the <a href="http://download.oracle.com/technetwork/systems/opensparc/OpenSPARCT1_Arch.1.5.tar.bz2">OpenSPARC T1 archive</a>, whose blobs are byte-identical. One <b>-L</b> suffices only if that single directory holds all six.</p>
+<p>The <a href="https://gitlab.com/qemu-project/qemu/-/commit/4524051c32190c1dc13ec2ccd122fd120dbed736">second</a> <b>-L</b> is needed when the first directory holds only part of them. The config directories in bin hold just 1up-md.bin and 1up-hv.bin, so the firmware has to come from a second path &mdash; <b>fw_blobs</b> (from this project), or the <b>S10image</b> dir from the <a href="http://download.oracle.com/technetwork/systems/opensparc/OpenSPARCT1_Arch.1.5.tar.bz2">OpenSPARC T1 archive</a>, whose blobs are byte-identical. One <b>-L</b> suffices only if that single directory holds all six.</p>
 
 <p>Order matters especially with S10image: it also ships its own 1up-md.bin and 1up-hv.bin, so listing it first silently overrides the config you meant to test. Keep the config directory first.</p>
 
