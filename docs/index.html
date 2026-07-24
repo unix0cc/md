@@ -142,11 +142,17 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 </div>
 
 <h2>Usage</h2>
-<p>-m <b>&lt;memsize&gt;</b> is QEMU's guest memory size flag and should correspond with the proper path in -L <b>&lt;md_dir&gt;</b>/<b>&lt;memsize&gt;</b>. A mismatch (e.g. -L /git/md/bin/tlb_fix/1024 with -m 2048) means the guest is told it has memory the MD never declared, and will fail to boot correctly.</p>
+<pre><code>./qemu-system-sparc64 -M niagara -L <b>&lt;config_dir&gt;</b> [-L <b>&lt;firmware_dir&gt;</b>] -nographic -m <b>&lt;memsize&gt;</b> [-trace load_file] -drive if=pflash,readonly=on,file=<b>&lt;image&gt;</b></code></pre>
 
-<p><b>Syntax:</b> pass <b>two</b> <code>-L</code> paths — the config directory (MD/HV blobs) and <code>fw_blobs/</code> (static OBP firmware). <code>-L</code> may be repeated; the paths are searched in the order given.</p>
-<pre><code>./qemu-system-sparc64 -M niagara -L <b>&lt;md_dir&gt;</b>/<b>&lt;memsize&gt;</b> -L <b>&lt;repo&gt;</b>/fw_blobs -nographic -m <b>&lt;memsize&gt;</b> -drive if=pflash,readonly=on,file=<b>&lt;path_to_file&gt;</b>/<b>&lt;iso_file.iso&gt;</b></code></pre>
-<p><b>&lt;md_dir&gt;/&lt;memsize&gt;</b> holds only the MD/HV binaries (<code>1up-md.bin</code>, <code>1up-hv.bin</code>), e.g. <code>/git/md/bin/tlb_fix/1024</code>; the firmware blobs (<code>nvram1</code>, <code>openboot.bin</code>, <code>q.bin</code>, <code>reset.bin</code>) come from the second path. This is what repeated <code>-L</code> exists for — see QEMU commit <a href="https://gitlab.com/qemu-project/qemu/-/commit/4524051c32190c1dc13ec2ccd122fd120dbed736">4524051c32</a>, which added it so that "you don't have to create a symlink farm for all the rom blobs". Use <code>-L help</code> to print the search order and <code>-trace load_file</code> to see where each blob was actually loaded from.</p>
+<p><b>-M niagara</b> loads six files by name &mdash; <b>1up-md.bin</b>, <b>1up-hv.bin</b>, <b>nvram1</b>, <b>openboot.bin</b>, <b>q.bin</b>, <b>reset.bin</b> &mdash; and finds them across the <b>-L</b> paths, searched in the order given, first match winning.</p>
+
+<p><b>The second -L is needed when the first directory holds only part of them.</b> The config directories in <b>bin/</b> hold just <b>1up-md.bin</b> and <b>1up-hv.bin</b>, so the firmware has to come from a second path &mdash; <b>fw_blobs/</b> here, or <b>S10image/</b> from the <a href="http://download.oracle.com/technetwork/systems/opensparc/OpenSPARCT1_Arch.1.5.tar.bz2">OpenSPARC T1 archive</a>, whose blobs are byte-identical. One <b>-L</b> suffices only if that single directory holds all six.</p>
+
+<p><b>Order matters with S10image/:</b> it also ships its own <b>1up-md.bin</b> and <b>1up-hv.bin</b>, so listing it first silently overrides the config you meant to test. Keep the config directory first.</p>
+
+<p><b>-m is required and must match the config</b> &mdash; the memory size is the last path component, <b>bin/&lt;config&gt;/&lt;memsize&gt;</b>.</p>
+
+<p><b>-trace load_file is optional</b> and prints where each of the six files was resolved from.</p>
 
 <p><b>Example:</b></p>
 <pre><code>./qemu-system-sparc64 -M niagara -L /tmp/md/bin/latest/1024 -L /tmp/md/fw_blobs -nographic -m 1024 -drive if=pflash,readonly=on,file=/zroot/iso/s10u11/V36434-01.iso</code></pre>
