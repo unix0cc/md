@@ -26,6 +26,7 @@
 set -u
 
 REPO_ROOT=$(cd -- "$(dirname -- "$0")/.." && pwd)
+FW_BLOBS_DIR=$(cd -- "$REPO_ROOT/fw_blobs" 2>/dev/null && pwd)
 MDGEN=${MDGEN:-$HOME/mdbuild/bin/mdgen}
 
 quiet=0
@@ -91,19 +92,29 @@ for makefile in $(find "$REPO_ROOT/src" -name Makefile | sort); do
         cmp -s "$tmp/$f" "$outdir/$f" || drift="$drift $f"
     done
 
-    # The config directory must hold the built artefacts and nothing else.
-    # Firmware blobs used to be symlinked in here; they were dropped because
-    # the links were absolute and so broke every clone outside /git/md, and
-    # because a stray copy of a blob shadows later -L paths at run time.
-    # (See CHANGELOG, 2026-07-23, for the full account.)
+    # The config directory must hold the built artefacts and nothing else,
+    # with one exception: `make symlinks` links the firmware in so a single
+    # -L suffices, and those links are legitimate.
+    #
+    # A *copy* of a firmware blob is not, and is still reported. That is the
+    # case that hurts: a copy shadows every later -L at run time, so the run
+    # silently uses it instead of whatever the later path holds. A symlink
+    # into fw_blobs cannot diverge from fw_blobs, a copy can.
+    #
+    # Dangling links are reported too -- hence -L on the existence test, so a
+    # broken link is seen rather than skipped as absent.
     stray=""
     for existing in "$outdir"/*; do
-        [ -e "$existing" ] || continue
+        [ -e "$existing" ] || [ -L "$existing" ] || continue
         base=$(basename "$existing")
         case " $expected " in
-            *" $base "*) ;;
-            *) stray="$stray $base" ;;
+            *" $base "*) continue ;;
         esac
+        if [ -L "$existing" ] && [ -e "$existing" ] &&
+           [ "$(readlink -f "$existing")" = "$FW_BLOBS_DIR/$base" ]; then
+            continue
+        fi
+        stray="$stray $base"
     done
 
     if [ -n "$drift" ] || [ -n "$stray" ]; then

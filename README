@@ -70,6 +70,19 @@ Building a config
     make                   # writes the config's .bin/.txt into
                             # the mirrored bin/<config>/ path
     make distclean          # removes that output, leaves src/ untouched
+    make symlinks           # opt-in: link fw_blobs in, so one -L suffices
+
+`make symlinks` links nvram1, openboot.bin, q.bin and reset.bin into the
+config's bin/ directory, so that a single -L covers all six files QEMU
+loads instead of two. The links are relative, so they keep working after a
+move or in a fresh clone, and .gitignore keeps them unstageable -- this
+repo once carried exactly such links committed and absolute, which left 55
+dangling links in every clone made outside /git/md. `make distclean`
+removes them along with the rest of the output.
+
+scripts/verify.sh accepts those links but still reports a *copy* of a
+firmware blob, since a copy can drift from fw_blobs and shadows any later
+-L path at run time.
 
 What make actually does. A config directory holds four sources, and they
 compile as two independent chains -- not one pipeline:

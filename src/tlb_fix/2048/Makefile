@@ -25,9 +25,8 @@ CPP     := cpp -traditional-cpp
 MDGEN   ?= $(HOME)/mdbuild/bin/mdgen
 VERBOSE ?=
 
-# Static OBP/firmware blobs (openboot.bin, q.bin, reset.bin, nvram1) are
-# deliberately NOT copied or symlinked into the output directory. Pass
-# fw_blobs/ to QEMU as a second search path instead:
+# Static OBP/firmware blobs (openboot.bin, q.bin, reset.bin, nvram1) are not
+# part of a normal build. Pass fw_blobs/ to QEMU as a second search path:
 #
 #   qemu-system-sparc64 -M niagara -L <OUT_DIR> -L ../../../fw_blobs ...
 #
@@ -35,12 +34,21 @@ VERBOSE ?=
 # order; specifying an incomplete directory this way is exactly what that
 # feature was added for (commit 4524051c32, "so you don't have to create a
 # symlink farm for all the rom blobs"). Verify with -L help / -trace load_file.
+#
+# `make symlinks` is the opt-in alternative, for when a single -L is wanted:
+# it links the firmware into OUT_DIR so that one directory holds all six
+# files. The links are relative, so they survive a move or a fresh clone,
+# and .gitignore keeps them out of commits -- the absolute, committed
+# symlink farm this repo used to carry is what commit 4524051c32 above
+# describes not needing.
+FW_BLOBS := ../../../fw_blobs
+FW_FILES := nvram1 openboot.bin q.bin reset.bin
 
 # Built output (.bin/.txt) lands here, not alongside the
 # source -- sibling bin/tlb_fix/2048/ directory.
 OUT_DIR := ../../../bin/tlb_fix/2048
 
-.PHONY: all clean distclean
+.PHONY: all symlinks clean distclean
 
 all: $(OUT_DIR)/1up-md.bin $(OUT_DIR)/1up-md.txt $(OUT_DIR)/1up-hv.bin $(OUT_DIR)/1up-hv.txt
 
@@ -65,6 +73,15 @@ $(OUT_DIR)/%-hv.bin: %-hv.pp
 $(OUT_DIR)/%-hv.txt: %-hv.pp
 	@mkdir -p $(dir $@)
 	$(MDGEN) --text --outfile $@ $<
+
+# Opt-in: link the firmware into OUT_DIR so a single -L suffices. Relative
+# link targets are computed from OUT_DIR, so they stay correct at any depth
+# and in any clone. `make distclean` removes them along with OUT_DIR.
+symlinks: all
+	@for f in $(FW_FILES); do \
+	    ln -sfn "$$(realpath --relative-to=$(OUT_DIR) $(FW_BLOBS)/$$f)" $(OUT_DIR)/$$f; \
+	    echo "$(OUT_DIR)/$$f -> $$(readlink $(OUT_DIR)/$$f)"; \
+	done
 
 clean:
 	$(RM) *.pp

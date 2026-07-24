@@ -1,0 +1,14 @@
+# `make symlinks` links the firmware into a config's bin/ directory so that a
+# single -L suffices. Those links are a local convenience, never content: this
+# repo once carried them committed and absolute, which left 55 dangling links
+# in every clone made outside /git/md. Keeping them unstageable makes that
+# impossible to repeat.
+#
+# The real firmware lives in fw_blobs/, and the pristine copies under
+# bin/_reference/ are tracked -- .gitignore does not affect already-tracked
+# files, so those are unaffected.
+bin/**/nvram1
+bin/**/openboot.bin
+bin/**/q.bin
+bin/**/reset.bin
+bin/**/netcons
