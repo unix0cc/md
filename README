@@ -198,6 +198,38 @@ Two ways to check what actually got used:
 Beware the ordering rule: first match wins. A directory that carries its
 own copy of a firmware blob will shadow every -L after it.
 
+After `make symlinks` the same boot needs one -L, because the config
+directory now holds all six. Captured from a real run:
+
+    qemu-system-sparc64 -M niagara \
+        -L /tmp/md/bin/latest/1024 \
+        -nographic -m 1024 -trace load_file \
+        -drive if=pflash,readonly=on,file=/zroot/iso/s10u11/V36434-01.iso
+
+    load_file name nvram1 location /tmp/md/bin/latest/1024/nvram1
+    load_file name 1up-md.bin location /tmp/md/bin/latest/1024/1up-md.bin
+    load_file name 1up-hv.bin location /tmp/md/bin/latest/1024/1up-hv.bin
+    load_file name reset.bin location /tmp/md/bin/latest/1024/reset.bin
+    load_file name q.bin location /tmp/md/bin/latest/1024/q.bin
+    load_file name openboot.bin location /tmp/md/bin/latest/1024/openboot.bin
+    load_file name /zroot/iso/s10u11/V36434-01.iso location /zroot/iso/s10u11/V36434-01.iso
+    cpu Probing I/O buses
+
+
+    Sun Fire T2000, No Keyboard
+    Copyright 2005 Sun Microsystems, Inc.  All rights reserved.
+    OpenBoot 4.20.0, 1024 MB memory available, Serial #1122867.
+    [mo23723 obp4.20.0 #0]
+    Ethernet address 0:80:3:de:ad:3, Host ID: 80112233.
+
+    ok
+
+All six resolve out of the config directory, and "1024 MB memory
+available" confirms -m matched it -- the memory size is the last path
+component, so bin/latest/1024 wants -m 1024. The four firmware paths are
+the symlinks into fw_blobs, so nothing was copied and the shadowing rule
+above has nothing left to bite on.
+
 Provenance / licensing
 -----------------------
 The original OpenSPARC T1 "niagara" .pdesc/.hdesc/.conf sources
