@@ -195,18 +195,7 @@ paths here instead, and the config under test would never have been loaded.</p>
 <pre><code>qemu-system-sparc64 -M niagara \
     -L /tmp/md/bin/latest/1024 \
     -nographic -m 1024 \
-    -drive if=pflash,readonly=on,file=/zroot/iso/s10u11/V36434-01.iso
-
-cpu Probing I/O buses
-
-
-Sun Fire T2000, No Keyboard
-Copyright 2005 Sun Microsystems, Inc.  All rights reserved.
-OpenBoot 4.20.0, 1024 MB memory available, Serial #1122867.
-[mo23723 obp4.20.0 #0]
-Ethernet address 0:80:3:de:ad:3, Host ID: 80112233.
-
-ok</code></pre>
+    -drive if=pflash,readonly=on,file=/zroot/iso/s10u11/V36434-01.iso</code></pre>
 
 <h2>Build Procedure</h2>
 <p>The build procedure is described here: <a href="https://github.com/unix0cc/md/">https://github.com/unix0cc/md/</a>. Requires a toolkit (<a href="https://github.com/unix0cc/mdbuild/">mdgen/mdlint</a>) used for compiling the <code>.bin</code> files (<code>1up-md.bin</code>, <code>1up-hv.bin</code>).</p>
