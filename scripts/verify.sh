@@ -92,9 +92,10 @@ for makefile in $(find "$REPO_ROOT/src" -name Makefile | sort); do
     done
 
     # The config directory must hold the built artefacts and nothing else.
-    # Firmware blobs used to be symlinked in here; they were removed in
-    # 4571078 because the links were absolute and broke every clone, and
+    # Firmware blobs used to be symlinked in here; they were dropped because
+    # the links were absolute and so broke every clone outside /git/md, and
     # because a stray copy of a blob shadows later -L paths at run time.
+    # (See CHANGELOG, 2026-07-23, for the full account.)
     stray=""
     for existing in "$outdir"/*; do
         [ -e "$existing" ] || continue
