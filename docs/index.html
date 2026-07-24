@@ -194,16 +194,9 @@ paths here instead, and the config under test would never have been loaded.</p>
 <p>If the md config files were built with <a href="https://github.com/unix0cc/md/"><b>make symlinks</b></a>, a single <b>-L</b> path is enough:</p>
 <pre><code>qemu-system-sparc64 -M niagara \
     -L /tmp/md/bin/latest/1024 \
-    -nographic -m 1024 -trace load_file \
+    -nographic -m 1024 \
     -drive if=pflash,readonly=on,file=/zroot/iso/s10u11/V36434-01.iso
 
-load_file name nvram1 location /tmp/md/bin/latest/1024/nvram1
-load_file name 1up-md.bin location /tmp/md/bin/latest/1024/1up-md.bin
-load_file name 1up-hv.bin location /tmp/md/bin/latest/1024/1up-hv.bin
-load_file name reset.bin location /tmp/md/bin/latest/1024/reset.bin
-load_file name q.bin location /tmp/md/bin/latest/1024/q.bin
-load_file name openboot.bin location /tmp/md/bin/latest/1024/openboot.bin
-load_file name /zroot/iso/s10u11/V36434-01.iso location /zroot/iso/s10u11/V36434-01.iso
 cpu Probing I/O buses
 
 
