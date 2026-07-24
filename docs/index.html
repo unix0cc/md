@@ -147,15 +147,15 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
     -nographic -m <b>&lt;memsize&gt;</b> [-trace load_file] \
     -drive if=pflash,readonly=on,file=<b>&lt;image&gt;</b></code></pre>
 
-<p><code>-M niagara</code> loads six files by name &mdash; <code>1up-md.bin</code>, <code>1up-hv.bin</code>, <code>nvram1</code>, <code>openboot.bin</code>, <code>q.bin</code>, <code>reset.bin</code> &mdash; and finds them across the <code>-L</code> paths, searched in the order given, first match winning.</p>
+<p><b>-M niagara</b> loads six files by name &mdash; 1up-md.bin, 1up-hv.bin, nvram1, openboot.bin, q.bin, reset.bin &mdash; and finds them across the <b>-L</b> paths, searched in the order given, first match winning.</p>
 
-<p>The second <code>-L</code> is needed when the first directory holds only part of them. The config directories in <code>bin</code> hold just <code>1up-md.bin</code> and <code>1up-hv.bin</code>, so the firmware has to come from a second path &mdash; <code>fw_blobs</code> (from this project), or the <code>S10image</code> dir from the <a href="http://download.oracle.com/technetwork/systems/opensparc/OpenSPARCT1_Arch.1.5.tar.bz2">OpenSPARC T1 archive</a>, whose blobs are byte-identical. One <code>-L</code> suffices only if that single directory holds all six.</p>
+<p>The second <b>-L</b> is needed when the first directory holds only part of them. The config directories in bin hold just 1up-md.bin and 1up-hv.bin, so the firmware has to come from a second path &mdash; <b>fw_blobs</b> (from this project), or the <b>S10image</b> dir from the <a href="http://download.oracle.com/technetwork/systems/opensparc/OpenSPARCT1_Arch.1.5.tar.bz2">OpenSPARC T1 archive</a>, whose blobs are byte-identical. One <b>-L</b> suffices only if that single directory holds all six.</p>
 
-<p>Order matters especially with <code>S10image</code>: it also ships its own <code>1up-md.bin</code> and <code>1up-hv.bin</code>, so listing it first silently overrides the config you meant to test. Keep the config directory first.</p>
+<p>Order matters especially with S10image: it also ships its own 1up-md.bin and 1up-hv.bin, so listing it first silently overrides the config you meant to test. Keep the config directory first.</p>
 
-<p><code>-m</code> is required and <b>must match the config</b> &mdash; the memory size is the last path component, <code>&lt;config&gt;/&lt;memsize&gt;</code>.</p>
+<p><b>-m</b> is required and <b>must match the config</b> &mdash; the memory size is the last path component, <b>&lt;config&gt;</b>/<b>&lt;memsize&gt;</b>.</p>
 
-<p><code>-trace load_file</code> is optional and prints where each of the six files was resolved from.</p>
+<p><b>-trace load_file</b> is optional and prints where each of the six files was resolved from.</p>
 
 <p><b>Example:</b></p>
 
