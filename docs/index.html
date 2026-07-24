@@ -142,11 +142,14 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 </div>
 
 <h2>Usage</h2>
-<pre><code>./qemu-system-sparc64 -M niagara -L <b>&lt;config_dir&gt;</b> [-L <b>&lt;firmware_dir&gt;</b>] -nographic -m <b>&lt;memsize&gt;</b> [-trace load_file] -drive if=pflash,readonly=on,file=<b>&lt;image&gt;</b></code></pre>
+<pre><code>qemu-system-sparc64 -M niagara \
+    -L <b>&lt;config_dir&gt;</b> [-L <b>&lt;firmware_dir&gt;</b>] \
+    -nographic -m <b>&lt;memsize&gt;</b> [-trace load_file] \
+    -drive if=pflash,readonly=on,file=<b>&lt;image&gt;</b></code></pre>
 
 <p><b>-M niagara</b> loads six files by name &mdash; 1up-md.bin, 1up-hv.bin, nvram1, openboot.bin, q.bin, reset.bin &mdash; and finds them across the <b>-L</b> paths, searched in the order given, first match winning.</p>
 
-<p>The second <b>-L</b> is needed when the first directory holds only part of them. The config directories in bin/ hold just 1up-md.bin and 1up-hv.bin, so the firmware has to come from a second path &mdash; <b>fw_blobs</b> (from this project), or the <b>S10image</b> dir from the <a href="http://download.oracle.com/technetwork/systems/opensparc/OpenSPARCT1_Arch.1.5.tar.bz2">OpenSPARC T1 archive</a>, whose blobs are byte-identical. One <b>-L</b> suffices only if that single directory holds all six.</p>
+<p>The second <b>-L</b> is needed when the first directory holds only part of them. The config directories in bin hold just 1up-md.bin and 1up-hv.bin, so the firmware has to come from a second path &mdash; <b>fw_blobs</b> (from this project), or the <b>S10image</b> dir from the <a href="http://download.oracle.com/technetwork/systems/opensparc/OpenSPARCT1_Arch.1.5.tar.bz2">OpenSPARC T1 archive</a>, whose blobs are byte-identical. One <b>-L</b> suffices only if that single directory holds all six.</p>
 
 <p>Order matters especially with S10image: it also ships its own 1up-md.bin and 1up-hv.bin, so listing it first silently overrides the config you meant to test. Keep the config directory first.</p>
 
@@ -155,8 +158,14 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 <p><b>-trace load_file</b> is optional and prints where each of the six files was resolved from.</p>
 
 <p><b>Example:</b></p>
-<pre><code>./qemu-system-sparc64 -M niagara -L /tmp/md/bin/latest/1024 -L /tmp/md/fw_blobs -nographic -m 1024 -drive if=pflash,readonly=on,file=/zroot/iso/s10u11/V36434-01.iso</code></pre>
-<pre><code>./qemu-system-sparc64 -M niagara -L /tmp/md/bin/tlb_fix/1024 -L /tmp/md/fw_blobs -nographic -m 1024 -drive if=pflash,readonly=on,file=/zroot/iso/sol-10-u8-ga-sparc-dvd.iso</code></pre>
+<pre><code>qemu-system-sparc64 -M niagara \
+    -L /tmp/md/bin/latest/1024 -L /tmp/md/fw_blobs \
+    -nographic -m 1024 \
+    -drive if=pflash,readonly=on,file=/zroot/iso/s10u11/V36434-01.iso</code></pre>
+<pre><code>qemu-system-sparc64 -M niagara \
+    -L /tmp/md/bin/latest/1024 -L /path-to/S10image \
+    -nographic -m 1024 \
+    -drive if=pflash,readonly=on,file=/zroot/iso/s10u11/V36434-01.iso</code></pre>
 
 <h2>Build Procedure</h2>
 <p>The build procedure is described here: <a href="https://github.com/unix0cc/md/">https://github.com/unix0cc/md/</a>. Requires a toolkit (<a href="https://github.com/unix0cc/mdbuild/">mdgen/mdlint</a>) used for compiling the <code>.bin</code> files (<code>1up-md.bin</code>, <code>1up-hv.bin</code>).</p>
