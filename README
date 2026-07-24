@@ -55,6 +55,40 @@ Building a config
                             # the mirrored bin/<config>/ path
     make distclean          # removes that output, leaves src/ untouched
 
+What `make` actually does. A config directory holds four sources, and they
+compile as two independent chains -- not one pipeline:
+
+    1up.pdesc ----+                        +--> 1up-md.bin   guest MD
+                  +-- cpp --> 1up-md.pp ---+
+    common.pdesc -+                        +--> 1up-md.txt   readable dump
+
+    1up.hdesc ----+                        +--> 1up-hv.bin   hv-config
+                  +-- cpp --> 1up-hv.pp ---+
+    common.hdesc -+                        +--> 1up-hv.txt
+
+    *.pdesc  ->  *-md.bin   the guest MD: what the guest OS reads to learn
+                            what CPUs, memory and virtual devices it has.
+    *.hdesc  ->  *-hv.bin   the hv-config: what the hypervisor uses to back
+                            that machine.
+
+`common.pdesc`/`common.hdesc` are pulled in by `#include` and are never
+compiled on their own -- which is why four sources yield two blobs, not four.
+`cpp` runs first because the sources use `#include` and macros; the `.pp`
+intermediates are deleted after the build.
+
+Each chain is run twice, once with `mdgen --binary` for the `.bin` and once
+with `--text` for the `.txt`. Both are committed: the `.txt` is the readable
+twin of an otherwise opaque binary, so a change to a blob is reviewable in a
+diff.
+
+Beware the two-layer memory rule: guest RAM size lives in *both* the MD
+(`mblock.size`) and the hv-config (`GUEST()` memsize), and both must match
+QEMU's `-m`. Patch one only and OBP reports the new size while the hypervisor
+still backs the old one.
+
+The equivalent by hand, if you are building outside this repo, is in the
+mdbuild README's Usage section (github.com/unix0cc/mdbuild).
+
 Verifying the committed blobs
 ------------------------------
     scripts/verify.sh      # rebuilds every config into a temp dir and
