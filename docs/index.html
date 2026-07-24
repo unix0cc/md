@@ -173,7 +173,7 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
 
 <p><sup>7</sup> Available via <a href="https://edelivery.oracle.com">edelivery.oracle.com</a>, <code>V36434-01.iso</code>.</p>
 
-<p><sup>8</sup> Requires 32M/256M paging, which currently is not available via qemu-devel. Suppressing <code>mmu_exported_pagesize_mask</code> from <code>0x2b</code> to <code>0xb</code> live via kmdb helps it boot, but the system is extremely slow (boot to console in ~18 hours) -- see <a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__snv_134-ai-iso__pagesize-mask-suppressed.txt">artefact</a>.</p>
+<p><sup>8</sup> Requires 256M paging, which currently is not available via qemu-devel. Suppressing <code>mmu_exported_pagesize_mask</code> from <code>0x2b</code> to <code>0xb</code> live via kmdb helps it boot, but the system is extremely slow (boot to console in ~18 hours) -- see <a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__snv_134-ai-iso__pagesize-mask-suppressed.txt">artefact</a>.</p>
 
 <footer>See <a href="https://github.com/unix0cc/md/blob/main/README">README</a> for the repo layout (src/bin/patches/fw_blobs) and build instructions.</footer>
 
