@@ -130,7 +130,7 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
   <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__s10u11.txt">FAIL/trap<br>Level 14 Interrupt</a></td>
 </tr>
 <tr>
-  <td class="build"><a href="https://github.com/unix0cc/md/tree/main/bin/pagesize_256m/4096">pagesize_256m/4096</a><br>(tlb_fix/4096 + mmu-page-size-list=0x2b, 256M paging)<sup>9</sup></td>
+  <td class="build"><a href="https://github.com/unix0cc/md/tree/main/bin/pagesize_256m/4096">pagesize_256m/4096</a><br>(tlb_fix/4096+256M paging (mmu-page-size-list=0x2b) + QEMU fix)<sup>10</sup></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__disk.s10hw2.txt">PASS</a></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__snv_134-ai-iso.txt">PASS</a></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__sol-11-exp-201011-ai.txt">PASS</a></td>
@@ -240,7 +240,7 @@ paths here instead, and the config under test would never have been loaded.</p>
 
 <p><sup>8</sup> Requires 256M paging, which currently is not available via qemu-devel. Suppressing <code>mmu_exported_pagesize_mask</code> from <code>0x2b</code> to <code>0xb</code> live via kmdb helps it boot, but the system is extremely slow (boot to console in ~18 hours) -- see <a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__snv_134-ai-iso__pagesize-mask-suppressed.txt">artefact</a>.</p>
 
-<p><sup>9</sup> Root cause of footnote 8's 18-hour slowdown, found and fixed on the QEMU side:
+<p><sup>10</sup> Root cause of footnote 8's 18-hour slowdown, found and fixed on the QEMU side:
 <code>target/sparc</code>'s sun4v TTE page-size field was truncated to 2 bits, silently
 aliasing 32M/256M requests down to 64K/512K -- fixed by widening it to the full 3 bits (bit 48).
 Separately, evicting a live 256M TLB entry costs QEMU <code>O(page-size / 8K)</code> —
