@@ -134,7 +134,7 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__disk.s10hw2.txt">PASS</a></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__snv_134-ai-iso.txt">PASS</a></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__sol-11-exp-201011-ai.txt">PASS</a></td>
-  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__sol-11-1111-text.txt">PASS</a></td>
+  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__sol-11-1111-text.txt">PASS</a><sup>9</sup></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__sol-10-u8.txt">PASS</a></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__sol-10-u10.txt">PASS</a></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__s10u11.txt">PASS</a></td>
@@ -239,6 +239,12 @@ paths here instead, and the config under test would never have been loaded.</p>
 <p><sup>7</sup> Available via <a href="https://edelivery.oracle.com">edelivery.oracle.com</a>, <code>V36434-01.iso</code>.</p>
 
 <p><sup>8</sup> Requires 256M paging, which currently is not available via qemu-devel. Suppressing <code>mmu_exported_pagesize_mask</code> from <code>0x2b</code> to <code>0xb</code> live via kmdb helps it boot, but the system is extremely slow (boot to console in ~18 hours) -- see <a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__snv_134-ai-iso__pagesize-mask-suppressed.txt">artefact</a>.</p>
+
+<p><sup>9</sup> Booted single-user (<code>boot -kdvs</code>). In multiuser the installer goes on to
+mount a second slice of the same <code>hsfs</code> image, which is not RAM-backed here &mdash; the
+ISO's kernel carries no <code>hsimd</code> (Legion virtual-disk) driver, so that slice is
+unreachable and boot stops short of a console login. An image/driver limitation, not an MD or
+256M-paging failure: the kernel itself boots cleanly either way.</p>
 
 <p><sup>10</sup> Root cause of footnote 8's 18-hour slowdown, found and fixed on the QEMU side:
 <code>target/sparc</code>'s sun4v TTE page-size field was truncated to 2 bits, silently
