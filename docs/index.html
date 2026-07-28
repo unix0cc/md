@@ -154,7 +154,7 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-8192__snv_134-ai-iso.txt">PASS</a><sup>9</sup></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-8192__sol-11-exp-201011-ai.txt">PASS</a><sup>9</sup></td>
   <td class="untested">untested</td>
-  <td class="untested">untested</td>
+  <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-8192__sol-11_1-ai__256m-proof.txt">PASS</a><sup>9,11</sup></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-8192__sol-10-u8.txt">PASS</a></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-8192__sol-10-u10.txt">PASS</a></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-8192__s10u11.txt">PASS</a></td>
@@ -273,7 +273,7 @@ Solaris 11.3 boots cleanly through this exact mechanism then hits an unrelated u
 <code>init(1M)</code> crash loop -- neither of those two point releases has a public artefact/ISO
 link in this table yet.</p>
 
-<p><sup>11</sup> <code>sol-11_1-ai-sparc.iso</code> &mdash; Solaris 11.1 automated-install image. Boots, but <b>extremely slowly</b>: 09:11 to 17:34, about 8h20m to reach the single-user root shell, on an <code>--enable-debug</code> (<code>-O0</code>) QEMU build. Every other image in this row reaches its prompt in minutes. A plausible cause is the cost QEMU pays to evict a live 256M TLB entry &mdash; <code>replace_tlb_entry()</code> invalidates the mapping one <code>TARGET_PAGE_SIZE</code> at a time, so 32768 <code>tlb_flush_page()</code> calls per eviction &mdash; but this run was not profiled, so that is a hypothesis, not a measurement.</p>
+<p><sup>11</sup> <code>sol-11_1-ai-sparc.iso</code> &mdash; Solaris 11.1 automated-install image. Boots, but <b>extremely slowly</b>: 09:11 to 17:34, about 8h20m to reach the single-user root shell, on an <code>--enable-debug</code> (<code>-O0</code>) QEMU build. A plausible cause is the cost QEMU pays to evict a live 256M TLB entry &mdash; <code>replace_tlb_entry()</code> invalidates the mapping one <code>TARGET_PAGE_SIZE</code> at a time, so 32768 <code>tlb_flush_page()</code> calls per eviction &mdash; but this run was not profiled, so that is a hypothesis, not a measurement.</p>
 
 <footer>See <a href="https://github.com/unix0cc/md/blob/main/README">README</a> for the repo layout (src/bin/patches/fw_blobs) and build instructions.</footer>
 
