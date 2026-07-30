@@ -138,7 +138,7 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
   <td class="fail"><a href="https://unix0cc.github.io/md-artefacts/tlb_fix-2048__s10u11.txt">FAIL/trap<br>Level 14 Interrupt</a></td>
 </tr>
 <tr>
-  <td class="build"><a href="https://github.com/unix0cc/md/tree/main/bin/pagesize_256m/4096">pagesize_256M/4096</a> + <a href="https://github.com/unix0cc/qemu-experimental/blob/main/0002-target-sparc-fix-sun4v-TTE-page-size-truncation-32M-256M-pages.patch">QEMU TTE-page-size patch</a><sup>10</sup></td>
+  <td class="build"><a href="https://github.com/unix0cc/md/tree/main/bin/pagesize_256m/4096">pagesize_256M/4096</a><sup>10</sup></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__disk.s10hw2.txt">PASS</a></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__snv_134-ai-iso.txt">PASS</a><sup>9</sup></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__sol-11-exp-201011-ai.txt">PASS</a><sup>9</sup></td>
@@ -149,7 +149,7 @@ against which <a href="https://sun4v.github.io/ARChive/FWARC/2005/115/final.mate
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-4096__s10u11.txt">PASS</a></td>
 </tr>
 <tr>
-  <td class="build"><a href="https://github.com/unix0cc/md/tree/main/bin/pagesize_256m/8192">pagesize_256M/8192</a> + <a href="https://github.com/unix0cc/qemu-experimental/blob/main/0002-target-sparc-fix-sun4v-TTE-page-size-truncation-32M-256M-pages.patch">QEMU TTE-page-size patch</a><sup>10</sup></td>
+  <td class="build"><a href="https://github.com/unix0cc/md/tree/main/bin/pagesize_256m/8192">pagesize_256M/8192</a><sup>10</sup></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-8192__disk.s10hw2.txt">PASS</a></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-8192__snv_134-ai-iso.txt">PASS</a><sup>9</sup></td>
   <td class="pass"><a href="https://unix0cc.github.io/md-artefacts/pagesize_256m-8192__sol-11-exp-201011-ai.txt">PASS</a><sup>9</sup></td>
@@ -259,19 +259,20 @@ image/driver limitation, not an MD or paging failure: the kernel itself boots cl
 (<code>pagesize_256m/4096</code> &times; Solaris&nbsp;11&nbsp;11/11 text additionally needed
 <code>boot -kdvs</code>; every other cell here booted <code>-kdv</code>.)</p>
 
-<p><sup>10</sup> Root cause of footnote 8's 18-hour slowdown, found and fixed on the QEMU side:
-<code>target/sparc</code>'s sun4v TTE page-size field was truncated to 2 bits, silently
-aliasing 32M/256M requests down to 64K/512K -- fixed by widening it to the full 3 bits (bit 48).
-Separately, evicting a live 256M TLB entry costs QEMU <code>O(page-size / 8K)</code> —
-32,768 individual <code>tlb_flush_page()</code> calls per eviction — which is almost certainly
-what footnote 8's ~18-hour boot time was actually paying for. This <code>pagesize_256m/4096</code>
-build (a copy of <code>tlb_fix/4096</code> with <code>mmu-page-size-list</code> widened to
-<code>0x2b</code>) validates the QEMU-side fix directly: Solaris 11.1 boots cleanly and Solaris
-10u11 reaches the interactive text installer at normal speed, not ~18 hours. Solaris 11.2 still
-hangs at this config (fully diagnosed as the same eviction-cost mechanism, not an MD issue) and
-Solaris 11.3 boots cleanly through this exact mechanism then hits an unrelated userland
-<code>init(1M)</code> crash loop -- neither of those two point releases has a public artefact/ISO
-link in this table yet.</p>
+<p><sup>10</sup> Root cause found and fixed on the QEMU side: <code>target/sparc</code>'s sun4v TTE
+page-size field was only 2 bits wide, so any 32M/256M request silently aliased down to
+64K/512K -- the <a href="https://github.com/unix0cc/qemu-experimental/blob/main/0002-target-sparc-fix-sun4v-TTE-page-size-truncation-32M-256M-pages.patch">QEMU TTE-page-size patch</a>
+widens it to the full 3 bits (bit 48), so a 256M mapping is installed correctly instead of
+truncated. <code>mmu-page-size-list=0x2b</code> (what this build widens from <code>tlb_fix</code>'s
+<code>0x9</code>) is the MD-side half: it's what tells the guest kernel 256M pages exist at all,
+which is what makes it request one and exercise the fix in the first place. Footnote 8's
+workaround went the opposite direction -- suppressing this same value to <code>0xb</code> at
+runtime via kmdb, dropping 256M entirely to dodge the bug on unfixed QEMU. With the fix in place,
+<code>0x2b</code> no longer needs suppressing -- moreover, some kernels get <code>0x2b</code>
+forced back in regardless of what <code>mmu-page-size-list</code> actually declares, whenever
+<code>domaining-enabled</code> is absent from the MD (<code>init_md_broken()</code>'s
+<code>broken_md_flag</code> ORs it in; <code>tlb_fix</code> itself only declares <code>0x9</code>
+but ends up with <code>0x2b</code> at runtime for exactly this reason).</p>
 
 <p><sup>11</sup> <code>sol-11_1-ai-sparc.iso</code> &mdash; Solaris 11.1 automated-install image. Boots, but <b>extremely slowly</b>: 09:11 to 17:34, about 8h20m to reach the single-user root shell, on an <code>--enable-debug</code> (<code>-O0</code>) QEMU build. A plausible cause is the cost QEMU pays to evict a live 256M TLB entry &mdash; <code>replace_tlb_entry()</code> invalidates the mapping one <code>TARGET_PAGE_SIZE</code> at a time, so 32768 <code>tlb_flush_page()</code> calls per eviction &mdash; but this run was not profiled, so that is a hypothesis, not a measurement.</p>
 
