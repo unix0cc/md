@@ -1,0 +1,333 @@
+--- pagesize_256m/4096/1up.hdesc	2026-07-26 21:57:12.602316944 +0200
++++ hvmd_v1/4096/1up.hdesc	2026-08-04 17:52:37.905414154 +0200
+@@ -1,50 +1,293 @@
+ /*
+-* ========== Copyright Header Begin ==========================================
+-* 
+-* OpenSPARC T1 Processor File: 1up.hdesc
+-* Copyright (c) 2006 Sun Microsystems, Inc.  All Rights Reserved.
+-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES.
+-* 
+-* The above named program is free software; you can redistribute it and/or
+-* modify it under the terms of the GNU General Public
+-* License version 2 as published by the Free Software Foundation.
+-* 
+-* The above named program is distributed in the hope that it will be 
+-* useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-* General Public License for more details.
+-* 
+-* You should have received a copy of the GNU General Public
+-* License along with this work; if not, write to the Free Software
+-* Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+-* 
+-* ========== Copyright Header End ============================================
+-*/
+-/*
+- * Copyright 2005 Sun Microsystems, Inc.  All rights reserved.
+- * Use is subject to license terms.
++ * Hypervisor configuration in the *new* hv MD format -- content-version 1.0.
++ *
++ * The OpenSPARC T2-release hypervisor (greatlakes/{ontario,huron}, the
++ * generation that carries the full LDC API group) rejects our historical
++ * hv-config outright:
++ *
++ *     ABORT: config-basics: MD content-version not found
++ *
++ * because that format predates the version field entirely.  This file is the
++ * first attempt at the shape that hv wants, modelled on Sun's own
++ * S10image/1c1t/legion-hv.md and cut down to what a single-guest QEMU
++ * `-M niagara` domain actually needs.
++ *
++ * Reference for every value here: docs/niagara-findings.md, "Track A: what the
++ * new hv MD format actually requires" in the qemu-sparc64 notes repo.
+  *
+- * ident	"@(#)1up.hdesc	1.8	05/02/18 SMI"
++ * What changed against ../pagesize_256m/4096/1up.hdesc:
++ *
++ *   - root gains content-version and stick-frequency;
++ *   - arcs are the standard fwd/back pair rather than named arcs;
++ *   - container nodes appear between root and the leaves;
++ *   - guest loses its inline cpuset/membase/memsize/realbase/uartbase/pdpa and
++ *     gains name, resource_id, mdpa and arcs to cpu/mblock/virtual_devices/
++ *     channel_devices/console;
++ *   - cpu gains resource_id, gid and partid.
++ *
++ * The addresses are deliberately chosen so that *no QEMU change is required*:
++ * mdpa points at NIAGARA_MD_ROM_BASE, where the machine already loads the
++ * guest MD, and hvuart at the console the exp #18 patch models.  Everything
++ * the new hv learns about its environment it learns from this file.
+  */
+ 
+-// Hypervisor configuration for 1up.conf
+-
+ #include "common.hdesc"
+ 
+-CPU(0,guest0,0)
+-GUEST(0, 0x1, 0x80000000, 4096M, 0x80000000, 0x1f12000000, 0x1f40000000)
++/*
++ * 0x1f12000000 is NIAGARA_MD_ROM_BASE in hw/sparc64/niagara.c -- where QEMU
++ * already loads 1up-md.bin.  The new hv finds the guest MD through this
++ * property rather than at a fixed address, so pointing it here means the
++ * two-level MD layout costs nothing on the emulator side.
++ */
++#define	GUEST_MDPA	0x1f12000000
++
++/* Matches legion.conf's sysclkfreq for the T1 configurations. */
++#define	STICK_FREQ	0x42c1d80
+ 
+-node cpus cpus {
+-	cpu -> cpu0;
++node root root {
++	content-version	= 0x100000000;		/* major 1, minor 0 */
++	stick-frequency	= STICK_FREQ;
++
++	fwd -> platform;
++	fwd -> guests;
++	fwd -> cpus;
++	fwd -> memory;
++	fwd -> maus;
++	fwd -> cwqs;
++	fwd -> devices;
++	fwd -> ldc_endpoints;
++	fwd -> consoles;
++
++	hvuart		= HVUART;
++	tod		= HVTOD;
++}
++
++node platform platform {
++	back -> root;
++	stick-frequency	= STICK_FREQ;
+ }
+ 
+ node guests guests {
+-	guest -> guest0;
++	back -> root;
++	fwd -> guest0;
+ }
+ 
+-node root root {
+-	guests -> guests;
+-	cpus -> cpus;
+-	hvuart = HVUART;
+-	tod = HVTOD;
++node cpus cpus {
++	back -> root;
++	fwd -> cpu0;
++}
++
++node memory memory {
++	back -> root;
++	fwd -> mblock0;
++}
++
++/*
++ * Present but empty: the hv walks these containers unconditionally.  Guest
++ * LDC endpoints and consoles go here when the vds/vsw work starts; for now an
++ * empty container is what a domain with neither looks like.
++ */
++/*
++ * The crypto containers.  Empty, but they must exist: the hv aborts with
++ * "Missing maus node in HVMD" rather than treating absence as "no MAUs".
++ */
++node maus maus {
++	back -> root;
++}
++
++node cwqs cwqs {
++	back -> root;
++}
++
++node devices devices {
++	back -> root;
++}
++
++/*
++ * LDC endpoints.
++ *
++ * Modelled on Sun's own single-guest Legion config, S10image/1c1t/legion-hv.md,
++ * decoded node for node.  The shape is worth stating because it is not obvious:
++ * a one-domain machine still gets a *pair* of endpoints wired to each other
++ * inside the same guest (channel 1 <-> 2 below), because the LDoms model always
++ * has a server side and a client side even when both live in one domain.  The
++ * hv copies between the two queues itself, so no external peer is involved.
++ *
++ * Required properties, read out of the parser rather than copied on faith
++ * (common/src/reconf.c, config_a_guest_ldc_endpoint):
++ *
++ *	channel		the endpoint number, indexes guest->ldc_endpoint[]
++ *	target_type	1 = the HV/SP side, 0 = another guest
++ *	target_channel	the channel number at the far end
++ *	target_guest	required only when target_type == 0
++ *
++ * tx-ino/rx-ino are the guest-visible interrupt numbers for the two queue
++ * directions; they must match the channel-endpoint nodes in the guest MD.
++ * Nothing raises them yet -- this hv has no path from a device to a guest
++ * interrupt -- so the drivers will attach but sit idle.  That is the expected
++ * outcome of this step, not a failure.
++ */
++node ldc_endpoints ldc_endpoints {
++	back -> root;
++	fwd -> ldce_hvctl;
++	fwd -> ldce_vldc_a;
++	fwd -> ldce_vldc_b;
++	fwd -> ldce_hv;
++}
++
++/* Guest channel 0 -> the HV/SP control endpoint (target_type 1). */
++node ldc_endpoint ldce_hvctl {
++	back -> ldc_endpoints;
++	back -> guest0;
++	target_type		= 1;
++	channel			= 0;
++	resource_id		= 0;
++	tx-ino			= 0;
++	rx-ino			= 1;
++	target_channel		= 0;
++	server_name		= "hvctl";
++	server_ldom_name	= "domain0";
++	server_instance		= 0;
++}
++
++/* The vldc pair: channel 1 and channel 2 point at each other. */
++node ldc_endpoint ldce_vldc_a {
++	back -> ldc_endpoints;
++	back -> guest0;
++	target_type		= 0;
++	channel			= 1;
++	resource_id		= 2;
++	tx-ino			= 2;
++	rx-ino			= 3;
++	target_guest		= 0;
++	target_channel		= 2;
++	server_name		= "vldc";
++	server_ldom_name	= "domain0";
++	server_instance		= 0;
++	client_ldom_name	= "domain0";
++}
++
++node ldc_endpoint ldce_vldc_b {
++	back -> ldc_endpoints;
++	back -> guest0;
++	target_type		= 0;
++	channel			= 2;
++	resource_id		= 3;
++	tx-ino			= 4;
++	rx-ino			= 5;
++	target_guest		= 0;
++	target_channel		= 1;
++	server_name		= "vldc";
++	server_ldom_name	= "domain0";
++	server_instance		= 0;
++	client_ldom_name	= "domain0";
++}
++
++/*
++ * The hv's own side of the control channel.  Carries svc_id, which is what
++ * config_a_hvldc keys on (reconf.c:507), and is deliberately NOT owned by the
++ * guest -- no back arc to guest0, matching Sun's node.
++ */
++node ldc_endpoint ldce_hv {
++	back -> ldc_endpoints;
++	target_type		= 0;
++	channel			= 0;
++	resource_id		= 1;
++	target_guest		= 0;
++	target_channel		= 0;
++	server_name		= "hvctl";
++	server_ldom_name	= "domain0";
++	svc_id			= 1;
++}
++
++node consoles consoles {
++	back -> root;
++	fwd -> console0;
++}
++
++node guest guest0 {
++	back -> guests;
++
++	name			= "domain0";
++	gid			= 0;
++	resource_id		= 0;
++	pid			= 1;
++
++	tod-offset		= 0;
++	reset-reason		= 0;
++	perfctraccess		= 1;
++	perfctrhtaccess		= 0;
++	rngctlaccessible	= 0;
++	diagpriv		= 0;
++
++	fwd -> vdevs0;
++	fwd -> chdevs0;
++	fwd -> cpu0;
++	fwd -> mblock0;
++
++	mdpa			= GUEST_MDPA;
++
++	rombase			= ROMBASE;
++	romsize			= ROMSIZE;
++	nvbase			= PNVBASE(0);
++	nvsize			= NVSIZE;
++	diskpa			= 0x1f40000000;
++
++	/*
++	 * Arcs to the endpoints this guest owns -- the forward half of the
++	 * back arcs on the ldc_endpoint nodes.  The hv-side endpoint
++	 * (ldce_hv) is deliberately absent: it belongs to the hypervisor, not
++	 * to the guest, exactly as in Sun's legion-hv.md.
++	 */
++	fwd -> ldce_hvctl;
++	fwd -> ldce_vldc_a;
++	fwd -> ldce_vldc_b;
++
++	fwd -> console0;
++}
++
++node virtual_devices vdevs0 {
++	back -> guest0;
++	cfghandle	= 0x100;
++}
++
++node channel_devices chdevs0 {
++	back -> guest0;
++	cfghandle	= 0x200;
++}
++
++node cpu cpu0 {
++	back -> cpus;
++	back -> guest0;
++	pid		= 0;
++	vid		= 0;
++	resource_id	= 0;
++	gid		= 0;
++	partid		= 1;
++}
++
++/*
++ * The guest's memory, which the old format carried inline on the guest node as
++ * membase/memsize/realbase.
++ */
++node mblock mblock0 {
++	back -> memory;
++	back -> guest0;
++	membase		= 0x80000000;
++	memsize		= 4096M;
++	realbase	= 0x80000000;
++	resource_id	= 0;
++}
++
++node console console0 {
++	back -> consoles;
++	back -> guest0;
++	/*
++	 * ino is the interrupt number the console raises; the hv rejects a
++	 * UART console without one ("Missing ino in console node").  0x11 is
++	 * what Sun's own legion-hv.md uses for domain0.
++	 */
++	ino		= 0x11;
++	resource_id	= 0;
++	uartbase	= PUART(0);
+ }
