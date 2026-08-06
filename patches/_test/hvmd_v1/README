@@ -37,6 +37,16 @@ What changed
     pair, because LDoms always has a server and a client side.  Required
     properties per common/src/reconf.c: channel, target_type, target_channel,
     and target_guest when target_type == 0.
+  - perfctraccess = 0 (2026-08-06, was 1), matching Sun's legion-hv.md.  A
+    non-zero value lets hcall_niagara_{get,set}perf past their
+    GUEST_PERFREG_ACCESSIBLE check, after which the hv performs a raw PHYSICAL
+    access to JBI_PERF_CTL 0x8000020000 / DRAM_PERF_CTL0..3 0x9700000400+ --
+    addresses QEMU's -M niagara does not map, where an unassigned access raises
+    TT_DATA_ACCESS with HS_PRIV set, i.e. inside the hypervisor.  Reachable from
+    the guest by `kstat -p dram:::`, because cpu_init_private creates the
+    dram/jbus kstats once HSVC_GROUP_NIAGARA_CPU registers and this hv offers
+    that group.  Nothing is lost: the counters cannot work under this emulator
+    at any value, which is also why Sun's Legion config ships 0.
 
 Changes to the guest MD (common.pdesc), which is where the boot was actually won:
 
@@ -84,11 +94,15 @@ disk1.img, which carries the whole LDoms driver stack (exp #19).
 Console input works too, confirmed on a boot: with "qcn" first in the console's
 compatible list the login prompt responds to the keyboard.
 
-The LDC configuration (both the hv endpoints and the guest channel-devices
-subtree) is the newest change and is NOT yet confirmed on a boot.  Everything
-else in the lists above is.  The expectation for it is modest by construction:
-cnex/vldc/vcc/vds should attach, but no channel can carry traffic yet, because
-nothing in this hv raises a guest interrupt.
+The LDC configuration works as designed, confirmed on a boot after this file
+first claimed otherwise: cnex, vldc, vcc and vds all attach, with their minor
+nodes named out of this MD.  No channel carries traffic yet, exactly as
+expected -- nothing in this hv raises a guest interrupt.
+
+The perfctraccess change is the one item NOT yet exercised on a boot.  It is a
+grant being withdrawn, so it cannot break anything that was working; the reason
+to boot is to confirm the fault it prevents was real, by running
+`kstat -p dram:::` against a config that still has 1.
 
 Full background: docs/niagara-findings.md in the qemu-sparc64 notes repo,
 "Track A: what the new hv MD format actually requires".

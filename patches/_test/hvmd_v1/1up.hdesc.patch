@@ -1,6 +1,6 @@
---- pagesize_256m/4096/1up.hdesc	2026-07-26 21:57:12.602316944 +0200
-+++ hvmd_v1/4096/1up.hdesc	2026-08-06 15:06:51.449037029 +0200
-@@ -1,50 +1,297 @@
+--- pagesize_256m/4096/1up.hdesc
++++ hvmd_v1/4096/1up.hdesc
+@@ -1,50 +1,317 @@
  /*
 -* ========== Copyright Header Begin ==========================================
 -* 
@@ -259,7 +259,27 @@
 +
 +	tod-offset		= 0;
 +	reset-reason		= 0;
-+	perfctraccess		= 1;
++	/*
++	 * 0, matching Sun's legion-hv.md -- and for the same reason they use
++	 * it.  Non-zero lets hcall_niagara_{get,set}perf past their
++	 * GUEST_PERFREG_ACCESSIBLE check (ontario/src/hcall_niagara.s:74,106),
++	 * after which the hv does a raw PHYSICAL access to real T1 registers:
++	 * JBI_PERF_CTL 0x8000020000 and DRAM_PERF_CTL0..3 0x9700000400+.
++	 * QEMU's -M niagara maps neither, and an unassigned access here is not
++	 * a silent zero -- sparc_cpu_do_transaction_failed raises TT_DATA_ACCESS
++	 * with HS_PRIV set, i.e. inside the hypervisor.
++	 *
++	 * The guest reaches it by ordinary means: cpu_init_private
++	 * (uts/sun4v/cpu/niagara.c:232) creates the dram/jbus kstats once
++	 * hsvc_register(HSVC_GROUP_NIAGARA_CPU) succeeds -- and this hv does
++	 * offer that group (hcall_groups.s:325) -- so `kstat -p dram:::` at the
++	 * guest prompt is enough to trigger it.  Legion has no JBI or DRAM
++	 * controller either, which is why Sun ships 0.
++	 *
++	 * Nothing is lost: the counters cannot work under this emulator at any
++	 * value.  Was 1 until 2026-08-06, with no recorded reason.
++	 */
++	perfctraccess		= 0;
 +	perfctrhtaccess		= 0;
 +	rngctlaccessible	= 0;
 +	diagpriv		= 0;

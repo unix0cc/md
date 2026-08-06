@@ -111,7 +111,7 @@ node guest guest0 {
 	pid = 0x1;
 	tod-offset = 0x0;
 	reset-reason = 0x0;
-	perfctraccess = 0x1;
+	perfctraccess = 0x0;
 	perfctrhtaccess = 0x0;
 	rngctlaccessible = 0x0;
 	diagpriv = 0x0;
