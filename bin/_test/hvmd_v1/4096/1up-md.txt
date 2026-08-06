@@ -3,7 +3,7 @@ node root root {
 	md-generation# = 0x1;
 	banner-name = "Sun Fire T2000";
 	name = "SUNW,Sun-Fire-T2000";
-	stick-frequency = 0x4c4b40;
+	stick-frequency = 0x5f5e100;
 	clock-frequency = 0x4c4b40;
 	board-part# = "000-000-000";
 	max-#cpumondo-entries = 0x100;
@@ -27,8 +27,7 @@ node variables XXvariables {
 	back -> XXopenboot;
 	fcode-debug? = "true";
 	boot-device = "disk";
-	auto-boot? = "true";
-	boot-file = "-v";
+	auto-boot? = "false";
 }
 node options XXoptions {
 	input-device = "ttya";
@@ -51,7 +50,7 @@ node platform platform_data {
 	mac-address = 0x8003dead03;
 	hostid = 0x80112233;
 	serial# = 0xab4130;
-	stick-frequency = 0x4c4b40;
+	stick-frequency = 0x5f5e100;
 	clock-frequency = 0x4c4b40;
 	max-cpus = 0x20;
 }

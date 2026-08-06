@@ -1,6 +1,6 @@
 node root root {
 	content-version = 0x100000000;
-	stick-frequency = 0x42c1d80;
+	stick-frequency = 0x5f5e100;
 	fwd -> platform;
 	fwd -> guests;
 	fwd -> cpus;
@@ -15,7 +15,7 @@ node root root {
 }
 node platform platform {
 	back -> root;
-	stick-frequency = 0x42c1d80;
+	stick-frequency = 0x5f5e100;
 }
 node guests guests {
 	back -> root;

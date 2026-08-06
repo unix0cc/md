@@ -41,8 +41,12 @@
  */
 #define	GUEST_MDPA	0x1f12000000
 
-/* Matches legion.conf's sysclkfreq for the T1 configurations. */
-#define	STICK_FREQ	0x42c1d80
+/*
+ * 100 MHz -- what QEMU ticks (hw/sparc64/sparc64.c:271), not what legion.conf
+ * says.  The old value was 0x42c1d80 = 70 MHz, copied from Sun's Legion
+ * config; under this emulator that simply makes every derived clock wrong.
+ */
+#define	STICK_FREQ	100000000
 
 node root root {
 	content-version	= 0x100000000;		/* major 1, minor 0 */

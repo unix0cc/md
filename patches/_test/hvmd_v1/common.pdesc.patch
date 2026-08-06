@@ -1,5 +1,5 @@
 --- pagesize_256m/4096/common.pdesc	2026-07-26 21:57:12.602316944 +0200
-+++ hvmd_v1/4096/common.pdesc	2026-08-04 17:53:43.727829994 +0200
++++ hvmd_v1/4096/common.pdesc	2026-08-06 15:06:51.449037029 +0200
 @@ -28,12 +28,22 @@
   */
  
@@ -23,7 +23,7 @@
      mmu-page-size-list = 0x2b; \
      mmu-#va-bits = 0x40; \
      back -> cpus; \
-@@ -41,14 +51,35 @@
+@@ -41,14 +51,52 @@
      fwd -> tlb; \
      }
  
@@ -44,7 +44,24 @@
 +     back -> XXopenboot;
 +     fcode-debug? = "true";
 +     boot-device = "disk";
-+     auto-boot? = "true";
++     /*
++      * Stop at the `ok` prompt instead of booting, so the boot flags are a
++      * decision made per run rather than baked into this file:
++      *
++      *     ok boot            normal
++      *     ok boot -v         verbose: driver binding and attach
++      *     ok boot -kv        verbose + kmdb resident, break in later with a
++      *                        serial break (Ctrl-A b under QEMU's mon:stdio)
++      *     ok boot -kd        stop in kmdb immediately, before any driver
++      *
++      * boot-file is deliberately NOT set here.  It would supply default
++      * arguments, which is the opposite of the point -- and an explicit
++      * `boot <args>` overrides it anyway, making the file's value invisible
++      * and therefore misleading.
++      *
++      * Set auto-boot? back to "true" for an unattended boot.
++      */
++     auto-boot? = "false";
 +}
 +
  node options XXoptions {
@@ -60,7 +77,7 @@
       net = "/virtual-devices/network@0";
       disk = "/virtual-devices/disk@0";
       vdisk = "/virtual-devices/disk@0";
-@@ -57,7 +88,16 @@
+@@ -57,10 +105,31 @@
       ttyb = "/virtual-devices/console@4";
  }
  
@@ -76,8 +93,24 @@
 +	md-generation# = 1;
  	banner-name = "Sun Fire T2000";
  	name = "SUNW,Sun-Fire-T2000";
- 	stick-frequency = 5000000;
-@@ -68,10 +108,12 @@
+-	stick-frequency = 5000000;
++/*
++ * 100 MHz, because that is what QEMU actually ticks: hw/sparc64/sparc64.c:271
++ * hardcodes tick/stick/hstick to 100 * 1000000 for every sparc64 machine.
++ *
++ * Solaris derives all of its time from the stick counter divided by the
++ * frequency the MD declares, so a wrong value here does not slow anything
++ * down -- it makes the guest's clock run at the wrong rate.  The old 5 MHz
++ * made guest time pass 20x too fast, which is why `time` inside the guest
++ * gave results varying five-fold between identical runs, and why svc.startd
++ * reported service after service timing out during boot.  Those timeouts are
++ * computed in guest time.
++ */
++	stick-frequency = 100000000;
+ 	clock-frequency = 5000000;
+ 	board-part# = "000-000-000";
+ 	max-#cpumondo-entries = 256;
+@@ -68,10 +137,12 @@
  	max-#cpus = 32;                            // XXX
          max-#tsb-entries = 0x2;
  	reset-reason = 0;			   // power-on
@@ -90,9 +123,12 @@
  }
  
  node platform platform_data {
-@@ -82,16 +124,62 @@
+@@ -80,18 +151,64 @@
+      mac-address = 0x8003dead03;        // mac address
+      hostid = 0x80112233;
       serial# = 11223344;
-      stick-frequency = 5000000;
+-     stick-frequency = 5000000;
++     stick-frequency = 100000000;
       clock-frequency = 5000000;
 +     /*
 +      * Required by the T2-generation OBP, which refuses to continue without
@@ -153,7 +189,7 @@
  	fcode-driver-name = "disk-virtual-device";
  	my-space = 0;
  	intr = 0;
-@@ -103,10 +191,48 @@
+@@ -103,10 +220,48 @@
  node virtual-device console {
  	back -> vdev;
  	name = "console";
@@ -203,7 +239,7 @@
  	cfg-handle = 0x1;
  	channel# = 0;
  }
-@@ -129,3 +255,124 @@
+@@ -129,3 +284,124 @@
  	cfg-handle = 0x3;
  	compatible = "sun4v-tod";
  }
