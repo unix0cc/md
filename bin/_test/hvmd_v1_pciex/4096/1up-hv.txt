@@ -1,0 +1,173 @@
+node root root {
+	content-version = 0x100000000;
+	stick-frequency = 0x5f5e100;
+	fwd -> platform;
+	fwd -> guests;
+	fwd -> cpus;
+	fwd -> memory;
+	fwd -> maus;
+	fwd -> cwqs;
+	fwd -> devices;
+	fwd -> ldc_endpoints;
+	fwd -> consoles;
+	hvuart = 0xfff0c2c000;
+	tod = 0xfff0c1fff8;
+}
+node platform platform {
+	back -> root;
+	stick-frequency = 0x5f5e100;
+}
+node guests guests {
+	back -> root;
+	fwd -> guest0;
+}
+node cpus cpus {
+	back -> root;
+	fwd -> cpu0;
+}
+node memory memory {
+	back -> root;
+	fwd -> mblock0;
+}
+node maus maus {
+	back -> root;
+}
+node cwqs cwqs {
+	back -> root;
+}
+node devices devices {
+	back -> root;
+	fwd -> pcie_bus;
+}
+node pcie_bus pcie_bus {
+	back -> devices;
+	back -> guest0;
+	resource_id = 0x0;
+	cfghandle = 0x0;
+	gid = 0x0;
+}
+node ldc_endpoints ldc_endpoints {
+	back -> root;
+	fwd -> ldce_hvctl;
+	fwd -> ldce_vldc_a;
+	fwd -> ldce_vldc_b;
+	fwd -> ldce_hv;
+}
+node ldc_endpoint ldce_hvctl {
+	back -> ldc_endpoints;
+	back -> guest0;
+	target_type = 0x1;
+	channel = 0x0;
+	resource_id = 0x0;
+	tx-ino = 0x0;
+	rx-ino = 0x1;
+	target_channel = 0x0;
+	server_name = "hvctl";
+	server_ldom_name = "domain0";
+	server_instance = 0x0;
+}
+node ldc_endpoint ldce_vldc_a {
+	back -> ldc_endpoints;
+	back -> guest0;
+	target_type = 0x0;
+	channel = 0x1;
+	resource_id = 0x2;
+	tx-ino = 0x2;
+	rx-ino = 0x3;
+	target_guest = 0x0;
+	target_channel = 0x2;
+	server_name = "vldc";
+	server_ldom_name = "domain0";
+	server_instance = 0x0;
+	client_ldom_name = "domain0";
+}
+node ldc_endpoint ldce_vldc_b {
+	back -> ldc_endpoints;
+	back -> guest0;
+	target_type = 0x0;
+	channel = 0x2;
+	resource_id = 0x3;
+	tx-ino = 0x4;
+	rx-ino = 0x5;
+	target_guest = 0x0;
+	target_channel = 0x1;
+	server_name = "vldc";
+	server_ldom_name = "domain0";
+	server_instance = 0x0;
+	client_ldom_name = "domain0";
+}
+node ldc_endpoint ldce_hv {
+	back -> ldc_endpoints;
+	target_type = 0x0;
+	channel = 0x0;
+	resource_id = 0x1;
+	target_guest = 0x0;
+	target_channel = 0x0;
+	server_name = "hvctl";
+	server_ldom_name = "domain0";
+	svc_id = 0x1;
+}
+node consoles consoles {
+	back -> root;
+	fwd -> console0;
+	fwd -> pcie_bus;
+}
+node guest guest0 {
+	back -> guests;
+	name = "domain0";
+	gid = 0x0;
+	resource_id = 0x0;
+	pid = 0x1;
+	tod-offset = 0x0;
+	reset-reason = 0x0;
+	perfctraccess = 0x0;
+	perfctrhtaccess = 0x0;
+	rngctlaccessible = 0x0;
+	diagpriv = 0x0;
+	fwd -> vdevs0;
+	fwd -> chdevs0;
+	fwd -> cpu0;
+	fwd -> mblock0;
+	mdpa = 0x1f12000000;
+	rombase = 0xfff0080000;
+	romsize = 0x80000;
+	nvbase = 0x1f11000000;
+	nvsize = 0x2000;
+	diskpa = 0x1f40000000;
+	fwd -> ldce_hvctl;
+	fwd -> ldce_vldc_a;
+	fwd -> ldce_vldc_b;
+	fwd -> console0;
+}
+node virtual_devices vdevs0 {
+	back -> guest0;
+	cfghandle = 0x100;
+}
+node channel_devices chdevs0 {
+	back -> guest0;
+	cfghandle = 0x200;
+}
+node cpu cpu0 {
+	back -> cpus;
+	back -> guest0;
+	pid = 0x0;
+	vid = 0x0;
+	resource_id = 0x0;
+	gid = 0x0;
+	partid = 0x1;
+}
+node mblock mblock0 {
+	back -> memory;
+	back -> guest0;
+	membase = 0x80000000;
+	memsize = 0x100000000;
+	realbase = 0x80000000;
+	resource_id = 0x0;
+}
+node console console0 {
+	back -> consoles;
+	back -> guest0;
+	ino = 0x11;
+	resource_id = 0x0;
+	uartbase = 0x1f10000000;
+}

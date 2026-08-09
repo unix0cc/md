@@ -1,0 +1,20 @@
+--- hvmd_v1/4096/Makefile	2026-08-04 10:13:03.951132021 +0200
++++ hvmd_v1_pciex/4096/Makefile	2026-08-09 11:54:04.215067839 +0200
+@@ -27,7 +27,7 @@
+ #
+ # This directory holds ONLY source (.pdesc/.hdesc) + this Makefile. `make`
+ # writes built .bin/.txt into the sibling
+-# bin/_test/hvmd_v1/4096/ tree (see OUT_DIR below), so src stays pure
++# bin/_test/hvmd_v1_pciex/4096/ tree (see OUT_DIR below), so src stays pure
+ # source and bin stays pure blobs even right after a build.
+ #
+ # mdgen itself comes from github.com/unix0cc/mdbuild, built via that repo's
+@@ -60,7 +60,7 @@
+ 
+ # Built output (.bin/.txt) lands here, not alongside the
+ # source -- sibling bin/_test/pagesize_256m/2048/ directory.
+-OUT_DIR := ../../../../bin/_test/hvmd_v1/4096
++OUT_DIR := ../../../../bin/_test/hvmd_v1_pciex/4096
+ 
+ .PHONY: all symlinks clean distclean
+ 

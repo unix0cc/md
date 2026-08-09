@@ -1,0 +1,314 @@
+node root root {
+	content-version = "1.0";
+	md-generation# = 0x1;
+	banner-name = "Sun Fire T2000";
+	name = "SUNW,Sun-Fire-T2000";
+	stick-frequency = 0x5f5e100;
+	clock-frequency = 0x4c4b40;
+	board-part# = "000-000-000";
+	max-#cpumondo-entries = 0x100;
+	max-#devmondo-entries = 0x100;
+	max-#cpus = 0x20;
+	max-#tsb-entries = 0x2;
+	reset-reason = 0x0;
+	fwd -> XXopenboot;
+	fwd -> platform_data;
+	fwd -> vdev;
+	fwd -> memory;
+	fwd -> cpus;
+	fwd -> chep;
+	fwd -> physio;
+}
+node openboot XXopenboot {
+	back -> root;
+	fwd -> XXvariables;
+	fwd -> XXdevalias;
+	fwd -> imaps;
+}
+node variables XXvariables {
+	back -> XXopenboot;
+	fcode-debug? = "true";
+	boot-device = "disk";
+	auto-boot? = "false";
+}
+node options XXoptions {
+	input-device = "ttya";
+	output-device = "ttya";
+	boot-device = "disk";
+	use-nvramrc? = 0xffffffffffffffff;
+}
+node devalias XXdevalias {
+	back -> XXopenboot;
+	net = "/virtual-devices/network@0";
+	disk = "/virtual-devices/disk@0";
+	vdisk = "/virtual-devices/disk@0";
+	nvram = "/virtual-devices/nvram@5";
+	ttya = "/virtual-devices/console@1";
+	ttyb = "/virtual-devices/console@4";
+}
+node platform platform_data {
+	banner-name = "Sun Fire T2000";
+	name = "SUNW,Sun-Fire-T2000";
+	mac-address = 0x8003dead03;
+	hostid = 0x80112233;
+	serial# = 0xab4130;
+	stick-frequency = 0x5f5e100;
+	clock-frequency = 0x4c4b40;
+	max-cpus = 0x20;
+}
+node virtual-devices vdev {
+	name = "virtual-devices";
+	device-type = "virtual-devices";
+	compatible = XXXXXXXX;
+	cfg-handle = 0x100;
+	probe-list = 0x1f;
+	back -> root;
+	fwd -> disk;
+	fwd -> console;
+	fwd -> nvram;
+	fwd -> tod;
+	fwd -> chdev;
+}
+node virtual-device disk {
+	back -> vdev;
+	name = "disk";
+	compatible = XXXXXXXX;
+	fcode-driver-name = "disk-virtual-device";
+	my-space = 0x0;
+	intr = 0x0;
+	ino = 0x0;
+	cfg-handle = 0x0;
+}
+node virtual-device console {
+	back -> vdev;
+	name = "console";
+	device-type = "serial";
+	fcode-driver-name = "console-virtual-device";
+	intr = 0x1;
+	ino = 0x11;
+	compatible = XXXXXXXX;
+	cfg-handle = 0x1;
+	channel# = 0x0;
+}
+node virtual-device nvram {
+	back -> vdev;
+	name = "nvram";
+	fcode-driver-name = "nvram-virtual-device";
+	intr = 0x0;
+	ino = 0x0;
+	cfg-handle = 0x2;
+}
+node virtual-device tod {
+	back -> vdev;
+	name = "rtc";
+	fcode-driver-name = "tod-virtual-device";
+	intr = 0x0;
+	ino = 0x0;
+	cfg-handle = 0x3;
+	compatible = "sun4v-tod";
+}
+node channel-devices chdev {
+	back -> vdev;
+	name = "channel-devices";
+	device-type = "channel-devices";
+	compatible = XXXXXXXX;
+	cfg-handle = 0x200;
+	fwd -> vchan;
+	fwd -> vcc;
+	fwd -> vds;
+}
+node channel-endpoints chep {
+	back -> root;
+	fwd -> chep0;
+	fwd -> chep1;
+	fwd -> chep2;
+}
+node virtual-device vchan {
+	back -> chdev;
+	compatible = XXXXXXXX;
+	device-type = "serial";
+	name = "virtual-channel";
+	cfg-handle = 0x0;
+	fwd -> vldcport0;
+	fwd -> vldcport1;
+}
+node virtual-device-port vldcport0 {
+	back -> vchan;
+	name = "vldc-port";
+	id = 0x0;
+	fwd -> chep0;
+	vldc-svc-name = "hvctl";
+}
+node channel-endpoint chep0 {
+	back -> chep;
+	back -> vldcport0;
+	id = 0x0;
+	tx-ino = 0x0;
+	rx-ino = 0x1;
+}
+node virtual-device-port vldcport1 {
+	back -> vchan;
+	name = "vldc-port";
+	id = 0x1;
+	fwd -> chep1;
+	vldc-svc-name = "ldom-primary";
+}
+node channel-endpoint chep1 {
+	back -> chep;
+	back -> vldcport1;
+	id = 0x1;
+	tx-ino = 0x2;
+	rx-ino = 0x3;
+}
+node channel-endpoint chep2 {
+	back -> chep;
+	id = 0x2;
+	tx-ino = 0x4;
+	rx-ino = 0x5;
+}
+node virtual-device vcc {
+	back -> chdev;
+	compatible = XXXXXXXX;
+	device-type = "vcc";
+	name = "virtual-console-concentrator";
+	cfg-handle = 0x0;
+}
+node virtual-device vds {
+	back -> chdev;
+	compatible = XXXXXXXX;
+	device-type = "vds";
+	name = "virtual-disk-server";
+	cfg-handle = 0x0;
+}
+node phys_io physio {
+	back -> root;
+	fwd -> pci_bus;
+}
+node iodevice pci_bus {
+	back -> physio;
+	name = "pci";
+	pseudonym = "pci";
+	disabled = 0x0;
+	device-type = "pciex";
+	compatible = XXXXXXXX;
+	cfg-handle = 0x0;
+	address-ranges = XXXXXXXX;
+	virtual-dma = XXXXXXXX;
+	ino-bitmap = 0xf;
+	probe-list = "0";
+	msi-address-ranges = XXXXXXXX;
+	#msi = 0x100;
+	msi-data-mask = 0xff;
+	msi-ranges = XXXXXXXX;
+	msi-eq-size = 0x80;
+	msix-data-width = 0x20;
+	#msi-eqs = 0x24;
+	msi-eq-to-devino = XXXXXXXX;
+	interrupts = XXXXXXXX;
+	#interrupt-cells = 0x1;
+	interrupt-map-mask = XXXXXXXX;
+	bus-ranges = XXXXXXXX;
+	fwd -> imentry0;
+	fwd -> imentry1;
+	fwd -> imentry2;
+	fwd -> imentry3;
+}
+node interrupt-map-entry imentry0 {
+	back -> pci_bus;
+	child-unit-address = XXXXXXXX;
+	child-interrupt = 0x1;
+	parent-interrupt = 0x14;
+	parent-device-path = "/pci@0";
+}
+node interrupt-map-entry imentry1 {
+	back -> pci_bus;
+	child-unit-address = XXXXXXXX;
+	child-interrupt = 0x2;
+	parent-interrupt = 0x15;
+	parent-device-path = "/pci@0";
+}
+node interrupt-map-entry imentry2 {
+	back -> pci_bus;
+	child-unit-address = XXXXXXXX;
+	child-interrupt = 0x3;
+	parent-interrupt = 0x16;
+	parent-device-path = "/pci@0";
+}
+node interrupt-map-entry imentry3 {
+	back -> pci_bus;
+	child-unit-address = XXXXXXXX;
+	child-interrupt = 0x4;
+	parent-interrupt = 0x17;
+	parent-device-path = "/pci@0";
+}
+node interrupt-maps imaps {
+	back -> XXopenboot;
+	fwd -> imap;
+}
+node interrupt-map imap {
+	back -> imaps;
+	dev = "/pci@0";
+	parent = "/pci@0";
+	intr-cells = 0x1;
+	intr-mask = XXXXXXXX;
+	interrupts = XXXXXXXX;
+	fwd -> intr0;
+	fwd -> intr1;
+	fwd -> intr2;
+	fwd -> intr3;
+}
+node interrupt intr0 {
+	back -> imap;
+	intr = 0x1;
+	ino = 0x14;
+	addr = XXXXXXXX;
+}
+node interrupt intr1 {
+	back -> imap;
+	intr = 0x2;
+	ino = 0x15;
+	addr = XXXXXXXX;
+}
+node interrupt intr2 {
+	back -> imap;
+	intr = 0x3;
+	ino = 0x16;
+	addr = XXXXXXXX;
+}
+node interrupt intr3 {
+	back -> imap;
+	intr = 0x4;
+	ino = 0x17;
+	addr = XXXXXXXX;
+}
+node cpu cpu0 {
+	id = 0x0;
+	clock-frequency = 0x4c4b40;
+	isalist = XXXXXXXX;
+	compatible = XXXXXXXX;
+	max-#tsb-entries = 0x2;
+	mmu-max-#tsbs = 0x4;
+	mmu-page-size-list = 0x2b;
+	mmu-#va-bits = 0x40;
+	back -> cpus;
+	fwd -> cache;
+	fwd -> tlb;
+}
+node mblock p0_memlist0 {
+	base = 0x80000000;
+	size = 0x100000000;
+}
+node memory memory {
+	fwd -> p0_memlist0;
+	back -> root;
+}
+node cpus cpus {
+	fwd -> cpu0;
+	back -> root;
+}
+node cache cache {
+	back -> cpu0;
+}
+node tlb tlb {
+	back -> cpu0;
+}

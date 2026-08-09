@@ -1,0 +1,545 @@
+/*
+* ========== Copyright Header Begin ==========================================
+* 
+* OpenSPARC T1 Processor File: common.pdesc
+* Copyright (c) 2006 Sun Microsystems, Inc.  All Rights Reserved.
+* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES.
+* 
+* The above named program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public
+* License version 2 as published by the Free Software Foundation.
+* 
+* The above named program is distributed in the hope that it will be 
+* useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public
+* License along with this work; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+* 
+* ========== Copyright Header End ============================================
+*/
+/*
+ * Copyright 2006 Sun Microsystems, Inc.  All rights reserved.
+ * Use is subject to license terms.
+ *
+ * ident	"@(#)common.pdesc	1.11	06/06/12 SMI"
+ */
+
+#define	VDEV_HANDLE 0x100
+/*
+ * mmu-max-#tsbs is the newer name for max-#tsb-entries.  The T2-generation OBP
+ * refuses to continue without it ("FATAL: Missing required property:
+ * mmu-max-#tsbs in node cpu"); the old name stays so older firmware still finds
+ * what it expects.
+ *
+ * Keep comments OUT of the macro body: a block comment spanning lines eats the
+ * backslash continuations, and mdgen then reports "node definition expected".
+ */
+#define ADD_CPU(x) node cpu cpu/**/x {	\
+    id = x; 				\
+    clock-frequency = 0x4C4B40;		\
+    isalist = "sparcv9","sparcv8plus","sparcv8","sparcv8-fsmuld","sparcv7","sparc"; \
+    compatible = { "SUNW,UltraSPARC-T1", "SUNW,sun4v-cpu", "sun4v" }; \
+    max-#tsb-entries = 0x2; \
+    mmu-max-#tsbs = 0x4; \
+    mmu-page-size-list = 0x2b; \
+    mmu-#va-bits = 0x40; \
+    back -> cpus; \
+    fwd -> cache; \
+    fwd -> tlb; \
+    }
+
+/*
+ * The T2 generation keeps OBP configuration under an `openboot` container with
+ * `variables` and `devalias` as its children -- see Sun's guest MD.  Our old
+ * options/devalias pair had no back arcs and root never pointed at them, so
+ * they were orphans: OBP never saw boot-device and fell through to netbooting.
+ * `options` stays for the older firmware, which does read it.
+ */
+node openboot XXopenboot {
+     back -> root;
+     fwd -> XXvariables;
+     fwd -> XXdevalias;
+     fwd -> imaps;
+}
+
+node variables XXvariables {
+     back -> XXopenboot;
+     fcode-debug? = "true";
+     boot-device = "disk";
+     /*
+      * Stop at the `ok` prompt instead of booting, so the boot flags are a
+      * decision made per run rather than baked into this file:
+      *
+      *     ok boot            normal
+      *     ok boot -v         verbose: driver binding and attach
+      *     ok boot -kv        verbose + kmdb resident, break in later with a
+      *                        serial break (Ctrl-A b under QEMU's mon:stdio)
+      *     ok boot -kd        stop in kmdb immediately, before any driver
+      *
+      * boot-file is deliberately NOT set here.  It would supply default
+      * arguments, which is the opposite of the point -- and an explicit
+      * `boot <args>` overrides it anyway, making the file's value invisible
+      * and therefore misleading.
+      *
+      * Set auto-boot? back to "true" for an unattended boot.
+      */
+     auto-boot? = "false";
+}
+
+node options XXoptions {
+     input-device = "ttya";
+     output-device = "ttya";
+     boot-device = "disk";
+     use-nvramrc? = -1;
+}
+
+node devalias XXdevalias {
+     back -> XXopenboot;
+     net = "/virtual-devices/network@0";
+     disk = "/virtual-devices/disk@0";
+     vdisk = "/virtual-devices/disk@0";
+     nvram = "/virtual-devices/nvram@5";
+     ttya = "/virtual-devices/console@1";
+     ttyb = "/virtual-devices/console@4";
+}
+
+/*
+ * The guest MD has its own generational marker, separate from the hv MD's:
+ * content-version here is a STRING "1.0" (the hv MD's is a u64 0x100000000),
+ * and md-generation# counts reconfigurations.  Sun's guest MD carries both and
+ * keeps root almost empty, with the platform properties in the platform node.
+ * Without them the T2-generation OBP reads this MD in a legacy shape.
+ */
+node root root {
+	content-version = "1.0";
+	md-generation# = 1;
+	banner-name = "Sun Fire T2000";
+	name = "SUNW,Sun-Fire-T2000";
+/*
+ * 100 MHz, because that is what QEMU actually ticks: hw/sparc64/sparc64.c:271
+ * hardcodes tick/stick/hstick to 100 * 1000000 for every sparc64 machine.
+ *
+ * Solaris derives all of its time from the stick counter divided by the
+ * frequency the MD declares, so a wrong value here does not slow anything
+ * down -- it makes the guest's clock run at the wrong rate.  The old 5 MHz
+ * made guest time pass 20x too fast, which is why `time` inside the guest
+ * gave results varying five-fold between identical runs, and why svc.startd
+ * reported service after service timing out during boot.  Those timeouts are
+ * computed in guest time.
+ */
+	stick-frequency = 100000000;
+	clock-frequency = 5000000;
+	board-part# = "000-000-000";
+	max-#cpumondo-entries = 256;
+	max-#devmondo-entries = 256;
+	max-#cpus = 32;                            // XXX
+        max-#tsb-entries = 0x2;
+	reset-reason = 0;			   // power-on
+	fwd -> XXopenboot;
+	fwd -> platform_data;
+	fwd -> vdev;
+	fwd -> memory;
+	fwd -> cpus;
+	fwd -> chep;
+	fwd -> physio;
+}
+
+node platform platform_data {
+     banner-name = "Sun Fire T2000";
+     name = "SUNW,Sun-Fire-T2000";
+     mac-address = 0x8003dead03;        // mac address
+     hostid = 0x80112233;
+     serial# = 11223344;
+     stick-frequency = 100000000;
+     clock-frequency = 5000000;
+     /*
+      * Required by the T2-generation OBP, which refuses to continue without
+      * it: "FATAL: Missing required property: max-cpus in node platform".
+      * Sun's own guest MD uses 0x40; the real T2000 firmware uses 0x20.
+      */
+     max-cpus = 0x20;
+}
+
+
+/*
+ * The container needs more than a cfg-handle.  Without a `name` property the
+ * device-tree node it produces has no name, so the path /virtual-devices/console
+ * does not resolve -- and this OBP's default input-device and output-device are
+ * `virtual-console`, which loadconfig.fth defines as exactly that path
+ * (arch/sun4v/niagara/loadconfig.fth:73-77).  Hence the repeated
+ * "/virtual-devices/console not found" before the banner, after which OBP falls
+ * back to the raw UART.  Values follow Sun's own guest MD.
+ */
+node virtual-devices vdev {
+    name = "virtual-devices";
+    device-type = "virtual-devices";
+    /*
+     * compatible must be a LIST: probe.fth reads it as MD_PROP_DATA and a bare
+     * string lands as MD_PROP_STR, which it never looks at.
+     */
+    compatible = { "SUNW,sun4v-virtual-devices" };
+    cfg-handle = VDEV_HANDLE;
+    probe-list = 0x1f;
+    /*
+     * Arcs in BOTH directions.  The children each carry `back -> vdev`, but
+     * without the matching `fwd ->` here nothing can walk down: OBP's vnexus
+     * probe enumerates children by following fwd arcs, so /virtual-devices
+     * came up existing but empty -- `dev /virtual-devices` succeeded while
+     * `ls` printed nothing and every child was "Device not found".  Sun's own
+     * guest MD has back -> root plus one fwd per child.
+     */
+    back -> root;
+    fwd -> disk;
+    fwd -> console;
+    fwd -> nvram;
+    fwd -> tod;
+    fwd -> chdev;
+}
+
+node virtual-device disk {
+	back -> vdev;
+	name = "disk";
+	/*
+	 * vcommon/probe.fth:128-142 matches a driver on `compatible` first and
+	 * falls back to `name`.  It reads compatible as MD_PROP_DATA -- the
+	 * comment there is about peeling the extra NUL off that form -- so the
+	 * value has to be a LIST, which mdgen emits as data; a bare string
+	 * comes out as MD_PROP_STR and is not seen.  SUNW,legion-disk is the
+	 * dropin word this OBP registers for the sim disk.
+	 */
+	compatible = { "SUNW,legion-disk" };
+	fcode-driver-name = "disk-virtual-device";
+	my-space = 0;
+	intr = 0;
+	ino = 0;
+	cfg-handle = 0;
+}
+
+
+node virtual-device console {
+	back -> vdev;
+	name = "console";
+	/*
+	 * The T2-generation OBP binds its console driver from the dropin word
+	 * SUNW,sun4v-console, so that has to appear in compatible -- and
+	 * compatible has to be a list, not a single string.  Without it OBP
+	 * reports "/virtual-devices/console not found" and falls back to
+	 * printing on the raw UART.  device-type is what Sun's own guest MD
+	 * carries; fcode-driver-name is the older binding and stays for the
+	 * older firmware.
+	 */
+	device-type = "serial";
+	fcode-driver-name = "console-virtual-device";
+	intr = 1;
+	ino = 0x11;
+	/*
+	 * ORDER MATTERS, and the two consumers want different answers.
+	 *
+	 * Solaris' qcn driver runs interrupt-driven unless ddi_binding_name()
+	 * is literally "qcn", in which case it polls the console from a 5 ms
+	 * cyclic instead (illumos usr/src/uts/sun4v/io/qcn.c:376-394, the
+	 * `#ifdef QCN_POLLING` block, whose comment says it exists "for the
+	 * sole purposes of allowing the console to work on older firmware
+	 * releases" -- which is exactly our situation).  Solaris binds on the
+	 * FIRST matching entry of compatible, so "qcn" has to come first or
+	 * the driver waits for an interrupt.
+	 *
+	 * That interrupt never arrives and cannot be made to: this hv has no
+	 * UART-RX interrupt path at all.  struct console keeps vintr_mapreg
+	 * ("for guest intr") only on the LDC side, while CONS_TYPE_UART is
+	 * poll-only -- hcall_cons_getchar polls LSR_DRDY (vdev_console.s:331)
+	 * and nothing ever posts our ino 0x11 to the guest.  So this property
+	 * order is the whole fix; no QEMU or firmware change is involved.
+	 *
+	 * OBP is unharmed by putting "qcn" first, because find-fcode-driver
+	 * (vcommon/probe.fth:129) cycles through every entry and takes the
+	 * first with a builtin method.  No dropin answers to "qcn", so it
+	 * falls through to SUNW,sun4v-console exactly as before.
+	 *
+	 * intr/ino stay: they are what Sun's own guest MD carries, they are
+	 * harmless while nothing raises them, and they are what an eventual
+	 * interrupt path would use.
+	 */
+	compatible = { "qcn", "SUNW,sun4v-console" };
+	cfg-handle = 0x1;
+	channel# = 0;
+}
+
+node virtual-device nvram {
+	back -> vdev;
+	name = "nvram";
+	fcode-driver-name = "nvram-virtual-device";
+	intr = 0;
+	ino = 0;
+	cfg-handle = 0x2;
+}
+
+node virtual-device tod {
+	back -> vdev;
+	name = "rtc";
+	fcode-driver-name = "tod-virtual-device";
+	intr = 0;
+	ino = 0;
+	cfg-handle = 0x3;
+	compatible = "sun4v-tod";
+}
+
+/*
+ * ===========================================================================
+ * Channel devices -- the guest half of the LDC configuration.
+ * ===========================================================================
+ *
+ * Decoded node for node out of Sun's own single-guest Legion guest MD,
+ * S10image/1c1t/legion-guest-domain0.md.  Two things about the layout are not
+ * guessable and were taken from there:
+ *
+ *   - channel-devices hangs off virtual-devices, NOT off root.  On a real
+ *     LDoms box it is a sibling of virtual-devices; in this configuration it
+ *     is a child.
+ *   - channel-endpoints is a separate top-level container under root, and each
+ *     endpoint carries TWO back arcs: one to that container and one to the
+ *     virtual-device-port that uses it.
+ *
+ * What binds to what, guest-side:
+ *
+ *   channel-devices            -> cnex   (SUNW,sun4v-channel-devices)
+ *   virtual-channel + ports    -> vldc   (SUNW,sun4v-channel)
+ *   virtual-console-concentr.  -> vcc    (SUNW,sun4v-console-concentrator)
+ *   virtual-disk-server        -> vds    (SUNW,sun4v-disk-server)
+ *
+ * All four drivers ship compiled in the Solaris 10 8/07 image we boot; none of
+ * this needs new guest code.  vcc and vds get no ports here, exactly as in
+ * Sun's file -- they are the driver anchors, and a port is what would give
+ * them something to serve.
+ *
+ * The tx-ino/rx-ino numbers must agree with the ldc_endpoint nodes in the hv
+ * MD (1up.hdesc): 0/1 for channel 0, 2/3 for channel 1, 4/5 for channel 2.
+ * Nothing raises those interrupts yet, so the expectation for this step is
+ * that the drivers attach and stay idle, not that a channel carries traffic.
+ */
+node channel-devices chdev {
+	back -> vdev;
+	name = "channel-devices";
+	device-type = "channel-devices";
+	compatible = { "SUNW,sun4v-channel-devices" };
+	cfg-handle = 0x200;
+	fwd -> vchan;
+	fwd -> vcc;
+	fwd -> vds;
+}
+
+node channel-endpoints chep {
+	back -> root;
+	fwd -> chep0;
+	fwd -> chep1;
+	fwd -> chep2;
+}
+
+/* The vldc device and its two service ports. */
+node virtual-device vchan {
+	back -> chdev;
+	compatible = { "SUNW,sun4v-channel" };
+	device-type = "serial";
+	name = "virtual-channel";
+	cfg-handle = 0x0;
+	fwd -> vldcport0;
+	fwd -> vldcport1;
+}
+
+node virtual-device-port vldcport0 {
+	back -> vchan;
+	name = "vldc-port";
+	id = 0;
+	fwd -> chep0;
+	vldc-svc-name = "hvctl";
+}
+
+node channel-endpoint chep0 {
+	back -> chep;
+	back -> vldcport0;
+	id = 0;
+	tx-ino = 0;
+	rx-ino = 1;
+}
+
+node virtual-device-port vldcport1 {
+	back -> vchan;
+	name = "vldc-port";
+	id = 1;
+	fwd -> chep1;
+	vldc-svc-name = "ldom-primary";
+}
+
+node channel-endpoint chep1 {
+	back -> chep;
+	back -> vldcport1;
+	id = 1;
+	tx-ino = 2;
+	rx-ino = 3;
+}
+
+/*
+ * The third endpoint has no port in Sun's file either -- it is the far half of
+ * the vldc pair, reachable from the hv MD rather than from a guest driver.
+ */
+node channel-endpoint chep2 {
+	back -> chep;
+	id = 2;
+	tx-ino = 4;
+	rx-ino = 5;
+}
+
+node virtual-device vcc {
+	back -> chdev;
+	compatible = { "SUNW,sun4v-console-concentrator" };
+	device-type = "vcc";
+	name = "virtual-console-concentrator";
+	cfg-handle = 0x0;
+}
+
+node virtual-device vds {
+	back -> chdev;
+	compatible = { "SUNW,sun4v-disk-server" };
+	device-type = "vds";
+	name = "virtual-disk-server";
+	cfg-handle = 0x0;
+}
+
+/*
+ * PCIe root complex for the guest.  Reason it exists: OBP's probe-io
+ * (arch/sun4v/niagara/probeall.fth:98) looks up the node named `phys_io` and
+ * applies (probe-io) to each of its fwd arcs; a child whose device-type is
+ * "pciex" gets the path /pci@<cfg-handle> built and `master-probe` called with
+ * its `probe-list`.  That word is the sun4v-vpci dropin, carried only by the
+ * Niagara2 OBP image.
+ *
+ * Copied from Sun's own single-domain T1 descriptor,
+ * opensparc-t2/t1_fpga/src/xilinx/configs/1c1t_guest.desc -- a guest MD for
+ * one domain on a T1, which is what we are, and GPL source rather than a
+ * vendor firmware image.  Only the arc labels are ours.
+ *
+ * mdgen note: inside { } each integer is emitted big-endian with leading zero
+ * bytes DISCARDED (mdgen/mdparse.c:378-391), so fixed-width cells are written
+ * one byte at a time -- which is exactly how Sun writes them too.
+ */
+node phys_io physio {
+	back -> root;
+	fwd -> pci_bus;
+}
+
+node iodevice pci_bus {
+	back -> physio;
+	name  = "pci";
+	pseudonym  = "pci";
+	disabled  = 0x0;
+	device-type  = "pciex";
+	compatible  = { "SUNW,sun4v-pci" };
+	cfg-handle  = 0x0;
+	address-ranges  = { 0x00 , 0x00 , 0x00 , 0xc8 , 0x10 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x10 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0xca , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x7f , 0xff , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0xcc , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x03 , 0xff , 0xff , 0x00 , 0x00 };
+	virtual-dma  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x80 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x80 , 0x00 , 0x00 , 0x00 };
+	ino-bitmap  = 0xf;
+	probe-list  = "0";
+	msi-address-ranges  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x7f , 0xff , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x01 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x03 , 0x00 , 0x00 , 0x00 , 0x00 , 0xff , 0xff , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x01 , 0x00 , 0x00 };
+	#msi  = 0x100;
+	msi-data-mask  = 0xff;
+	msi-ranges  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x01 , 0x00 };
+	msi-eq-size  = 0x80;
+	msix-data-width  = 0x20;
+	#msi-eqs  = 0x24;
+	msi-eq-to-devino  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x24 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x18 };
+	interrupts  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x3f , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x3e };
+	#interrupt-cells  = 0x1;
+	interrupt-map-mask  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0xff , 0xf0 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x07 };
+	bus-ranges  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x02 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0xff };
+	fwd -> imentry0;
+	fwd -> imentry1;
+	fwd -> imentry2;
+	fwd -> imentry3;
+}
+
+node interrupt-map-entry imentry0 {
+	back -> pci_bus;
+	child-unit-address  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x02 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 };
+	child-interrupt  = 0x1;
+	parent-interrupt  = 0x14;
+	parent-device-path  = "/pci@0";
+}
+
+node interrupt-map-entry imentry1 {
+	back -> pci_bus;
+	child-unit-address  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x02 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 };
+	child-interrupt  = 0x2;
+	parent-interrupt  = 0x15;
+	parent-device-path  = "/pci@0";
+}
+
+node interrupt-map-entry imentry2 {
+	back -> pci_bus;
+	child-unit-address  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x02 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 };
+	child-interrupt  = 0x3;
+	parent-interrupt  = 0x16;
+	parent-device-path  = "/pci@0";
+}
+
+node interrupt-map-entry imentry3 {
+	back -> pci_bus;
+	child-unit-address  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x02 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 };
+	child-interrupt  = 0x4;
+	parent-interrupt  = 0x17;
+	parent-device-path  = "/pci@0";
+}
+
+/*
+ * The INTx routing OBP hands to the guest: interrupt-maps hangs off openboot,
+ * one interrupt-map per bus, four `interrupt` children mapping INTA..INTD
+ * (intr 1..4) onto INO 0x14..0x17.
+ */
+node interrupt-maps imaps {
+	back -> XXopenboot;
+	fwd -> imap;
+}
+
+node interrupt-map imap {
+	back -> imaps;
+	dev  = "/pci@0";
+	parent  = "/pci@0";
+	intr-cells  = 0x1;
+	intr-mask  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0xff , 0xf0 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x07 };
+	interrupts  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x3f , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x3e };
+	fwd -> intr0;
+	fwd -> intr1;
+	fwd -> intr2;
+	fwd -> intr3;
+}
+
+node interrupt intr0 {
+	back -> imap;
+	intr  = 0x1;
+	ino  = 0x14;
+	addr  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x02 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 };
+}
+
+node interrupt intr1 {
+	back -> imap;
+	intr  = 0x2;
+	ino  = 0x15;
+	addr  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x02 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 };
+}
+
+node interrupt intr2 {
+	back -> imap;
+	intr  = 0x3;
+	ino  = 0x16;
+	addr  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x02 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 };
+}
+
+node interrupt intr3 {
+	back -> imap;
+	intr  = 0x4;
+	ino  = 0x17;
+	addr  = { 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x02 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 };
+}
+

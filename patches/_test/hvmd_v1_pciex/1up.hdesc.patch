@@ -1,0 +1,38 @@
+--- hvmd_v1/4096/1up.hdesc	2026-08-06 21:41:43.555774951 +0200
++++ hvmd_v1_pciex/4096/1up.hdesc	2026-08-09 11:56:32.462709564 +0200
+@@ -105,6 +105,27 @@
+ 
+ node devices devices {
+ 	back -> root;
++	fwd -> pcie_bus;
++}
++
++/*
++ * The hv side of the guest's PCIe root complex.  Sun's single-domain T1
++ * descriptor (opensparc-t2/t1_fpga/src/xilinx/configs/1c1t_hv.desc:142) carries
++ * exactly this: a pcie_bus node under `devices`, pointed at from the guest as
++ * well, and nothing more than three scalars.  `cfghandle` is the devhandle the
++ * guest names in every VPCI hypercall and must equal the guest MD's cfg-handle.
++ *
++ * Present because without it the hypervisor has no bus registered under that
++ * handle at all, which is a candidate explanation for the EINVAL its VPCI
++ * calls currently return -- the alternative being that -UCONFIG_PCIE simply
++ * disables the code.  This config is how the two are told apart.
++ */
++node pcie_bus pcie_bus {
++	back -> devices;
++	back -> guest0;
++	resource_id = 0x0;
++	cfghandle = 0x0;
++	gid = 0x0;
+ }
+ 
+ /*
+@@ -207,6 +228,7 @@
+ node consoles consoles {
+ 	back -> root;
+ 	fwd -> console0;
++	fwd -> pcie_bus;
+ }
+ 
+ node guest guest0 {

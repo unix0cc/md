@@ -1,0 +1,81 @@
+hvmd_v1_pciex -- hvmd_v1 plus a PCIe root complex
+=================================================
+
+Produces: bin/_test/hvmd_v1_pciex/4096/1up-md.bin   (guest MD, gains the bus)
+          bin/_test/hvmd_v1_pciex/4096/1up-hv.bin   (hv MD, gains pcie_bus)
+
+Against:  src/_test/hvmd_v1/4096/   (the config that boots Solaris 10 to a
+          login prompt on the Niagara2 OBP image)
+
+Source of the values
+--------------------
+`opensparc-t2/t1_fpga/src/xilinx/configs/1c1t_{guest,hv}.desc` -- Sun's own
+descriptors for a **single domain on a T1**, in source form. That is what we
+are, so the whole node is copied across unchanged; only the arc labels are
+ours. Verified after the build: all 22 properties of the bus node are identical
+to the reference.
+
+Why it exists
+-------------
+The Fire/px route needs OBP to walk a PCIe bus, and OBP only does that if the
+guest MD describes one. `probe-io` (OBP arch/sun4v/niagara/probeall.fth:98)
+looks up the node named `phys_io` and applies `(probe-io)` to each of its fwd
+arcs; a child whose `device-type` is "pciex" gets the path /pci@<cfg-handle>
+built and `master-probe` invoked with its `probe-list`. The word behind that is
+the sun4v-vpci dropin, which only the Niagara2 OBP image carries.
+
+Kept separate from hvmd_v1 rather than folded into it: hvmd_v1 is the
+configuration that boots, and this one deliberately provokes an error path.
+
+What changed
+------------
+common.pdesc (guest MD):
+  - root gains `fwd -> physio`; the openboot node gains `fwd -> imaps`
+  - `phys_io` -> `iodevice` (device-type "pciex", cfg-handle 0x0), with arcs
+    both ways. Both directions are required: a child carrying only `back ->`
+    leaves its parent enumerable but empty.
+  - four `interrupt-map-entry` children of the bus, mapping child-interrupt
+    1..4 to parent-interrupt 0x14..0x17 on "/pci@0"
+  - `interrupt-maps` -> `interrupt-map` -> four `interrupt` nodes under
+    openboot, the same INTA..INTD -> INO 0x14..0x17 routing seen from the
+    other side. This is the INTx path the plan depends on, MSI being deferred.
+
+1up.hdesc (hv MD):
+  - `devices` gains `pcie_bus` (resource_id, cfghandle, gid), and guest0 points
+    at it, exactly as 1c1t_hv.desc:142 does.
+
+Makefile:
+  - OUT_DIR retargeted to bin/_test/hvmd_v1_pciex/4096
+
+mdgen gotcha
+------------
+Inside a `{ }` list mdgen emits each integer big-endian with leading zero bytes
+DISCARDED (mdgen/mdparse.c:378-391), so fixed-width cells have to be written one
+byte at a time -- which is how Sun writes them in the reference too.
+
+Result
+------
+OBP builds /pci@0 from the cfg-handle, loads sun4v-vpci, and issues:
+
+    fn=b4 o0=0 o1=20000 o2=0    VPCI_CONFIG_GET
+    fn=b4 o0=0 o1=20000 o2=6    VPCI_CONFIG_GET
+    fn=b5 o0=0 o1=20000 o2=6    VPCI_CONFIG_PUT
+
+(devhandle values shown for cfg-handle 0x0; 0x20000 decodes as bus 2, device 0,
+function 0, bus 2 being the first in bus-ranges.) The boot then continues to the
+ok prompt.
+
+**The hypervisor answers EINVAL, and pcie_bus does not change that.** Worth
+recording, because the obvious hypothesis was that the hv simply had no bus
+registered under that devhandle. It is not that: the hv's own startup narration
+lists every guest device it sets up and `pcie_bus` never appears in it at all,
+so the node is not parsed. This build is `-UCONFIG_PCIE` and its VPCI entry
+points have nothing behind them regardless of what the MD says.
+
+The consequence is the useful part: the hypervisor cannot be made to serve VPCI
+by describing a bus to it, so QEMU has to claim those function numbers in the
+hypercall hook. That was the plan; this rules out the cheaper alternative.
+
+The `pcie_bus` node is kept even though this build ignores it -- it is correct,
+it is what Sun's descriptor has, and it is needed the moment an hv is built with
+CONFIG_PCIE. Its presence should not be read as the hv knowing about the bus.
