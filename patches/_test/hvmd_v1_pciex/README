@@ -47,6 +47,15 @@ common.pdesc (guest MD):
 Makefile:
   - OUT_DIR retargeted to bin/_test/hvmd_v1_pciex/4096
 
+One value is deliberately not Sun's
+-----------------------------------
+`bus-ranges` starts at 0 rather than 2, and the `child-unit-address` of each
+interrupt-map-entry follows. On a real T2000 a PCIe switch sits behind the root
+complex and occupies the first two bus numbers; this machine has no switch, so
+its root bus is 0. Copying Sun's 2 verbatim made OBP probe a bus that does not
+exist here, and /pci@0 came up with no children. Addresses are worth taking
+verbatim; topology has to describe the machine it belongs to.
+
 mdgen gotcha
 ------------
 Inside a `{ }` list mdgen emits each integer big-endian with leading zero bytes
