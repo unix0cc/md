@@ -7,6 +7,12 @@ Produces: bin/_test/hvmd_v1_pciex/4096/1up-md.bin   (guest MD, gains the bus)
 Against:  src/_test/hvmd_v1/4096/   (the config that boots Solaris 10 to a
           login prompt on the Niagara2 OBP image)
 
+Read ../README first.  It says which binaries this config needs -- and this one
+needs one more than hvmd_v1 does: the niagara2/release OBP image, the only
+prebuilt one carrying the `pciex` word that loads sun4v-vpci.  It also states
+what has actually been verified, which for this config is: never booted
+Solaris.  Everything below stops at the OBP ok prompt.
+
 Source of the values
 --------------------
 `opensparc-t2/t1_fpga/src/xilinx/configs/1c1t_{guest,hv}.desc` -- Sun's own

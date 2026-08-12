@@ -1,0 +1,152 @@
+_test -- experimental configurations
+====================================
+
+Everything here derives from one of the three finished configs in src/
+(OpenSPARC_T1_rebuild, t1_boot_fix, tlb_fix) and has not been promoted out
+of _test.  Each subdirectory has its own README saying what it changes and
+why.  This file says what the directory as a whole is worth, which is a
+different question -- and the short answer is: less than the per-config
+READMEs alone might suggest.
+
+Read this before running anything here.
+
+
+Two families, and they do not run on the same machine
+-----------------------------------------------------
+
+  old hv MD format          maxcpu_fix, pagesize_256m, post_t1boot_mini,
+  (no content-version)      post_tlb_fix, post_tlb_fix2
+
+      A single-level hv config: one guest node carrying cpuset, membase,
+      memsize, realbase, uartbase and pdpa inline, emitted by the GUEST()
+      macro in common.hdesc.  This is Sun's 2006 shape and it runs on the
+      firmware in fw_blobs/ -- the hypervisor Sun shipped with the
+      OpenSPARC T1 release, built for the Legion simulator.  These are the
+      configs the boot matrix in docs/index.html was measured on.
+
+  new hv MD format          hvmd_v1, hvmd_v1_pciex
+  (content-version 1.0)
+
+      Two-level.  An hv MD describing guests, cpus, memory, devices,
+      ldc_endpoints and consoles as container nodes, plus a separate guest
+      MD that the hypervisor finds through the guest's mdpa property.  The
+      hv MD's content-version is a u64 (0x100000000); the guest MD's is the
+      string "1.0" -- different types, same idea.
+
+      Nothing in fw_blobs/ can run these.  See the next section.
+
+
+The new-format configs need a completely different set of binaries
+------------------------------------------------------------------
+
+They are not drop-in replacements for the old ones, and none of what they
+need is in this repository:
+
+  q.bin       Our own build of the OpenSPARC *T2* release hypervisor
+              (hypervisor/src/greatlakes/ontario), with stock GNU cross
+              tools and a non-default option set.  Sun's shipped q.bin is
+              the T1 release's Legion build and rejects these configs
+              outright --
+
+                  ABORT: config-basics: MD content-version not found
+
+              -- because that format predates the version field entirely.
+              The reverse holds too: the T2-generation hypervisor rejects
+              the old-format configs for the same reason.
+
+  reset.bin   Likewise rebuilt from the T2 sources.
+
+  openboot.bin
+              Sun's, but from the T2 release, not the OBP 4.20.0 in
+              fw_blobs/.  Two are usable and the choice matters:
+
+                obp/obp/arch/sun4v/niagara/t1_fpga/openboot.bin
+                    the 2009 Ontario build; carries sun4v-vdisk,
+                    sun4v-vnet, sun4v-chan-dev.  What hvmd_v1 booted on.
+
+                obp/obp/arch/sun4v/niagara2/release/openboot.bin
+                    additionally carries the pciex word, which loads
+                    sun4v-vpci.  Required by hvmd_v1_pciex: without it OBP
+                    does not walk a PCIe bus at all.  Runs on the T1 CPU
+                    model and boots Solaris just as well; its N2-specific
+                    words stay inert because no MD node matches them.
+
+  qemu        Upstream, plus the sun4v TTE page-size fix, plus a patch
+              modelling the hypervisor's own private console UART at
+              0xfff0c2c000 -- a compile-time constant in the T2 sources,
+              nothing to do with any MD.  Without that device the hv hangs
+              on its first PRINT() and the machine is silent.
+
+So this is a transplant: a hypervisor generation from the T2 release, built
+for and running on the T1 machine QEMU emulates.  That is what makes the LDC
+and PCIe work possible at all -- the T1-release hypervisor has no LDC code
+in it -- and it is equally why these configs cannot be tried by pointing
+QEMU at this repository alone.  The hypervisor build recipe is kept
+elsewhere and is not published.
+
+
+What has and has not been seen to boot
+--------------------------------------
+
+The old-format configs are the measured ones; results are in the boot matrix
+and the artefact logs it cites.
+
+For the new-format pair, precision matters, because "it booted" is easy to
+inherit across an edit that was never booted:
+
+  hvmd_v1         The blob pair that booted Solaris 10 to a login prompt --
+                  first the 2005 disk.s10hw2 image, then the T2 release's
+                  Solaris 10 8/07 disk1.img with the whole LDoms driver
+                  stack -- is one property away from what is committed here.
+                  The guest MD is byte-identical to the one that booted; the
+                  hv MD differs by perfctraccess alone, changed 1 -> 0 after
+                  those boots (see below).  The change withdraws a permission
+                  rather than granting one, so it cannot plausibly break
+                  anything -- but it has not been re-run.
+
+  hvmd_v1_pciex   Has never booted Solaris.  Its recorded result stops at the
+                  OBP ok prompt: OBP builds /pci@0 from the cfg-handle, loads
+                  sun4v-vpci, issues VPCI_CONFIG_GET, and the hypervisor
+                  answers EINVAL.  That negative result is what the config
+                  exists to produce.
+
+The work since 2026-08-04 has gone into getting hardware described and
+enumerated -- LDC endpoints, a PCIe root complex, interrupt maps -- rather
+than into re-testing the boot after each step.  Read everything under
+bin/_test/ as "builds, and is what the source says", not as "known to boot".
+Which of it survives contact with a running Solaris is the next question,
+not an answered one.
+
+
+perfctraccess: the old configs keep 1 on purpose
+------------------------------------------------
+
+hvmd_v1 and hvmd_v1_pciex set perfctraccess = 0 on the guest node; every
+old-format config still sets 1, from the GUEST() macro.  Neither is an
+oversight.
+
+Non-zero lets hcall_niagara_getperf / setperf past their
+GUEST_PERFREG_ACCESSIBLE check, after which the hypervisor -- both
+generations; T1 release in greatlakes/common/src/hcall.s, T2 release in
+ontario/src/hcall_niagara.s -- performs a raw *physical* access to real T1
+registers: JBI_PERF_CTL at 0x8000020000, DRAM_PERF_CTL0..3 at 0x9700000400
+and up.  QEMU's -M niagara maps neither address, and an unassigned access
+there is not a silent zero: it raises a data access exception with HS_PRIV
+set, i.e. inside the hypervisor.  A guest reaches it by ordinary means --
+Solaris creates dram/jbus kstats once the Niagara CPU API group registers,
+so `kstat -p dram:::` is enough.
+
+Sun's own configs disagree with each other, and both are right: the T1 FPGA
+descriptors ship 1, because that board has a real JBus interface and a real
+DRAM controller behind those addresses; the Legion config ships 0, because
+the simulator has neither.  QEMU is the Legion case, so 0 is the correct
+value for anything written here.
+
+The old-format configs are nevertheless left at 1.  OpenSPARC_T1_rebuild is
+Sun's 2006 source copied verbatim and has to stay that way -- the
+byte-identity proof against bin/_reference/ is what it exists for -- and
+every other old config descends from it through the patch chains under
+patches/.  Changing the property there would mean regenerating thirteen
+patch sets to close a hazard that nothing in the boot matrix has ever
+triggered, and it would cost the one guarantee the tree is built around.
+Documented instead.

@@ -86,6 +86,10 @@ Everything the new hv learns about its environment comes from this file:
 
 Status
 ------
+Read ../README first: it says which binaries this config needs (none of them
+in fw_blobs/, and the hypervisor is our own build of the T2 release) and how
+far the whole _test tree has actually been verified.
+
 Works.  This pair boots our own build of the T2-release Ontario hypervisor all
 the way to a Solaris login prompt under QEMU -M niagara -- first with the 2005
 disk.s10hw2 image (exp #18), then with the T2 release's Solaris 10 8/07
@@ -99,10 +103,14 @@ first claimed otherwise: cnex, vldc, vcc and vds all attach, with their minor
 nodes named out of this MD.  No channel carries traffic yet, exactly as
 expected -- nothing in this hv raises a guest interrupt.
 
-The perfctraccess change is the one item NOT yet exercised on a boot.  It is a
-grant being withdrawn, so it cannot break anything that was working; the reason
-to boot is to confirm the fault it prevents was real, by running
-`kstat -p dram:::` against a config that still has 1.
+The perfctraccess change is the one item NOT yet exercised on a boot, and it is
+the only difference between what is committed here and what booted.  Compared
+property by property with scripts/mdcompare.py against the exact blobs from
+those runs: the guest MD is byte-identical, and the hv MD differs in
+perfctraccess and nothing else.  It is a grant being withdrawn, so it cannot
+break anything that was working; the reason to boot is to confirm the fault it
+prevents was real, by running `kstat -p dram:::` against a config that still
+has 1.
 
 Full background: docs/niagara-findings.md in the qemu-sparc64 notes repo,
 "Track A: what the new hv MD format actually requires".

@@ -10,6 +10,51 @@ the boot matrix and md-artefacts cite). "byte-identical" below always means
 verified with scripts/verify.sh, which rebuilds each config and compares.
 
 
+2026-08-12
+----------
+
+Added
+
+  - patches/_test/README -- what the experimental tree is worth, as opposed to
+    what each config in it changes. Two things it exists to state plainly. The
+    new-format configs (hvmd_v1, hvmd_v1_pciex) need an entirely different set
+    of binaries from everything else here: a hypervisor and reset vector built
+    by us from the OpenSPARC *T2* release sources, a T2-release OBP image, and
+    a QEMU carrying the hv-private console UART -- nothing in fw_blobs/ can run
+    them, and the T2-generation hv likewise rejects the old-format configs. And
+    none of the new-format work is verified on a Solaris boot as committed: the
+    effort since 2026-08-04 went into describing and enumerating hardware, not
+    into re-testing the boot after each step.
+
+  - _test/hvmd_v1 -- the hv MD in the format the T2-generation hypervisor
+    requires (content-version 1.0, two-level: an hv MD of container nodes plus
+    a guest MD found through mdpa), with LDC endpoints modelled on Sun's own
+    single-guest Legion pair. The guest MD gains forward arcs under
+    virtual-devices (arcs are directional; without them every device is "not
+    found"), compatible as a list everywhere, an openboot/variables subtree,
+    and a console compatible list ordered "qcn" first, which is what makes
+    console input work.
+
+  - _test/hvmd_v1_pciex -- hvmd_v1 plus a PCIe root complex, guest side and hv
+    side, copied from Sun's 1c1t descriptors. Deliberately kept separate: it
+    provokes an error path rather than booting. Its result is negative and
+    useful -- the hypervisor answers EINVAL and describing a bus to it changes
+    nothing, so the bus cannot be served that way.
+
+  - scripts/mdcompare.py -- compares two binary MDs property by property, so a
+    config can be checked against a reference (or against the exact blob that
+    last booted) instead of reasoned about on its own.
+
+Changed
+
+  - perfctraccess = 0 on the guest node in the new-format configs, matching
+    Sun's Legion configuration. Non-zero lets the perf-register hypercalls
+    reach physical addresses no emulator maps, faulting inside the hypervisor;
+    a guest triggers it with `kstat -p dram:::`. The old-format configs keep 1
+    on purpose -- see patches/_test/README for why, and why that is not an
+    oversight in either direction.
+
+
 2026-07-23
 ----------
 
