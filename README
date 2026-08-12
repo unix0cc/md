@@ -35,6 +35,16 @@ patches/
     mmu-page-size-list/mmu-#va-bits platform properties, required for
     a clean sun4v boot on illumos/OpenSolaris snv_134.
 
+latest
+    A symlink in each of the three directories above, pointing at the
+    newest config that has been *verified* -- currently pagesize_256m.
+    Deliberately not the newest work: the experimental configs under
+    _test/ have no row in the boot matrix, and the new-hv-MD-format ones
+    additionally need a firmware set this repo does not ship (see
+    patches/_test/README). "latest" means the one to reach for, which is
+    a claim about evidence, not about dates. It moves when a config earns
+    a matrix row, not when a config is written.
+
 fw_blobs/
     The firmware -M niagara loads but mdgen does not produce:
 
@@ -202,12 +212,12 @@ If the config was built with `make symlinks`, a single -L path is enough,
 because the config directory then holds all six:
 
     qemu-system-sparc64 -M niagara \
-        -L /tmp/md/bin/latest/1024 \
-        -nographic -m 1024 \
+        -L /tmp/md/bin/latest/4096 \
+        -nographic -m 4096 \
         -drive if=pflash,readonly=on,file=/zroot/iso/s10u11/V36434-01.iso
 
-The memory size is the last path component, so bin/latest/1024 wants
--m 1024. The four firmware paths are symlinks into fw_blobs, so nothing
+The memory size is the last path component, so bin/latest/4096 wants
+-m 4096. The four firmware paths are symlinks into fw_blobs, so nothing
 was copied and the shadowing rule above has nothing left to bite on. The
 full trace of a run in this form is on the project page:
 https://unix0cc.github.io/md/
