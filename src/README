@@ -48,7 +48,7 @@ Building
                            # ../../bin/<config>/ path
     make distclean         # removes that output, leaves source untouched
 
-Each Makefile's `MDGEN` defaults to $(HOME)/mdbuild/bin/mdgen (built from
+Each Makefile's `MDGEN` defaults to $(HOME)/toolchain/mdbuild/bin/mdgen (built from
 github.com/unix0cc/mdbuild, not part of this repo).
 
 A build produces only 1up-md.bin/.txt and 1up-hv.bin/.txt. The static

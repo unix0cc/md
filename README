@@ -9,7 +9,7 @@ has, and the QEMU-side hv-config that backs it.
 This repo is the MD/hv-config content itself. The compiler/linter that
 turns .pdesc/.hdesc source into the binary .bin blobs (mdgen,
 mdlint) lives separately at github.com/unix0cc/mdbuild -- built there,
-installed at $(HOME)/mdbuild/bin/, and referenced by path from the
+installed at $(HOME)/toolchain/mdbuild/bin/, and referenced by path from the
 Makefiles here.
 
 This README describes the repo as it currently is. For the history of

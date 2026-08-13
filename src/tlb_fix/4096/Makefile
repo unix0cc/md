@@ -31,7 +31,7 @@
 # NOTE: CPP is a GNU Make built-in variable (default "cc -E"); ?= would be
 # silently ignored, so this must be an unconditional override.
 CPP     := cpp -traditional-cpp
-MDGEN   ?= $(HOME)/mdbuild/bin/mdgen
+MDGEN   ?= $(HOME)/toolchain/mdbuild/bin/mdgen
 VERBOSE ?=
 
 # Static OBP/firmware blobs (openboot.bin, q.bin, reset.bin, nvram1) are not

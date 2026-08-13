@@ -27,7 +27,7 @@ set -u
 
 REPO_ROOT=$(cd -- "$(dirname -- "$0")/.." && pwd)
 FW_BLOBS_DIR=$(cd -- "$REPO_ROOT/fw_blobs" 2>/dev/null && pwd)
-MDGEN=${MDGEN:-$HOME/mdbuild/bin/mdgen}
+MDGEN=${MDGEN:-$HOME/toolchain/mdbuild/bin/mdgen}
 
 quiet=0
 case ${1:-} in
